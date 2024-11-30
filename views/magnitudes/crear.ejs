@@ -1,0 +1,21 @@
+<%- include ../layout/cabecera.ejs %>
+<br>
+<h1>Registar Magnitudes</h1>
+<br>
+<form method="post" action="/magnitudes">
+   
+    <div class="form-group">
+        <label for="my-input">Nombre:</label>
+        <input id="my-input" class="form-control" type="text" name="nombre" required>
+    </div>
+
+    <div class="form-group">
+        <label for="my-input">Descripcion</label>
+        <input id="my-input" class="form-control" type="text" name="descripcion">
+    </div>
+
+    <button class="btn btn-primary" type="submit">Registrar Magnitud</button>
+
+</form>
+
+<%- include ../layout/pie.ejs %>

@@ -1,0 +1,62 @@
+
+  body {
+      background-color: #121212; /* Fondo oscuro */
+      font-family: 'Arial', sans-serif;
+  }
+
+  h1 {
+      font-size: 2.5rem;
+  }
+
+  .card {
+      border-radius: 12px; /* Bordes redondeados */
+      background-color: #1f1f1f; /* Fondo de tarjeta */
+      color: #ffffff; /* Texto blanco */
+  }
+
+  .card-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+  }
+
+  .card-text {
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+  }
+
+  .btn {
+      border-radius: 8px; /* Bordes de los botones */
+      font-weight: 500;
+      font-size: 1rem;
+  }
+
+  .btn-primary {
+      background-color: #6c63ff; /* Color personalizado */
+      border: none;
+  }
+
+  .btn-primary:hover {
+      background-color: #5a54e0;
+  }
+
+  .btn-secondary {
+      background-color: #464646; /* Botón gris oscuro */
+      border: none;
+  }
+
+  .btn-secondary:hover {
+      background-color: #393939;
+  }
+
+  hr.bg-light {
+      opacity: 0.3; /* Línea divisora más sutil */
+  }
+
+  i {
+      font-size: 3rem; /* Tamaño del ícono */
+      color: #6c63ff; /* Color del ícono */
+  }
+
+  .row {
+      gap: 20px; /* Separación entre las tarjetas */
+  }
