@@ -18,6 +18,7 @@ export const indicadoresController = {
         } catch (error) {
             console.error("Error al obtener las magnitudes:", error);
             res.status(500).send("Error al cargar la página");
+            
         }
     },
     crear: (req, res) => {
