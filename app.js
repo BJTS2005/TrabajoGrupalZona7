@@ -8,7 +8,8 @@ import logger from 'morgan';
 import indexRouter from './routes/index.js';
 import magnitudesRouter from './routes/magnitudes.js';
 import unidadesRouter from './routes/unidades.js';
-import indicadoresRouter from './routes/indicadores.js'
+import indicadoresRouter from './routes/indicadores.js';
+import campusRouter from './routes/campus.route.js';
 
 console.log("hola");
 
@@ -30,6 +31,7 @@ app.use('/', indexRouter);
 app.use('/magnitudes', magnitudesRouter);
 app.use('/unidades', unidadesRouter);
 app.use('/indicadores', indicadoresRouter);
+app.use('/campus', campusRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

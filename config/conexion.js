@@ -1,7 +1,7 @@
 import { Sequelize } from "sequelize";
 
 
-const sequelize = new Sequelize('greenmetrics', 'postgres', '9deoctubre', {
+const sequelize = new Sequelize('gmte', 'postgres', '9deoctubre', {
     host: 'localhost',
     dialect: 'postgres',
     port: 5432,
