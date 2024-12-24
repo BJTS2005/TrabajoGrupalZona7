@@ -32,7 +32,7 @@ export const magnitudesController = {
             const magnitud = await Magnitudes.findByPk(req.params.id);
             if (!magnitud) return res.status(404).send("Magnitud no encontrada");
             await magnitud.destroy();
-            res.redirect('/magnitudes');      
+            res.redirect('/magnitudes');
         } catch (error) {
             console.error("Error al eliminar magnitud:", error);
             res.status(500).send("Error al eliminar magnitud");
@@ -43,7 +43,7 @@ export const magnitudesController = {
             const magnitud = await Magnitudes.findByPk(req.params.id, {
                 raw: true,
             });
-            res.render('magnitudes/editar', {magnitud});
+            res.render('magnitudes/editar', { magnitud });
         } catch (error) {
             console.error("Error al obtener la magnitud", error);
             res.status(500).send("Error al obtener magnitud");
@@ -58,12 +58,12 @@ export const magnitudesController = {
             magnitud.nombre = nombre;
             magnitud.descripcion = descripcion;
             await magnitud.save();
-             res.redirect('/magnitudes');
+            res.redirect('/magnitudes');
         } catch (error) {
             console.error("Error al actualizar magnitud:", error);
             res.status(500).send("Error al actualizar magnitud");
         }
-       //console.log(req.body.id);
+        //console.log(req.body.id);
     },
     /*getById: async (req, res) => {
         try {

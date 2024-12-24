@@ -3,54 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrar Campus</title>
+    <title>Editar Campus</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="text-center mb-4">Registrar Campus</h1>
-        <form method="post" action="/campus">
+        <h1 class="text-center mb-4">Editar Campus</h1>
+        <form action="../actualizar/" method="post">
             <div class="mb-3">
                 <label for="camp_id" class="form-label">ID del Campus</label>
-                <input type="text" class="form-control" id="camp_id" name="camp_id" maxlength="5" required>
+                <input type="text" class="form-control" id="camp_id" name="camp_id" value="<%= campus.camp_id %>" readonly>
             </div>
             <div class="mb-3">
                 <label for="camp_nom" class="form-label">Nombre del Campus</label>
-                <input type="text" class="form-control" id="camp_nom" name="camp_nom" maxlength="25" required>
+                <input type="text" class="form-control" id="camp_nom" name="camp_nom" value="<%= campus.camp_nom %>" maxlength="25" required>
             </div>
             <div class="mb-3">
                 <label for="camp_area" class="form-label">Área del Campus (m²)</label>
-                <input type="number" step="0.01" class="form-control" id="camp_area" name="camp_area" required>
+                <input type="number" step="0.01" class="form-control" id="camp_area" name="camp_area" value="<%= campus.camp_area %>" required>
             </div>
             <div class="mb-3">
                 <label for="camp_perimetro" class="form-label">Perímetro del Campus (m)</label>
-                <input type="number" step="0.01" class="form-control" id="camp_perimetro" name="camp_perimetro" required>
+                <input type="number" step="0.01" class="form-control" id="camp_perimetro" name="camp_perimetro" value="<%= campus.camp_perimetro %>" required>
             </div>
             <div class="mb-3">
                 <label for="camp_capacidad" class="form-label">Capacidad del Campus</label>
-                <input type="number" class="form-control" id="camp_capacidad" name="camp_capacidad">
+                <input type="number" class="form-control" id="camp_capacidad" name="camp_capacidad" value="<%= campus.camp_capacidad %>">
             </div>
             <div class="mb-3">
                 <label for="camp_cant_pobla" class="form-label">Cantidad de Población Actual</label>
-                <input type="number" class="form-control" id="camp_cant_pobla" name="camp_cant_pobla">
+                <input type="number" class="form-control" id="camp_cant_pobla" name="camp_cant_pobla" value="<%= campus.camp_cant_pobla %>">
             </div>
-            
+           
             <div class="mb-3">
                 <label for="camp_calle_principal" class="form-label">Calle Principal</label>
-                <input type="text" class="form-control" id="camp_calle_principal" name="camp_calle_principal" maxlength="50">
+                <input type="text" class="form-control" id="camp_calle_principal" name="camp_calle_principal" value="<%= campus.camp_calle_principal %>" maxlength="50">
             </div>
             <div class="mb-3">
                 <label for="camp_calle_secundaria" class="form-label">Calle Secundaria</label>
-                <input type="text" class="form-control" id="camp_calle_secundaria" name="camp_calle_secundaria" maxlength="50">
+                <input type="text" class="form-control" id="camp_calle_secundaria" name="camp_calle_secundaria" value="<%= campus.camp_calle_secundaria %>" maxlength="50">
             </div>
             <div class="text-center">
-                <button type="submit" class="btn btn-primary">Registrar Campus</button>
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                 <a href="/campus" class="btn btn-secondary">Cancelar</a>
             </div>
         </form>
     </div>
 
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
