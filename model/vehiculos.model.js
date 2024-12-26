@@ -115,7 +115,7 @@ const Vehiculo = sequelize.define('Vehiculo', {
 });
 
 // Relaciones
-Vehiculo.belongsTo(Frecuencia, { foreignKey: 'fre_id' });
+Vehiculo.belongsTo(Frecuencia, { foreignKey: 'fre_id', as: 'Frecuencia' });
 Vehiculo.belongsTo(TipoEmision, { foreignKey: 'tpe_id' });
 Vehiculo.belongsTo(TipoVehiculo, { foreignKey: 'tpv_id' });
 Vehiculo.belongsTo(Campus, { foreignKey: 'camp_id' });
