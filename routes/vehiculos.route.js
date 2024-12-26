@@ -18,10 +18,11 @@ router.post('/tipos-vehiculo', vehiculosController.registrarTpVehiculo);
 router.post('/tipos-vehiculo/eliminar/:id', vehiculosController.eliminarTpVehiculo);
 router.post('/tipos-vehiculo/actualizar', vehiculosController.actualizarTpVehiculo);
 
-router.get('/gestionar', vehiculosController.listarVehiculos);
-router.post('/gestionar', vehiculosController.registrarVehiculo);
-router.post('/gestionar/eliminar/:id', vehiculosController.eliminarVehiculo);
-router.post('/gestionar/actualizar', vehiculosController.actualizarVehiculo);
+router.get('/gestionar/:camp_id', vehiculosController.listarVehiculos);
+router.post('/gestionar/:camp_id', vehiculosController.registrarVehiculo);
+router.post('/gestionar/:camp_id/eliminar/:id', vehiculosController.eliminarVehiculo);
+router.post('/gestionar/:camp_id/actualizar', vehiculosController.actualizarVehiculo);
+
 
 
 export default router;

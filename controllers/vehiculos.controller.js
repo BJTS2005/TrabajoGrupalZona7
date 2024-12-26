@@ -194,8 +194,12 @@ actualizarTpVehiculo: async (req, res) => {
 
 listarVehiculos: async (req, res) => {
     try {
-        // Consulta para obtener los vehículos junto con sus asociaciones
+        const { camp_id } = req.params;
+
+        // Obtener vehículos filtrados por campus (si se especifica)
+        const whereCondition = camp_id ? { camp_id } : {};
         const vehiculos = await Vehiculo.findAll({
+            where: whereCondition,
             include: [
                 { model: TipoVehiculo, attributes: ['tpv_id', 'tpv_detalle'] },
                 { model: Frecuencia, attributes: ['fre_id', 'fre_detalle'], as: 'Frecuencia' },
@@ -205,19 +209,20 @@ listarVehiculos: async (req, res) => {
             nest: true,
         });
 
-        // Consultas independientes para las tablas relacionadas
+        // Consultar datos auxiliares
         const tiposVehiculo = await TipoVehiculo.findAll({ raw: true });
         const frecuencias = await Frecuencia.findAll({ raw: true });
         const tiposEmision = await TipoEmision.findAll({ raw: true });
         const campuses = await Campus.findAll({ raw: true });
 
-        // Renderizar la vista y pasar todos los datos necesarios
+        // Renderizar vista
         res.render('vehiculos/gestionVehiculos.ejs', {
-            vehiculos,       // Lista de vehículos
-            tiposVehiculo,   // Lista completa de tipos de vehículo
-            frecuencias,     // Lista completa de frecuencias
+            vehiculos,
+            tiposVehiculo,
+            frecuencias,
             tiposEmision,
-            campuses    // Lista completa de tipos de emisión
+            campuses,
+            currentCampus: camp_id || null, // Pasar el campus actual si está definido
         });
     } catch (error) {
         console.error("Error al listar los vehículos:", error);
@@ -231,12 +236,13 @@ registrarVehiculo: async (req, res) => {
             veh_id,
             fre_id,
             tpe_id,
-            tpv_id,
-            camp_id,
+            tpv_id,        
             veh_cantidad,
             veh_cantidad_ruedas,
             veh_distancia_aprox_recorrida,
         } = req.body;
+
+        const { camp_id } = req.params;
 
         await Vehiculo.create({
             veh_id,
@@ -250,7 +256,7 @@ registrarVehiculo: async (req, res) => {
             veh_distancia_aprox_recorrida,
         });
 
-        res.redirect('/vehiculos/gestionar');
+        res.redirect(`/vehiculos/gestionar/${camp_id}`);
     } catch (error) {
         console.error("Error al registrar el vehículo:", error);
         res.status(500).send("Error al registrar el vehículo.");
@@ -261,9 +267,12 @@ registrarVehiculo: async (req, res) => {
 // Editar un vehículo existente
 actualizarVehiculo: async (req, res) => {
     try {
-        const { veh_id, fre_id, tpe_id, tpv_id, veh_cantidad, veh_cantidad_ruedas, veh_fecha_registro, veh_distancia_aprox_recorrida } = req.body;
+        const { veh_id, fre_id, tpe_id, tpv_id, veh_cantidad, veh_cantidad_ruedas, veh_fecha_registro, veh_distancia_aprox_recorrida} = req.body;
+        
+        const {camp_id} = req.params;
 
         const vehiculo = await Vehiculo.findByPk(veh_id);
+        
         if (!vehiculo) {
             return res.status(404).send("Vehículo no encontrado.");
         }
@@ -277,8 +286,8 @@ actualizarVehiculo: async (req, res) => {
             veh_fecha_registro,
             veh_distancia_aprox_recorrida,
         });
-
-        res.redirect('/vehiculos/gestionar');
+     
+        res.redirect(`/vehiculos/gestionar/${camp_id}`);
     } catch (error) {
         console.error("Error al actualizar el vehículo:", error);
         res.status(500).send("Error al actualizar el vehículo.");
@@ -288,7 +297,7 @@ actualizarVehiculo: async (req, res) => {
 // Eliminar un vehículo
 eliminarVehiculo: async (req, res) => {
     try {
-        const { id } = req.params;
+        const { camp_id, id } = req.params;
 
         const vehiculo = await Vehiculo.findByPk(id);
         if (!vehiculo) {
@@ -296,7 +305,8 @@ eliminarVehiculo: async (req, res) => {
         }
 
         await vehiculo.destroy();
-        res.redirect('/vehiculos/gestionar');
+
+        res.redirect(`/vehiculos/gestionar/${camp_id}`);
     } catch (error) {
         console.error("Error al eliminar el vehículo:", error);
         res.status(500).send("Error al eliminar el vehículo.");

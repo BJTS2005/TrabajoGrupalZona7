@@ -75,7 +75,7 @@
                                     Editar
                                 </button>
                                 <!-- Botón de eliminar -->
-                                <form action="/vehiculos/gestionar/eliminar/<%= vehiculo.veh_id %>" method="POST"
+                                <form action="/vehiculos/gestionar/<%= currentCampus %>/eliminar/<%= vehiculo.veh_id %>" method="POST"
                                     class="d-inline"
                                     onsubmit="return confirm('¿Estás seguro de eliminar este vehículo?');">
                                     <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
@@ -96,7 +96,7 @@
                         <h5 class="modal-title" id="modalRegistrarVehiculoLabel">Registrar Vehículo</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form action="/vehiculos/gestionar" method="POST">
+                    <form action="/vehiculos/gestionar/<%= currentCampus %>" method="POST">
                         <div class="modal-body">
                             <div class="mb-3">
                                 <label for="veh_id" class="form-label">ID del Vehículo</label>
@@ -107,7 +107,8 @@
                                 <label for="camp_id" class="form-label">Campus</label>
                                 <select id="camp_id" name="camp_id" class="form-select" required>
                                     <% campuses.forEach(campus=> { %>
-                                        <option value="<%= campus.camp_id %>">
+                                        <option value="<%= campus.camp_id %>" <%=(currentCampus===campus.camp_id)
+                                            ? 'selected' : '' %>>
                                             <%= campus.camp_nom %>
                                         </option>
                                         <% }); %>
@@ -178,10 +179,11 @@
                         <h5 class="modal-title" id="modalEditarVehiculoLabel">Editar Vehículo</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form action="/vehiculos/gestionar/actualizar" method="POST">
+                    <form action="/vehiculos/gestionar/<%= currentCampus %>/actualizar" method="POST">
                         <div class="modal-body">
                             <!-- Campo oculto para el ID del vehículo -->
                             <input type="hidden" id="veh_id_editar" name="veh_id">
+                            <input type="hidden" name="camp_id" value="<%= currentCampus %>">
 
                             <!-- Tipo de Vehículo -->
                             <div class="mb-3">
