@@ -11,6 +11,7 @@ import unidadesRouter from './routes/unidades.js';
 import indicadoresRouter from './routes/indicadores.js';
 import campusRouter from './routes/campus.route.js';
 import vehiculosRouter from './routes/vehiculos.route.js';
+import shuttlesRouter from './routes/shuttles.route.js';
 
 console.log("hola");
 
@@ -34,6 +35,7 @@ app.use('/unidades', unidadesRouter);
 app.use('/indicadores', indicadoresRouter);
 app.use('/campus', campusRouter);
 app.use('/vehiculos', vehiculosRouter);
+app.use('/shuttles', shuttlesRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
