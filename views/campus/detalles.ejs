@@ -95,7 +95,7 @@
                     </div>
                 </div>
             </div>
-         
+
             <!-- Card para Shuttles -->
             <div class="col-md-4 mb-3">
                 <div class="card">
@@ -114,13 +114,53 @@
                     </div>
                 </div>
             </div>
-        
-            
-            
-           
-           
-          
-           
+
+            <!-- Card para Infraestructuras de Transporte -->
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-header text-center bg-warning text-dark">
+                        Infraestructuras de Transporte
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            Gestionar las infraestructuras de transporte asociadas a este campus.
+                        </p>
+                        <div class="d-grid gap-2">
+                            <a href="/infra-transporte/gestionar/<%= campus.camp_id %>"
+                                class="btn btn-primary">Gestionar Infraestructuras</a>
+                            <a href="/infra-transporte/tipos" class="btn btn-secondary">Tipos de Infraestructura</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card para Eventos Sostenibles -->
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-header text-center bg-success text-white">
+                        Eventos Sostenibles
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            Gestiona los eventos sostenibles organizados en este campus.
+                        </p>
+                        <div class="d-grid gap-2">
+                            <a href="/eventos-sostenibles/gestionar/<%= campus.camp_id %>" class="btn btn-primary">Gestionar
+                                Eventos</a>
+                            <a href="/eventos-sostenibles/tipos" class="btn btn-secondary">Tipos de Evento</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
 
 
         </div>
