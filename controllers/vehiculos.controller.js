@@ -214,9 +214,7 @@ listarVehiculos: async (req, res) => {
         const frecuencias = await Frecuencia.findAll({ raw: true });
         const tiposEmision = await TipoEmision.findAll({ raw: true });
         const campuses = await Campus.findAll({ raw: true });
-
-
-        console.log(vehiculos);
+ 
 
         // Renderizar vista
         res.render('vehiculos/gestionVehiculos.ejs', {

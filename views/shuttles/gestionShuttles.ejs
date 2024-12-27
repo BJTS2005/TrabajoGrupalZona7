@@ -55,15 +55,139 @@
                                 <%= new Date(shuttle.sti_fecha_registro).toLocaleDateString() %>
                             </td>
                             <td>
-                                
-                                <button class="btn btn-warning btn-sm"> Editar </button>
-                                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+
+                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#modalEditarShuttle" data-id="<%= shuttle.sti_id%>"
+                                    data-tpe_id="<%= shuttle.tpe_id %>"
+                                    data-descripcion="<%= shuttle.sti_descripcion %>"
+                                    data-pajeros="<%= shuttle.sti_prom_pasajeros %>"
+                                    data-viajes="<%= shuttle.sti_tot_viajes_dia %>">
+                                    Editar
+                                </button>
+
+                                <form action="/shuttles/gestionar/<%= currentCampus %>/eliminar/<%= shuttle.sti_id %>"
+                                    method="POST" class="d-inline"
+                                    onsubmit="return confirm('¿Estás seguro de eliminar este servicio?');">
+                                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                                </form>
                             </td>
                         </tr>
                         <% }); %>
                 </tbody>
             </table>
         </div>
+
+        <!--REGISTRAR-->
+        <div class="modal fade" id="modalRegistrarShuttle" tabindex="-1" aria-labelledby="modalRegistrarShuttleLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalRegistrarShuttleLabel">Registrar Servicio de Transporte</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="/shuttles/gestionar/<%= currentCampus %>" method="post">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="sti_id" class="form-label">ID del Servicio</label>
+                                <input type="text" class="form-control" id="sti_id" name="sti_id" maxlength="5"
+                                    required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="camp_id" class="form-label">Campus</label>
+                                <select id="camp_id" name="camp_id" class="form-select" required>
+                                    <% campuses.forEach(campus=> { %>
+                                        <option value="<%= campus.camp_id %>" <%=(currentCampus===campus.camp_id)
+                                            ? 'selected' : '' %>>
+                                            <%= campus.camp_nom %>
+                                        </option>
+                                        <% }); %>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tpe_id" class="form-label">Tipo de Emisión</label>
+                                <select id="tpe_id" name="tpe_id" class="form-select" required>
+                                    <% tiposEmision.forEach(tipo=> { %>
+                                        <option value="<%= tipo.tpe_id %>">
+                                            <%= tipo.tpe_detalle %>
+                                        </option>
+                                        <% }); %>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="sti_descripcion" class="form-label">Describa el servicio</label>
+                                <textarea class="form-control" name="sti_descripcion" id="sti_descripcion" rows="3"
+                                    required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="sti_prom_pasajeros" class="form-label">Aproximado de pasajeros</label>
+                                <input type="number" class="form-control" id="sti_prom_pasajeros"
+                                    name="sti_prom_pasajeros" required min="0">
+                            </div>
+                            <div class="mb-3">
+                                <label for="sti_tot_viajes_dia" class="form-label">Viajes al día</label>
+                                <input type="number" class="form-control" id="sti_tot_viajes_dia"
+                                    name="sti_tot_viajes_dia" required min="0">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Registrar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!--EDITAR-->
+        <div class="modal fade" id="modalEditarShuttle" tabindex="-1" aria-labelledby="modalEditarShuttleLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalEditarShuttleLabel">Editar Servicio de Transporte</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="/shuttles/gestionar/<%= currentCampus %>/actualizar" method="post">
+                        <div class="modal-body">
+                            <input type="hidden" id="sti_id_editar" name="sti_id">
+                            <div class="mb-3">
+                                <label for="tpe_id_editar" class="form-label">Tipo de Emisión</label>
+                                <select id="tpe_id_editar" name="tpe_id" class="form-select" required>
+                                    <% tiposEmision.forEach(tipo=> { %>
+                                        <option value="<%= tipo.tpe_id %>">
+                                            <%= tipo.tpe_detalle %>
+                                        </option>
+                                        <% }); %>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="sti_descripcion_editar" class="form-label">Describa el servicio</label>
+                                <textarea class="form-control" name="sti_descripcion" id="sti_descripcion_editar"
+                                    rows="3" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="sti_prom_pasajeros_editar" class="form-label">Aproximado de
+                                    pasajeros</label>
+                                <input type="number" class="form-control" id="sti_prom_pasajeros_editar"
+                                    name="sti_prom_pasajeros" required min="0">
+                            </div>
+                            <div class="mb-3">
+                                <label for="sti_tot_viajes_dia_editar" class="form-label">Viajes al día</label>
+                                <input type="number" class="form-control" id="sti_tot_viajes_dia_editar"
+                                    name="sti_tot_viajes_dia" required min="0">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
 
     </div>
 
@@ -72,6 +196,30 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const modalEditar = document.getElementById('modalEditarShuttle');
+
+        modalEditar.addEventListener('show.bs.modal',  (event) => {
+            const boton = event.relatedTarget;
+
+            const sti_id = boton.getAttribute('data-id');
+            const tpe_id = boton.getAttribute('data-tpe_id');
+            const sti_descripcion = boton.getAttribute('data-descripcion');
+            const sti_prom_pasajeros = boton.getAttribute('data-pajeros');
+            const sti_tot_viajes_dia = boton.getAttribute('data-viajes');
+
+            modalEditar.querySelector('#sti_id_editar').value = sti_id;
+            modalEditar.querySelector('#tpe_id_editar').value = tpe_id;
+            modalEditar.querySelector('#sti_descripcion_editar').value = sti_descripcion;
+            modalEditar.querySelector('#sti_prom_pasajeros_editar').value = sti_prom_pasajeros;
+            modalEditar.querySelector('#sti_tot_viajes_dia_editar').value = sti_tot_viajes_dia;
+
+        });
+
+
+    </script>
+
 </body>
 
 </html>
