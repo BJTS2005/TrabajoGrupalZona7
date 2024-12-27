@@ -61,5 +61,6 @@ const Shuttle = sequelize.define(
 // Relaciones
 Shuttle.belongsTo(Campus, { foreignKey: "camp_id" });
 Shuttle.belongsTo(TipoEmision, { foreignKey: "tpe_id" });
+Campus.hasMany(Shuttle, { foreignKey: "camp_id", as: "Shuttles" });
 
 export default Shuttle;

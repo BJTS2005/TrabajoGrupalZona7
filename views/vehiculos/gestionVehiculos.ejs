@@ -75,8 +75,8 @@
                                     Editar
                                 </button>
                                 <!-- Botón de eliminar -->
-                                <form action="/vehiculos/gestionar/<%= currentCampus %>/eliminar/<%= vehiculo.veh_id %>" method="POST"
-                                    class="d-inline"
+                                <form action="/vehiculos/gestionar/<%= currentCampus %>/eliminar/<%= vehiculo.veh_id %>"
+                                    method="POST" class="d-inline"
                                     onsubmit="return confirm('¿Estás seguro de eliminar este vehículo?');">
                                     <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                                 </form>
@@ -280,6 +280,8 @@
                 modalEditar.querySelector('#veh_cantidad_ruedas_editar').value = ruedas;
                 modalEditar.querySelector('#veh_distancia_aprox_recorrida_editar').value = distancia;
             });
+
+           
 
         </script>
 </body>
