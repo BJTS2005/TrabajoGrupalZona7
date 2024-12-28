@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Jobs Generales</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Gestión de Green Jobs Generales</h1>
+
+        <!-- Botón para abrir el modal de registrar -->
+        <div class="text-end mb-3">
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalRegistrarGreenJob">
+                Registrar Nuevo Green Job
+            </button>
+        </div>
+
+        <!-- Tabla de Green Jobs -->
+        <table class="table table-striped table-bordered">
+            <thead class="table-primary">
+                <tr>
+                    <th>ID</th>
+                    <th>Detalle</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% greenJobs.forEach(job => { %>
+                    <tr>
+                        <td><%= job.job_id %></td>
+                        <td><%= job.job_detalle %></td>
+                        <td>
+                            <!-- Botón para abrir el modal de editar -->
+                            <button 
+                                class="btn btn-warning btn-sm" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#modalEditarGreenJob" 
+                                data-id="<%= job.job_id %>" 
+                                data-detalle="<%= job.job_detalle %>">
+                                Editar
+                            </button>
+                            <!-- Botón de eliminar -->
+                            <form action="/greenJobs/eliminar/<%= job.job_id %>" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar este Green Job?');">
+                                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+
+        <!-- Modal para registrar nuevo Green Job -->
+        <div class="modal fade" id="modalRegistrarGreenJob" tabindex="-1" aria-labelledby="modalRegistrarGreenJobLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalRegistrarGreenJobLabel">Registrar Nuevo Green Job</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="/greenJobs/registrar" method="POST">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="job_id" class="form-label">ID del Green Job</label>
+                                <input type="text" class="form-control" id="job_id" name="job_id" maxlength="5" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="job_detalle" class="form-label">Detalle</label>
+                                <textarea class="form-control" id="job_detalle" name="job_detalle" rows="3" required></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Registrar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para editar Green Job -->
+        <div class="modal fade" id="modalEditarGreenJob" tabindex="-1" aria-labelledby="modalEditarGreenJobLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalEditarGreenJobLabel">Editar Green Job</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="/greenJobs/actualizar" method="POST">
+                        <div class="modal-body">
+                            <input type="hidden" id="job_id_editar" name="job_id">
+                            <div class="mb-3">
+                                <label for="job_detalle_editar" class="form-label">Detalle</label>
+                                <textarea class="form-control" id="job_detalle_editar" name="job_detalle" rows="3" required></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script para cargar datos en el modal de editar -->
+    <script>
+        const modalEditar = document.getElementById('modalEditarGreenJob');
+        modalEditar.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget; // Botón que abrió el modal
+            const id = button.getAttribute('data-id');
+            const detalle = button.getAttribute('data-detalle');
+
+            // Cargar los valores en los campos del modal
+            modalEditar.querySelector('#job_id_editar').value = id;
+            modalEditar.querySelector('#job_detalle_editar').value = detalle;
+        });
+    </script>
+</body>
+</html>

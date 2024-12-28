@@ -14,6 +14,10 @@ import vehiculosRouter from './routes/vehiculos.route.js';
 import shuttlesRouter from './routes/shuttles.route.js';
 import infraTransRouter from './routes/infraTrans.route.js';
 import eventosRouter from './routes/eventos.route.js';
+import sitiosWebRouter from './routes/sitiosWeb.route.js';
+import greenJobsRouter from './routes/greenJobs.route.js';
+import cursosRouter from './routes/cursos.route.js';
+
 
 console.log("hola");
 
@@ -40,6 +44,9 @@ app.use('/vehiculos', vehiculosRouter);
 app.use('/shuttles', shuttlesRouter);
 app.use('/infra-transporte', infraTransRouter);
 app.use('/eventos-sostenibles',eventosRouter);
+app.use('/sitiosWeb', sitiosWebRouter);
+app.use('/greenJobs', greenJobsRouter);
+app.use('/cursos', cursosRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

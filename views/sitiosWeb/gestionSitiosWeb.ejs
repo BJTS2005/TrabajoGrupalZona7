@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Sitios Web</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Gestión de Sitios Web</h1>
+
+        <!-- Botón para abrir el modal de registrar -->
+        <div class="text-end mb-3">
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalRegistrarSitioWeb">
+                Registrar Nuevo Sitio Web
+            </button>
+        </div>
+
+        <!-- Tabla de sitios web -->
+        <table class="table table-striped table-bordered">
+            <thead class="table-primary">
+                <tr>
+                    <th>ID</th>
+                    <th>Descripción</th>
+                    <th>URL</th>
+                    <th>Activo</th>
+                    <th>Es Reporte</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% sitiosWeb.forEach(sitio => { %>
+                    <tr>
+                        <td><%= sitio.id_sit %></td>
+                        <td><%= sitio.sit_descripcion || "Sin descripción" %></td>
+                        <td><a href="<%= sitio.sit_url %>" target="_blank"><%= sitio.sit_url %></a></td>
+                        <td><%= sitio.sit_activo ? "Sí" : "No" %></td>
+                        <td><%= sitio.sit_es_reporte ? "Sí" : "No" %></td>
+                        <td>
+                            <!-- Botón para abrir el modal de editar -->
+                            <button 
+                                class="btn btn-warning btn-sm" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#modalEditarSitioWeb" 
+                                data-id="<%= sitio.id_sit %>" 
+                                data-descripcion="<%= sitio.sit_descripcion %>" 
+                                data-url="<%= sitio.sit_url %>" 
+                                data-activo="<%= sitio.sit_activo %>" 
+                                data-reporte="<%= sitio.sit_es_reporte %>">
+                                Editar
+                            </button>
+                            <!-- Botón de eliminar -->
+                            <form action="/sitiosWeb/gestionar/<%= currentCampus %>/eliminar/<%= sitio.id_sit %>" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar este sitio web?');">
+                                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+
+        <!-- Modal para registrar nuevo sitio web -->
+        <div class="modal fade" id="modalRegistrarSitioWeb" tabindex="-1" aria-labelledby="modalRegistrarSitioWebLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalRegistrarSitioWebLabel">Registrar Nuevo Sitio Web</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="/sitiosWeb/gestionar/<%= currentCampus %>" method="POST">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="id_sit" class="form-label">ID del Sitio</label>
+                                <input type="text" class="form-control" id="id_sit" name="id_sit" maxlength="5" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="sit_descripcion" class="form-label">Descripción</label>
+                                <textarea class="form-control" id="sit_descripcion" name="sit_descripcion" rows="3"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="sit_url" class="form-label">URL</label>
+                                <input type="url" class="form-control" id="sit_url" name="sit_url" maxlength="100" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="sit_activo" class="form-label">¿Está Activo?</label>
+                                <select id="sit_activo" name="sit_activo" class="form-select" required>
+                                    <option value="true">Sí</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="sit_es_reporte" class="form-label">¿Es Reporte?</label>
+                                <select id="sit_es_reporte" name="sit_es_reporte" class="form-select" required>
+                                    <option value="true">Sí</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Registrar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para editar sitio web -->
+        <div class="modal fade" id="modalEditarSitioWeb" tabindex="-1" aria-labelledby="modalEditarSitioWebLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalEditarSitioWebLabel">Editar Sitio Web</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="/sitiosWeb/gestionar/<%= currentCampus %>/actualizar" method="POST">
+                        <div class="modal-body">
+                            <input type="hidden" id="id_sit_editar" name="id_sit">
+                            <div class="mb-3">
+                                <label for="sit_descripcion_editar" class="form-label">Descripción</label>
+                                <textarea class="form-control" id="sit_descripcion_editar" name="sit_descripcion" rows="3"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="sit_url_editar" class="form-label">URL</label>
+                                <input type="url" class="form-control" id="sit_url_editar" name="sit_url" maxlength="100" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="sit_activo_editar" class="form-label">¿Está Activo?</label>
+                                <select id="sit_activo_editar" name="sit_activo" class="form-select" required>
+                                    <option value="true">Sí</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="sit_es_reporte_editar" class="form-label">¿Es Reporte?</label>
+                                <select id="sit_es_reporte_editar" name="sit_es_reporte" class="form-select" required>
+                                    <option value="true">Sí</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script para cargar datos en el modal de editar -->
+    <script>
+        const modalEditar = document.getElementById('modalEditarSitioWeb');
+        modalEditar.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget; // Botón que abrió el modal
+            const id = button.getAttribute('data-id');
+            const descripcion = button.getAttribute('data-descripcion');
+            const url = button.getAttribute('data-url');
+            const activo = button.getAttribute('data-activo');
+            const reporte = button.getAttribute('data-reporte');
+
+            // Cargar los valores en los campos del modal
+            modalEditar.querySelector('#id_sit_editar').value = id;
+            modalEditar.querySelector('#sit_descripcion_editar').value = descripcion;
+            modalEditar.querySelector('#sit_url_editar').value = url;
+            modalEditar.querySelector('#sit_activo_editar').value = activo;
+            modalEditar.querySelector('#sit_es_reporte_editar').value = reporte;
+        });
+    </script>
+</body>
+</html>

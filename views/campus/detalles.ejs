@@ -145,13 +145,71 @@
                             Gestiona los eventos sostenibles organizados en este campus.
                         </p>
                         <div class="d-grid gap-2">
-                            <a href="/eventos-sostenibles/gestionar/<%= campus.camp_id %>" class="btn btn-primary">Gestionar
+                            <a href="/eventos-sostenibles/gestionar/<%= campus.camp_id %>"
+                                class="btn btn-primary">Gestionar
                                 Eventos</a>
                             <a href="/eventos-sostenibles/tipos" class="btn btn-secondary">Tipos de Evento</a>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Card para Sitios Web -->
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-header text-center bg-info text-white">
+                        Sitios Web
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            Gestiona los sitios web asociados a este campus, incluyendo reportes y enlaces relacionados.
+                        </p>
+                        <div class="d-grid gap-2">
+                            <a href="/sitiosWeb/gestionar/<%= campus.camp_id %>" class="btn btn-primary">Gestionar
+                                Sitios Web</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card para Green Jobs -->
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-header text-center bg-success text-white">
+                        Green Jobs
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            Gestiona los trabajos sostenibles y los graduados asociados a este campus.
+                        </p>
+                        <div class="d-grid gap-2">
+                            <a href="/greenJobs/gestionar/<%= campus.camp_id %>" class="btn btn-primary">Gestionar
+                                Graduados</a>
+                            <a href="/greenJobs/listar" class="btn btn-secondary">Gestionar Green Jobs</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card para Cursos -->
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-header text-center bg-primary text-white">
+                        Cursos
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            Gestiona los cursos asociados a este campus.
+                        </p>
+                        <div class="d-grid gap-2">
+                            <!-- Gestión de Cursos -->
+                            <a href="/cursos/gestionar/<%= campus.camp_id %>" class="btn btn-primary">Gestionar
+                                Cursos</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
 
 
