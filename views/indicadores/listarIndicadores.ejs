@@ -223,123 +223,52 @@
         </div>
     </div>
 
+    <div class="modal fade" id="modalEditarRango" tabindex="-1" aria-labelledby="modalEditarRangoLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEditarRangoLabel">Editar Rango</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formEditarRango">
+                    <div class="modal-body">
+                        <input type="hidden" id="id_ran_editar" name="id_ran">
+                        <input type="hidden" id="ind_cod_editar" name="ind_cod">
+                        <div class="mb-3">
+                            <label for="descripcion_ran_editar" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="descripcion_ran_editar" name="descripcion_ran"
+                                required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="valor_ran_editar" class="form-label">Valor</label>
+                            <input type="number" class="form-control" id="valor_ran_editar" name="valor_ran" required>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="esta_seleccionado_editar"
+                                name="esta_seleccionado">
+                            <label class="form-check-label" for="esta_seleccionado_editar">Seleccionar como rango
+                                actual</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/javascripts/listarIndicadores.script.js"></script>
 
 
 
 
 
-    <script>
-        const modalEditar = document.getElementById('modalEditarIndicador');
-        modalEditar.addEventListener('show.bs.modal', (event) => {
-            const button = event.relatedTarget;
-            const cod = button.getAttribute('data-cod');
-            const nombre = button.getAttribute('data-nombre');
-            const puntos = button.getAttribute('data-puntos');
-            const mie_ci = button.getAttribute('data-mie_ci');
-
-            modalEditar.querySelector('#ind_cod_editar').value = cod;
-            modalEditar.querySelector('#ind_nombre_editar').value = nombre;
-            modalEditar.querySelector('#ind_puntos_editar').value = puntos;
-            modalEditar.querySelector('#mie_ci_editar').value = mie_ci;
-        });
-
-
-        const modalGestionarRangos = document.getElementById("modalGestionarRangos");
-        modalGestionarRangos.addEventListener("show.bs.modal", (event) => {
-            const button = event.relatedTarget;
-            const ind_cod = button.getAttribute("data-ind_cod");
-            const ind_nombre = button.getAttribute("data-ind_nombre");
-            const cat_cod = button.getAttribute("data-cat_cod");
-
-            document.getElementById("modalGestionarRangosLabel").innerText = `Gestionar Rangos para ${ind_nombre}`;
-            document.getElementById("ind_cod_rango").value = ind_cod;
-            document.getElementById("cat_cod_rango").value = cat_cod;
-
-            const tablaRangos = document.getElementById("tabla-rangos");
-            tablaRangos.innerHTML = "";
-
-            fetch(`/indicadores/rangos/listar/${ind_cod}`)
-                .then((response) => response.json())
-                .then((data) => {
-                    data.forEach((rango) => {
-                        const fila = document.createElement("tr");
-
-                        fila.innerHTML = `
-                    <td>${rango.descripcion_ran}</td>
-                    <td>${rango.valor_ran + '%'} </td> 
-                    <td>${rango.esta_seleccionado ? "Sí" : "No"}</td>
-                    <td>
-                        <form action="/rangos/eliminar/${rango.id_ran}" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar este rango?');">
-                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                        </form>
-                        <button class="btn btn-warning btn-sm" onclick="editarRango(${rango.id_ran}, '${rango.descripcion_ran}', ${rango.valor_ran}, ${rango.esta_seleccionado}, '${ind_cod}')">Editar</button>
-                        ${!rango.esta_seleccionado ? `<form action="/rangos/seleccionar/${rango.id_ran}" method="POST" class="d-inline">
-                            <button type="submit" class="btn btn-info btn-sm">Seleccionar</button>
-                        </form>` : ""}
-                    </td>
-                `;
-
-                        tablaRangos.appendChild(fila);
-                    });
-                })
-                .catch((error) => {
-                    console.error("Error al cargar los rangos:", error);
-                });
-        });
-
-        document.getElementById('formRegistrarRango').addEventListener('submit', function (event) {
-            event.preventDefault(); 
-         
-            const data = {
-                ind_cod: document.getElementById('ind_cod_rango').value,
-                //cat_cod: document.getElementById('cat_cod_rango').value,             
-                descripcion_ran: document.getElementById('descripcion_ran').value,
-                valor_ran: parseFloat(document.getElementById('valor_ran').value),
-                esta_seleccionado: document.getElementById('esta_seleccionado').checked, 
-            };
-
-            //console.log(data); 
-
-            fetch('/indicadores/rangos/registrar', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json', 
-                },
-                body: JSON.stringify(data), 
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                      
-                        const tablaRangos = document.getElementById('tabla-rangos');
-                        const nuevoRango = data.rango;
-
-                        const nuevaFila = document.createElement('tr');
-                        nuevaFila.innerHTML = `
-                    <td>${nuevoRango.descripcion_ran}</td>
-                    <td>${nuevoRango.valor_ran}</td>
-                    <td>${nuevoRango.esta_seleccionado ? "Sí" : "No"}</td>
-                    <td>
-                        <!-- Aquí puedes agregar botones de editar o eliminar -->
-                    </td>
-                `;
-                        tablaRangos.appendChild(nuevaFila);
-
-                        document.getElementById('descripcion_ran').value = '';
-                        document.getElementById('valor_ran').value = '';
-                        document.getElementById('esta_seleccionado').checked = false;
-                    } else {
-                        alert("Error al registrar el rango.");
-                    }
-                })
-                .catch(error => console.error("Error:", error));
-        });
-
-
-
-    </script>
 </body>
 
 </html>

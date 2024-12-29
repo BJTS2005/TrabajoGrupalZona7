@@ -20,28 +20,23 @@ export const rangosController = {
         try {
             const { ind_cod, descripcion_ran, valor_ran, esta_seleccionado } = req.body;
     
-            // Si se marca como seleccionado, desmarcar los demás rangos del mismo indicador
             if (esta_seleccionado) {
                 await Rango.update(
                     { esta_seleccionado: false },
                     { where: { ind_cod } }
                 );
             }
-    
-            // Registrar el nuevo rango
+       
             const nuevoRango = await Rango.create({
                 ind_cod,
                 descripcion_ran,
                 valor_ran,
                 esta_seleccionado: esta_seleccionado || false,
             });
-    
-            // Devolver un JSON con los datos del rango registrado
+            
             res.json({ success: true, rango: nuevoRango });
         } catch (error) {
-            console.error("Error al registrar el rango:", error);
-    
-            // Devolver un JSON de error
+            console.error("Error al registrar el rango:", error);     
             res.status(500).json({ success: false, error: "Error al registrar el rango" });
         }
     },
@@ -50,25 +45,20 @@ export const rangosController = {
     actualizar: async (req, res) => {
         try {
             const { id_ran, descripcion_ran, valor_ran, esta_seleccionado, ind_cod } = req.body;
-
-            // Si se marca como seleccionado, desmarcar los demás rangos del mismo indicador
+    
             if (esta_seleccionado) {
-                await Rango.update(
-                    { esta_seleccionado: false },
-                    { where: { ind_cod } }
-                );
+                await Rango.update({ esta_seleccionado: false }, { where: { ind_cod } });
             }
-
-            const rango = await Rango.findByPk(id_ran);
-            if (!rango) return res.status(404).send("Rango no encontrado.");
-
-            // Actualizar el rango
-            await rango.update({ descripcion_ran, valor_ran, esta_seleccionado });
-
-            res.redirect(`/indicadores/gestionar/${ind_cod}`);
+    
+            await Rango.update(
+                { descripcion_ran, valor_ran, esta_seleccionado },
+                { where: { id_ran } }
+            );
+    
+            res.json({ success: true });
         } catch (error) {
             console.error("Error al actualizar el rango:", error);
-            res.status(500).send("Error al actualizar el rango.");
+            res.status(500).json({ success: false });
         }
     },
 
