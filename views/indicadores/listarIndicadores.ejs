@@ -290,31 +290,29 @@
         });
 
         document.getElementById('formRegistrarRango').addEventListener('submit', function (event) {
-            event.preventDefault(); // Prevenir el comportamiento normal del formulario
-
-            // Recopilar manualmente los datos del formulario
+            event.preventDefault(); 
+         
             const data = {
-                ind_cod: document.getElementById('ind_cod_rango').value, 
+                ind_cod: document.getElementById('ind_cod_rango').value,
                 //cat_cod: document.getElementById('cat_cod_rango').value,             
                 descripcion_ran: document.getElementById('descripcion_ran').value,
                 valor_ran: parseFloat(document.getElementById('valor_ran').value),
-                esta_seleccionado: document.getElementById('esta_seleccionado').checked, // Booleano
+                esta_seleccionado: document.getElementById('esta_seleccionado').checked, 
             };
 
-            console.log(data); // DEBUG: Verifica el contenido del objeto
+            //console.log(data); 
 
-            // Enviar los datos usando fetch
             fetch('/indicadores/rangos/registrar', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json', // Indicamos que enviamos JSON
+                    'Content-Type': 'application/json', 
                 },
-                body: JSON.stringify(data), // Convertimos el objeto a JSON
+                body: JSON.stringify(data), 
             })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Actualizar la tabla de rangos
+                      
                         const tablaRangos = document.getElementById('tabla-rangos');
                         const nuevoRango = data.rango;
 
@@ -329,7 +327,6 @@
                 `;
                         tablaRangos.appendChild(nuevaFila);
 
-                        // Limpiar el formulario
                         document.getElementById('descripcion_ran').value = '';
                         document.getElementById('valor_ran').value = '';
                         document.getElementById('esta_seleccionado').checked = false;
