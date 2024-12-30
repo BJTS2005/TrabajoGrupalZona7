@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frecuencias</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Gestión de Frecuencias</h1>
+
+        <!-- Botón para abrir el modal de registrar -->
+        <div class="text-end mb-3">
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalRegistrarFrecuencia">
+                Registrar Nueva Frecuencia
+            </button>
+        </div>
+
+        <!-- Tabla de frecuencias -->
+        <table class="table table-striped table-bordered">
+            <thead class="table-primary">
+                <tr>
+                    <th>ID</th>
+                    <th>Detalle</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% datos.forEach(frecuencia => { %>
+                    <tr>
+                        <td><%= frecuencia.fre_id %></td>
+                        <td><%= frecuencia.fre_detalle %></td>
+                        <td>
+                            <!-- Botón para abrir el modal de editar -->
+                            <button 
+                                class="btn btn-warning btn-sm" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#modalEditarFrecuencia" 
+                                data-id="<%= frecuencia.fre_id %>" 
+                                data-detalle="<%= frecuencia.fre_detalle %>">
+                                Editar
+                            </button>
+                            <!-- Botón de eliminar -->
+                            <form action="/vehiculos/frecuencias/eliminar/<%= frecuencia.fre_id %>" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar esta frecuencia?');">
+                                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+
+        <!-- Modal para registrar nueva frecuencia -->
+        <div class="modal fade" id="modalRegistrarFrecuencia" tabindex="-1" aria-labelledby="modalRegistrarFrecuenciaLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalRegistrarFrecuenciaLabel">Registrar Frecuencia</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="/vehiculos/frecuencias" method="POST">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="fre_id" class="form-label">ID de Frecuencia</label>
+                                <input type="text" class="form-control" id="fre_id" name="fre_id" maxlength="5" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="fre_detalle" class="form-label">Detalle</label>
+                                <input type="text" class="form-control" id="fre_detalle" name="fre_detalle" maxlength="30" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Registrar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para editar frecuencia -->
+        <div class="modal fade" id="modalEditarFrecuencia" tabindex="-1" aria-labelledby="modalEditarFrecuenciaLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalEditarFrecuenciaLabel">Editar Frecuencia</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="/vehiculos/frecuencias/actualizar" method="POST">
+                        <div class="modal-body">
+                            <input type="hidden" id="fre_id_editar" name="fre_id">
+                            <div class="mb-3">
+                                <label for="fre_detalle_editar" class="form-label">Detalle</label>
+                                <input type="text" class="form-control" id="fre_detalle_editar" name="fre_detalle" maxlength="30" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script para cargar datos en el modal de editar -->
+    <script>
+        const modalEditar = document.getElementById('modalEditarFrecuencia');
+        modalEditar.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget; // Botón que abrió el modal
+            const id = button.getAttribute('data-id');
+            const detalle = button.getAttribute('data-detalle');
+
+            // Cargar los valores en los campos del modal
+            modalEditar.querySelector('#fre_id_editar').value = id;
+            modalEditar.querySelector('#fre_detalle_editar').value = detalle;
+        });
+    </script>
+</body>
+</html>

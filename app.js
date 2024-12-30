@@ -6,9 +6,20 @@ import bodyParser from 'body-parser';
 import logger from 'morgan';
 
 import indexRouter from './routes/index.js';
-import magnitudesRouter from './routes/magnitudes.js';
-import unidadesRouter from './routes/unidades.js';
-import indicadoresRouter from './routes/indicadores.js'
+//import magnitudesRouter from './routes/magnitudes.js';
+//import unidadesRouter from './routes/unidades.js';
+//import indicadoresRouter from './routes/indicadores.js';
+import campusRouter from './routes/campus.route.js';
+import vehiculosRouter from './routes/vehiculos.route.js';
+import shuttlesRouter from './routes/shuttles.route.js';
+import infraTransRouter from './routes/infraTrans.route.js';
+import eventosRouter from './routes/eventos.route.js';
+import sitiosWebRouter from './routes/sitiosWeb.route.js';
+import greenJobsRouter from './routes/greenJobs.route.js';
+import cursosRouter from './routes/cursos.route.js';
+import categoriasRouter from './routes/categorias.router.js';
+import miembrosRouter from './routes/miembros.route.js';
+import indicadoresRouter from './routes/indicadores.route.js';
 
 console.log("hola");
 
@@ -27,9 +38,21 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(path.resolve(), 'public')));
 
 app.use('/', indexRouter);
-app.use('/magnitudes', magnitudesRouter);
-app.use('/unidades', unidadesRouter);
+//app.use('/magnitudes', magnitudesRouter);
+//app.use('/unidades', unidadesRouter);
+//app.use('/indicadores', indicadoresRouter);
+app.use('/campus', campusRouter);
+app.use('/vehiculos', vehiculosRouter);
+app.use('/shuttles', shuttlesRouter);
+app.use('/infra-transporte', infraTransRouter);
+app.use('/eventos-sostenibles',eventosRouter);
+app.use('/sitiosWeb', sitiosWebRouter);
+app.use('/greenJobs', greenJobsRouter);
+app.use('/cursos', cursosRouter);
+app.use('/categorias', categoriasRouter);
+app.use('/miembros', miembrosRouter);
 app.use('/indicadores', indicadoresRouter);
+
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

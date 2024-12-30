@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Infraestructuras</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Gestión de Infraestructuras de Transporte</h1>
+
+        <!-- Botón para abrir el modal de registrar -->
+        <div class="text-end mb-3">
+            <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                data-bs-target="#modalRegistrarInfraestructura">
+                Registrar Nueva Infraestructura
+            </button>
+        </div>
+
+        <!-- Tabla de infraestructuras -->
+        <table class="table table-striped table-bordered">
+            <thead class="table-primary">
+                <tr>
+                    <th>ID</th>
+                    <th>Detalle</th>
+                    <th>Tipo</th>
+                    <th>Ubicación</th>
+                    <th>Área (m²)</th>
+                    <th>Fecha de Registro</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% infraestructuras.forEach(infra=> { %>
+                    <tr>
+                        <td>
+                            <%= infra.int_id %>
+                        </td>
+                        <td>
+                            <%= infra.int_detalle %>
+                        </td>
+                        <td>
+                            <%= infra.TipoInfraestructura.tpi_detalle %>
+                        </td>
+                        <td>
+                            <%= infra.int_ubicacion %>
+                        </td>
+                        <td>
+                            <%= infra.int_area %>
+                        </td>
+                        <td>
+                            <%= new Date(infra.int_fecha_registro).toLocaleDateString() %>
+                        </td>
+                        <td>
+                            <!-- Botón para abrir el modal de editar -->
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#modalEditarInfraestructura" data-id="<%= infra.int_id %>"
+                                data-detalle="<%= infra.int_detalle %>" data-tipo="<%= infra.tpi_id %>"
+                                data-ubicacion="<%= infra.int_ubicacion %>" data-area="<%= infra.int_area %>"
+                                >
+                                Editar
+                            </button>
+                            <!-- Botón de eliminar -->
+                            <form action="/infra-transporte/gestionar/<%= currentCampus %>/eliminar/<%= infra.int_id %>"
+                                method="POST" class="d-inline"
+                                onsubmit="return confirm('¿Estás seguro de eliminar esta infraestructura?');">
+                                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <% }); %>
+            </tbody>
+        </table>
+
+        <!-- Modal para registrar nueva infraestructura -->
+        <div class="modal fade" id="modalRegistrarInfraestructura" tabindex="-1"
+            aria-labelledby="modalRegistrarInfraestructuraLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalRegistrarInfraestructuraLabel">Registrar Nueva Infraestructura
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="/infra-transporte/gestionar/<%= currentCampus %>" method="POST">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="int_id" class="form-label">ID de la Infraestructura</label>
+                                <input type="text" class="form-control" id="int_id" name="int_id" maxlength="5"
+                                    required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="int_detalle" class="form-label">Detalle</label>
+                                <textarea class="form-control" id="int_detalle" name="int_detalle" maxlength="100"
+                                    rows="3" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tpi_id" class="form-label">Tipo de Infraestructura</label>
+                                <select id="tpi_id" name="tpi_id" class="form-select" required>
+                                    <% tiposInfraestructura.forEach(tipo=> { %>
+                                        <option value="<%= tipo.tpi_id %>">
+                                            <%= tipo.tpi_detalle %>
+                                        </option>
+                                        <% }); %>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="int_ubicacion" class="form-label">Ubicación</label>
+                                <textarea id="int_ubicacion" name="int_ubicacion" class="form-control" rows="3"
+                                    required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="int_area" class="form-label">Área (m²)</label>
+                                <input type="number" class="form-control" id="int_area" name="int_area" step="0.01"
+                                    required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Registrar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para editar infraestructura -->
+        <div class="modal fade" id="modalEditarInfraestructura" tabindex="-1"
+            aria-labelledby="modalEditarInfraestructuraLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalEditarInfraestructuraLabel">Editar Infraestructura</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="/infra-transporte/gestionar/<%= currentCampus %>/actualizar" method="POST">
+                        <div class="modal-body">
+                            <input type="hidden" id="int_id_editar" name="int_id">
+                            <div class="mb-3">
+                                <label for="int_detalle_editar" class="form-label">Detalle</label>
+                                <input type="text" class="form-control" id="int_detalle_editar" name="int_detalle"
+                                    maxlength="100" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tpi_id_editar" class="form-label">Tipo de Infraestructura</label>
+                                <select id="tpi_id_editar" name="tpi_id" class="form-select" required>
+                                    <% tiposInfraestructura.forEach(tipo=> { %>
+                                        <option value="<%= tipo.tpi_id %>">
+                                            <%= tipo.tpi_detalle %>
+                                        </option>
+                                        <% }); %>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="int_ubicacion_editar" class="form-label">Ubicación</label>
+                                <textarea id="int_ubicacion_editar" name="int_ubicacion" class="form-control" rows="3"
+                                    required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="int_area_editar" class="form-label">Área (m²)</label>
+                                <input type="number" class="form-control" id="int_area_editar" name="int_area"
+                                    step="0.01" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script para cargar datos en el modal de editar -->
+    <script>
+        const modalEditar = document.getElementById('modalEditarInfraestructura');
+        modalEditar.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget; // Botón que abrió el modal
+            const id = button.getAttribute('data-id');
+            const detalle = button.getAttribute('data-detalle');
+            const tipo = button.getAttribute('data-tipo');
+            const ubicacion = button.getAttribute('data-ubicacion');
+            const area = button.getAttribute('data-area');
+            
+
+            // Cargar los valores en los campos del modal
+            modalEditar.querySelector('#int_id_editar').value = id;
+            modalEditar.querySelector('#int_detalle_editar').value = detalle;
+            modalEditar.querySelector('#tpi_id_editar').value = tipo;
+            modalEditar.querySelector('#int_ubicacion_editar').value = ubicacion;
+            modalEditar.querySelector('#int_area_editar').value = area;
+           
+        });
+    </script>
+</body>
+
+</html>
