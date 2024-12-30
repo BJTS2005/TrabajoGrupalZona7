@@ -2,6 +2,8 @@ import sequelize from "../config/conexion.js";
 import { DataTypes } from "sequelize";
 import Categoria from "./categorias.model.js";
 import { MiembroUnidad } from "./miembros.model.js";
+import RangoIndicador from "./rangos.model.js";
+
 
 const Indicador = sequelize.define(
     "Indicador",
@@ -48,5 +50,8 @@ Indicador.belongsTo(Categoria, { foreignKey: "cat_cod" });
 
 MiembroUnidad.hasMany(Indicador, { foreignKey: "mie_ci" });
 Indicador.belongsTo(MiembroUnidad, { foreignKey: "mie_ci" });
+
+Indicador.hasMany(RangoIndicador, { foreignKey: "ind_cod" }); 
+RangoIndicador.belongsTo(Indicador, { foreignKey: "ind_cod" }); 
 
 export default Indicador;
