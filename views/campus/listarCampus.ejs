@@ -1,13 +1,190 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Campus</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        .campus-card {
+            border: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .campus-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .campus-icon {
+            width: 50px;
+            height: 50px;
+            background-color: #4ade80;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-right: 1rem;
+        }
+
+        .campus-header {
+            margin-bottom: 2rem;
+        }
+
+        .btn-action {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin: 0 0.2rem;
+        }
+
+        .btn-view {
+            background-color: #4ade80;
+            color: white;
+            border: none;
+        }
+
+        .btn-view:hover {
+            background-color: #22c55e;
+        }
+
+        .btn-edit {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+        }
+
+        .btn-edit:hover {
+            background-color: #2563eb;
+        }
+
+        .btn-delete {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+        }
+
+        .btn-delete:hover {
+            background-color: #dc2626;
+        }
+
+        .add-campus-btn {
+            background-color: #4ade80;
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .add-campus-btn:hover {
+            background-color: #22c55e;
+            transform: translateY(-2px);
+        }
+
+        .campus-id {
+            font-size: 0.9rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .campus-location {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <%- include ../../views/layout/cabecera.ejs %>
+
+    <div class="container mt-5">
+        <div class="campus-header d-flex justify-content-between align-items-center">
+            <div>
+                <h2 class="mb-1">Gestión de Campus</h2>
+                <p class="text-muted">Administra la información de los campus universitarios</p>
+            </div>
+            <button class="add-campus-btn" onclick="location.href='/campus/registrar';">
+                <i class="fas fa-plus mr-2"></i>Nuevo Campus
+            </button>
+        </div>
+
+        <div class="row">
+            <!-- Campus Card 1 -->
+             <% datos.forEach(campus => { %>
+            <div class="col-md-6">
+                <div class="card campus-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="campus-icon">
+                                <i class="fas fa-university"></i>
+                            </div>
+                            <div>
+                                <h5 class="card-title mb-0"><%= campus.camp_nom %></h5>
+                                <span class="campus-id"><%= campus.camp_id %></span>
+                            </div>
+                        </div>
+                        <p class="campus-location mb-3">
+                            <i class="fas fa-map-marker-alt mr-2 text-muted"></i>
+                            <%= campus.camp_calle_principal %>
+                        </p>
+                        <div class="d-flex justify-content-end">
+                            <button class="btn btn-action btn-view btn-sm" onclick="location.href='/campus/<%= campus.camp_id %>';">
+                                <i class="fas fa-eye mr-1"></i>Ver
+                            </button>
+                            <button class="btn btn-action btn-edit btn-sm" onclick="location.href='/campus/editar/<%= campus.camp_id %>';">
+                                <i class="fas fa-edit mr-1"></i>Editar
+                            </button>
+                            <form action="/campus/eliminar/<%= campus.camp_id %>" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este campus?');">
+                                <button class="btn btn-action btn-delete btn-sm">
+                                    <i class="fas fa-trash-alt mr-1"></i>Eliminar
+                                </button>
+                            </form> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% }); %>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+    <%- include ../../views/layout/cabecera.ejs %>
+<head>
+
+     <tbody>
+                <% datos.forEach(campus => { %>
+                    <tr>
+                        <td><%= campus.camp_id %></td>
+                        <td><%= campus.camp_nom %></td>
+                        <td><%= campus.camp_ubi %></td>
+                        <td>
+                            <a href="/campus/<%= campus.camp_id %>" class="btn btn-info btn-sm">Ver detalles</a>
+                            <a href="/campus/editar/<%= campus.camp_id %>" class="btn btn-warning btn-sm">Editar</a>
+                            <form action="/campus/eliminar/<%= campus.camp_id %>" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este campus?');">
+                                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
         <%= title %>
-    </title>
-    <!-- Bootstrap CSS -->
+    </title>SS
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
@@ -54,7 +231,7 @@
                         <i class="bi bi-building campus-icon mb-2"></i>
                         <p class="campus-name"><%= campus.camp_nom %></p>
                     </div>
-                    <div class="d-flex flex-column mt-3"> <!-- Cambiado a flex-column -->
+                    <div class="d-flex flex-column mt-3">
                         <a href="/campus/<%= campus.camp_id %>" class="btn btn-info btn-sm mb-2">Ver detalles</a>
                         <a href="/campus/editar/<%= campus.camp_id %>" class="btn btn-warning btn-sm mb-2">Editar</a>
                         <form action="/campus/eliminar/<%= campus.camp_id %>" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este campus?');">
@@ -68,8 +245,7 @@
     
 
 
-    <!-- Bootstrap JS -->
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
-</html>
+</html> -->
