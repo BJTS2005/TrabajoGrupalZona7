@@ -1,0 +1,86 @@
+:root {
+    /* Variables CSS para colores y valores comunes */
+    --color-primary: #4ade80;
+    --color-primary-dark: #22c55e;
+    --color-secondary: #0f172a;
+    --color-secondary-dark: #0e1c3b;
+    --color-danger: #ef4444;
+    --color-danger-dark: #dc2626;
+    --color-info: #3b82f6;
+    --color-info-dark: #2563eb;
+    --border-radius: 8px;
+    --transition-default: all 0.3s ease;
+}
+
+.category-icon {
+    width: 3rem;
+    height: 3rem;
+    background-color: var(--color-primary);
+    border-radius: var(--border-radius);
+    display: grid;
+    place-items: center;
+    color: white;
+    font-size: 1.25rem;
+    margin-right: 1rem;
+}
+
+.btn-custom {
+    padding: 0.7rem 1.5rem;
+    border-radius: var(--border-radius);
+    border: none;
+    transition: var(--transition-default);
+    color: white;
+}
+
+.btn-custom:hover {
+    transform: translateY(-2px);
+}
+
+.btn-primary-custom {
+    background-color: var(--color-primary);
+}
+
+.btn-primary-custom:hover {
+    background-color: var(--color-primary-dark);
+}
+
+.btn-secondary-custom {
+    background-color: var(--color-secondary);
+}
+
+.btn-secondary-custom:hover {
+    background-color: var(--color-secondary-dark);
+}
+
+.category-card {
+    border: none;
+    border-radius: calc(var(--border-radius) * 1.5);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+    transition: var(--transition-default);
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-action {
+    padding: 0.5rem;
+    transition: var(--transition-default);
+    background: none;
+    border: none;
+    color: #333;
+}
+
+.btn-view:hover { 
+    color: var(--color-primary);
+}
+
+.btn-edit:hover { 
+    color: var(--color-info);
+}
+
+.btn-delete:hover { 
+    color: var(--color-danger);
+}
