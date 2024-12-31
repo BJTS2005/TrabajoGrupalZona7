@@ -1,4 +1,165 @@
 <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Categorías</title>
+    <!-- Optimizado: Usar versiones específicas de las dependencias -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            /* Variables CSS para colores y valores comunes */
+            --color-primary: #4ade80;
+            --color-primary-dark: #22c55e;
+            --color-secondary: #0f172a;
+            --color-secondary-dark: #0e1c3b;
+            --color-danger: #ef4444;
+            --color-danger-dark: #dc2626;
+            --color-info: #3b82f6;
+            --color-info-dark: #2563eb;
+            --border-radius: 8px;
+            --transition-default: all 0.3s ease;
+        }
+
+        .category-icon {
+            width: 3rem;
+            height: 3rem;
+            background-color: var(--color-primary);
+            border-radius: var(--border-radius);
+            display: grid;
+            place-items: center;
+            color: white;
+            font-size: 1.25rem;
+            margin-right: 1rem;
+        }
+
+        .btn-custom {
+            padding: 0.7rem 1.5rem;
+            border-radius: var(--border-radius);
+            border: none;
+            transition: var(--transition-default);
+            color: white;
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary-custom {
+            background-color: var(--color-primary);
+        }
+
+        .btn-primary-custom:hover {
+            background-color: var(--color-primary-dark);
+        }
+
+        .btn-secondary-custom {
+            background-color: var(--color-secondary);
+        }
+
+        .btn-secondary-custom:hover {
+            background-color: var(--color-secondary-dark);
+        }
+
+        .category-card {
+            border: none;
+            border-radius: calc(var(--border-radius) * 1.5);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+            transition: var(--transition-default);
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-action {
+            padding: 0.5rem;
+            transition: var(--transition-default);
+            background: none;
+            border: none;
+            color: #333;
+        }
+
+        .btn-view:hover { 
+            color: var(--color-primary);
+        }
+        
+        .btn-edit:hover { 
+            color: var(--color-info);
+        }
+        
+        .btn-delete:hover { 
+            color: var(--color-danger);
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('../../views/layout/cabecera') %>
+    
+    <main class="container mt-5">
+        <header class="d-flex justify-content-between align-items-center mb-4">
+            <section>
+                <h1 class="h2">Gestión de Categorías</h1>
+                <p class="text-muted">Administra las categorías de indicadores de sostenibilidad</p>
+            </section>
+            
+            <section class="d-flex gap-3">
+                <button class="btn-custom btn-primary-custom" onclick="location.href='/categorias/crear';">
+                    <i class="fa-solid fa-plus me-2"></i>Nueva Categoría
+                </button>
+                <button class="btn-custom btn-secondary-custom">
+                    <i class="fa-solid fa-users me-2"></i>Gestionar Miembros
+                </button>
+            </section>
+        </header>
+
+        <section class="categories-list">
+            <% categorias.forEach(categoria=> { %>
+            <article class="card category-card">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-4 d-flex align-items-center">
+                            <span class="category-icon">
+                                <i class="fa-solid fa-seedling"></i>
+                            </span>
+                            <div>
+                                <h2 class="h5 mb-1"><%= categoria.cat_nombre %></h2>
+                                <p class="text-muted mb-0">Código: <%= categoria.cat_cod %></p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <p class="mb-0">Porcentaje: <%= categoria.cat_porc %>%</p>
+                        </div>
+                        
+                        <div class="col-md-4 d-flex gap-2 justify-content-md-end mt-3 mt-md-0">
+                            <button class="btn-action btn-view" onclick="location.href='/indicadores/gestionar/<%= categoria.cat_cod %>';">
+                                <i class="fas fa-eye me-1"></i>Ver
+                            </button>
+                            <button class="btn-action btn-edit" onclick="location.href='/categorias/editar/<%= categoria.cat_cod %>';">
+                                <i class="fas fa-edit me-1"></i>Editar
+                            </button>
+                            <form action="/categorias/eliminar/<%= categoria.cat_cod %>" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar esta categoría?');">
+                                <button class="btn-action btn-delete">
+                                    <i class="fas fa-trash-alt me-1"></i>Eliminar
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            <% }); %>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -7,7 +168,6 @@
     <title>
         <%= title %>
     </title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .category-card {
@@ -23,7 +183,7 @@
             <%= title %>
         </h1>
 
-        <!-- Botón para agregar nueva categoría -->
+
         <div class="text-end mb-4">
             <a href="/categorias/crear" class="btn btn-success">Agregar Nueva Categoría</a>
         </div>
@@ -33,7 +193,7 @@
         </div>
         
 
-        <!-- Contenedor de cards -->
+
         <div class="row row-cols-1 row-cols-md-2 g-4">
             <% if (categorias.length===0) { %>
                 <div class="alert alert-warning text-center">
@@ -57,13 +217,13 @@
                                     </p>
                                 </div>
                                 <div class="card-footer text-center">
-                                    <!-- Botón para gestionar indicadores -->
+
                                     <a href="/indicadores/gestionar/<%= categoria.cat_cod %>"
                                         class="btn btn-primary btn-sm mb-2">Gestionar Indicadores</a>
-                                    <!-- Botón para editar categoría -->
+
                                     <a href="/categorias/editar/<%= categoria.cat_cod %>"
                                         class="btn btn-warning btn-sm mb-2">Editar</a>
-                                    <!-- Botón para eliminar categoría -->
+
                                     <form action="/categorias/eliminar/<%= categoria.cat_cod %>" method="POST"
                                         class="d-inline"
                                         onsubmit="return confirm('¿Estás seguro de eliminar esta categoría?');">
@@ -77,8 +237,8 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
-</html>
+</html> -->
