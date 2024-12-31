@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4"><%= title %></h1>
+
+        <!-- Detalles del Campus -->
+        <h3 class="mt-4">Detalles del Campus</h3>
+        <table class="table table-bordered">
+            <tr>
+                <th>ID del Campus</th>
+                <td><%= campus.camp_id %></td>
+            </tr>
+            <tr>
+                <th>Nombre del Campus</th>
+                <td><%= campus.camp_nom %></td>
+            </tr>
+            <tr>
+                <th>Área</th>
+                <td><%= campus.camp_area %> m²</td>
+            </tr>
+            <tr>
+                <th>Perímetro</th>
+                <td><%= campus.camp_perimetro %> m</td>
+            </tr>
+            <tr>
+                <th>Capacidad</th>
+                <td><%= campus.camp_capacidad %></td>
+            </tr>
+            <tr>
+                <th>Cantidad de Población Actual</th>
+                <td><%= campus.camp_cant_pobla %></td>
+            </tr>
+            <tr>
+                <th>Densidad de Población</th>
+                <td><%= campus.camp_dens_pobla %></td>
+            </tr>
+            <tr>
+                <th>Calle Principal</th>
+                <td><%= campus.camp_calle_principal %></td>
+            </tr>
+            <tr>
+                <th>Calle Secundaria</th>
+                <td><%= campus.camp_calle_secundaria %></td>
+            </tr>
+        </table>
+
+        <!-- Información del Fondo -->
+        <% if (fondo) { %>
+            <h3 class="mt-4">Detalles de los Fondos</h3>
+            <table class="table table-bordered">
+                <tr>
+                    <th>Presupuesto Total</th>
+                    <td>$ <%= fondo.fondo_total %></td>
+                </tr>
+                <tr>
+                    <th>Presupuesto para Sostenibilidad</th>
+                    <td>$ <%= fondo.fondo_sostenibilidad %></td>
+                </tr>
+            </table>
+        <% } else { %>
+            <div class="alert alert-warning text-center mt-4">
+                No hay fondo asociado a este campus.
+            </div>
+        <% } %>
+
+        <!-- Reporte de Vehículos -->
+        <h3 class="mt-4">Reporte de Vehículos</h3>
+        <table class="table table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>Tipo de Vehículo</th>
+                    <th>Frecuencia</th>
+                    <th>Total de Vehículos</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% resultados.forEach(dato => { %>
+                    <tr>
+                        <td><%= dato.tipo_vehiculo %></td>
+                        <td><%= dato.frecuencia %></td>
+                        <td><%= dato.total_vehiculos %></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+
+        <!-- Botón para regresar -->
+        <div class="text-end mt-4">
+            <a href="/reportes/campus" class="btn btn-secondary">Regresar</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

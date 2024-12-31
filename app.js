@@ -20,6 +20,7 @@ import cursosRouter from './routes/cursos.route.js';
 import categoriasRouter from './routes/categorias.router.js';
 import miembrosRouter from './routes/miembros.route.js';
 import indicadoresRouter from './routes/indicadores.route.js';
+import reportesRouter from './routes/reporte.route.js';
 
 console.log("hola");
 
@@ -52,7 +53,7 @@ app.use('/cursos', cursosRouter);
 app.use('/categorias', categoriasRouter);
 app.use('/miembros', miembrosRouter);
 app.use('/indicadores', indicadoresRouter);
-
+app.use('/reportes', reportesRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
