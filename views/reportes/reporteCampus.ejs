@@ -86,8 +86,14 @@
                     </td>
                 </tr>
                 <tr>
-                    <th>Presupuesto para Sostenibilidad</th>
+                    <th>Presupuesto para Investigación</th>
                     <td>$ <%= fondo.fondo_sostenibilidad %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Porcentaje de Fondos para Investigación</th>
+                    <td>
+                        <%= parseFloat((fondo.fondo_sostenibilidad * 100) / fondo.fondo_total).toFixed(2) %> %
                     </td>
                 </tr>
             </table>
@@ -129,14 +135,27 @@
                     </table>
 
                     <h3 class="mt-4">Resumen por Tipo de Emisión</h3>
+                    <p><strong>Población del Campus:</strong>
+                        <%= resumenEmisiones[0]?.poblacion_campus || "No disponible" %>
+                    </p>
+                    <ul>
+                        <% resumenEmisiones.forEach(emision=> { %>
+                            <li>
+                                <strong>
+                                    <%= emision.tipo_emision %>:
+                                </strong>
+                                <%= emision.total_vehiculos %> vehículos (<%= parseFloat(emision.ratio_poblacion).toFixed(6) %> por
+                                        habitante)
+                            </li>
+                            <% }); %>
+                    </ul>
                     <table class="table table-bordered">
                         <thead class="table-dark">
                             <tr>
                                 <th>Tipo de Emisión</th>
                                 <th>Frecuencia</th>
                                 <th>Total de Vehículos</th>
-                                <th>Población del Campus</th>
-                                <th>Total / Población</th>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -151,12 +170,7 @@
                                     <td>
                                         <%= dato.total_vehiculos %>
                                     </td>
-                                    <td>
-                                        <%= dato.poblacion_campus %>
-                                    </td>
-                                    <td>
-                                        <%= parseFloat(dato.porcentaje_poblacion).toFixed(6) %> 
-                                    </td>
+
                                 </tr>
                                 <% }); %>
                         </tbody>
@@ -204,6 +218,7 @@
                         <thead class="table-dark">
                             <tr>
                                 <th>Tipo de Infraestructura</th>
+                                <th>Total de Infraestructuras</th>
                                 <th>Área Total del Tipo (m²)</th>
                                 <th>Área Total del Campus (m²)</th>
                                 <th>Porcentaje del Campus (%)</th>
@@ -215,6 +230,7 @@
                                     <td>
                                         <%= infra.tipo_infraestructura %>
                                     </td>
+                                    <td><%= infra.total_infraestructuras %></td>
                                     <td>
                                         <%= parseFloat(infra.area_total_tipo).toFixed(2) %> m²
                                     </td>
@@ -223,6 +239,43 @@
                                     </td>
                                     <td>
                                         <%= infra.porcentaje_campus %> %
+                                    </td>
+                                </tr>
+                                <% }); %>
+                        </tbody>
+                    </table>
+
+                    <h3 class="mt-4">Resumen de Cursos</h3>
+                    <p><strong>Total de Cursos:</strong>
+                        <%= total_cursos %>
+                    </p>
+                    <p><strong>Total de Cursos Sostenibles:</strong>
+                        <%= total_cursos_sostenibles %>
+                    </p>
+                    <p><strong>Porcentaje de Sostenibilidad:</strong>
+                        <%= porcentaje_sostenibilidad %> %
+                    </p>
+
+                    <h4 class="mt-3">Detalle de Cursos</h4>
+                    <table class="table table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID del Curso</th>
+                                <th>Descripción</th>
+                                <th>Sostenible</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% cursosDetalles.forEach(curso=> { %>
+                                <tr>
+                                    <td>
+                                        <%= curso.cur_id %>
+                                    </td>
+                                    <td>
+                                        <%= curso.cur_descripcion %>
+                                    </td>
+                                    <td>
+                                        <%= curso.cur_es_sostenible ? "Sí" : "No" %>
                                     </td>
                                 </tr>
                                 <% }); %>

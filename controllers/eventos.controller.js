@@ -65,12 +65,10 @@ export const eventosController = {
         }
     },
 
-    // *** Controladores para Eventos Sostenibles ***
-
     listarEventos: async (req, res) => {
         try {
             const { camp_id } = req.params;
-
+    
             const eventos = await EventoSostenible.findAll({
                 where: { camp_id },
                 include: [
@@ -80,10 +78,10 @@ export const eventosController = {
                 raw: true,
                 nest: true,
             });
-
+    
             const tiposEvento = await TipoEvento.findAll({ raw: true });
             const campuses = await Campus.findAll({ raw: true });
-
+    
             res.render("eventos/gestionEventos.ejs", {
                 eventos,
                 tiposEvento,
@@ -95,12 +93,12 @@ export const eventosController = {
             res.status(500).send("Error al cargar los eventos.");
         }
     },
-
+    
     registrarEvento: async (req, res) => {
         try {
-            const { id_eve, tpe_id, eve_detalle, eve_fecha, eve_por_estudiantes } = req.body;
+            const { id_eve, tpe_id, eve_detalle, eve_fecha, eve_por_estudiantes, eve_url } = req.body;
             const { camp_id } = req.params;
-
+    
             await EventoSostenible.create({
                 id_eve,
                 tpe_id,
@@ -108,48 +106,50 @@ export const eventosController = {
                 eve_detalle,
                 eve_fecha,
                 eve_por_estudiantes: eve_por_estudiantes === "true", // Convertir a booleano
+                eve_url, // Nuevo campo
             });
-
+    
             res.redirect(`/eventos-sostenibles/gestionar/${camp_id}`);
         } catch (error) {
             console.error("Error al registrar el evento:", error);
             res.status(500).send("Error al registrar el evento.");
         }
     },
-
+    
     actualizarEvento: async (req, res) => {
         try {
-            const { id_eve, tpe_id, eve_detalle, eve_fecha, eve_por_estudiantes } = req.body;
+            const { id_eve, tpe_id, eve_detalle, eve_fecha, eve_por_estudiantes, eve_url } = req.body;
             const { camp_id } = req.params;
-
+    
             const evento = await EventoSostenible.findByPk(id_eve);
             if (!evento) {
                 return res.status(404).send("Evento no encontrado.");
             }
-
+    
             await evento.update({
                 tpe_id,
                 eve_detalle,
                 eve_fecha,
                 eve_por_estudiantes: eve_por_estudiantes === "true",
+                eve_url, // Nuevo campo
             });
-
+    
             res.redirect(`/eventos-sostenibles/gestionar/${camp_id}`);
         } catch (error) {
             console.error("Error al actualizar el evento:", error);
             res.status(500).send("Error al actualizar el evento.");
         }
     },
-
+    
     eliminarEvento: async (req, res) => {
         try {
             const { camp_id, id } = req.params;
-
+    
             const evento = await EventoSostenible.findByPk(id);
             if (!evento) {
                 return res.status(404).send("Evento no encontrado.");
             }
-
+    
             await evento.destroy();
             res.redirect(`/eventos-sostenibles/gestionar/${camp_id}`);
         } catch (error) {

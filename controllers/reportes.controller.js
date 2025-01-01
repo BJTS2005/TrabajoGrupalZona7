@@ -4,6 +4,8 @@ const { TipoVehiculo, TipoEmision, Frecuencia, Vehiculo } = modelos;
 import Campus from "../model/campus.model.js";
 import sequelize from "../config/conexion.js";
 import FondoInvestigacion from "../model/fondosInvestigacion.model.js";
+import Curso from "../model/cursos.model.js";
+
 
 export const reportesController = {
     listar: async (req, res) => {
@@ -60,27 +62,49 @@ export const reportesController = {
                 }
             );
 
-            // Consulta SQL cruda para el resumen por tipo de emisión con porcentaje de población
+            const resumenEmisiones = await sequelize.query(
+                `
+                SELECT 
+                    tpe.tpe_detalle AS tipo_emision,
+                    SUM(veh.veh_cantidad) AS total_vehiculos,
+                    c.camp_cant_pobla AS poblacion_campus,
+                    ROUND(CAST((SUM(veh.veh_cantidad)::NUMERIC / c.camp_cant_pobla) AS NUMERIC), 6) AS ratio_poblacion
+                FROM 
+                    GM_TE_VEHICULOS veh
+                JOIN 
+                    GM_TE_TIPOS_EMISION tpe ON veh.tpe_id = tpe.tpe_id
+                JOIN 
+                    GM_WSI_CAMPUS c ON veh.camp_id = c.camp_id
+                WHERE 
+                    veh.camp_id = :campId
+                GROUP BY 
+                    tpe.tpe_detalle, c.camp_cant_pobla
+                ORDER BY 
+                    total_vehiculos DESC;
+                `,
+                {
+                    replacements: { campId: camp_id },
+                    type: sequelize.QueryTypes.SELECT,
+                }
+            );
+
+            // Consulta SQL cruda para el resumen por tipo de emisión
             const emisiones = await sequelize.query(
                 `
     SELECT 
         tpe.tpe_detalle AS tipo_emision,
         fre.fre_detalle AS frecuencia,
-        SUM(veh.veh_cantidad) AS total_vehiculos,
-        c.camp_cant_pobla AS poblacion_campus,
-        TO_CHAR((SUM(veh.veh_cantidad)::NUMERIC / c.camp_cant_pobla), '0.000000') AS porcentaje_poblacion
+        SUM(veh.veh_cantidad) AS total_vehiculos
     FROM 
         GM_TE_VEHICULOS veh
     JOIN 
         GM_TE_TIPOS_EMISION tpe ON veh.tpe_id = tpe.tpe_id
     JOIN 
         GM_TE_FRECUENCIAS fre ON veh.fre_id = fre.fre_id
-    JOIN 
-        GM_WSI_CAMPUS c ON veh.camp_id = c.camp_id
     WHERE 
         veh.camp_id = :campId
     GROUP BY 
-        tpe.tpe_detalle, fre.fre_detalle, c.camp_cant_pobla
+        tpe.tpe_detalle, fre.fre_detalle
     ORDER BY 
         tpe.tpe_detalle, fre.fre_detalle;
     `,
@@ -131,22 +155,23 @@ export const reportesController = {
             const infraestructuras = await sequelize.query(
                 `
                 SELECT 
-                    ti.tpi_detalle AS tipo_infraestructura,
-                    SUM(it.int_area) AS area_total_tipo,
-                    c.camp_area AS area_total_campus,
-                    ROUND(CAST((SUM(it.int_area) / c.camp_area) * 100 AS NUMERIC), 2) AS porcentaje_campus
-                FROM 
-                    gm_te_infraestructuras_transpor it
-                JOIN 
-                    tipos_inf ti ON it.tpi_id = ti.tpi_id
-                JOIN 
-                    gm_wsi_campus c ON it.camp_id = c.camp_id
-                WHERE 
-                    c.camp_id = :campId
-                GROUP BY 
-                    ti.tpi_detalle, c.camp_area
-                ORDER BY 
-                    porcentaje_campus DESC;
+        ti.tpi_detalle AS tipo_infraestructura,
+        COUNT(it.int_id) AS total_infraestructuras, -- Total por tipo
+        SUM(it.int_area) AS area_total_tipo,
+        c.camp_area AS area_total_campus,
+        ROUND(CAST((SUM(it.int_area) / c.camp_area) * 100 AS NUMERIC), 2) AS porcentaje_campus
+    FROM 
+        gm_te_infraestructuras_transpor it
+    JOIN 
+        tipos_inf ti ON it.tpi_id = ti.tpi_id
+    JOIN 
+        gm_wsi_campus c ON it.camp_id = c.camp_id
+    WHERE 
+        c.camp_id = :campId
+    GROUP BY 
+        ti.tpi_detalle, c.camp_area
+    ORDER BY 
+        porcentaje_campus DESC;
                 `,
                 {
                     replacements: { campId: camp_id },
@@ -154,16 +179,53 @@ export const reportesController = {
                 }
             );
 
+            // Consulta SQL para resumen de cursos
+            const cursosResumen = await sequelize.query(
+                `
+    SELECT 
+        COUNT(*) AS total_cursos,
+        SUM(CASE WHEN cur_es_sostenible THEN 1 ELSE 0 END) AS total_cursos_sostenibles,
+        ROUND(
+            (CAST(SUM(CASE WHEN cur_es_sostenible THEN 1 ELSE 0 END) AS NUMERIC) / COUNT(*)) * 100, 
+            2
+        ) AS porcentaje_sostenibilidad
+    FROM 
+        GM_TE_CURSOS
+    WHERE 
+        camp_id = :campId;
+    `,
+                {
+                    replacements: { campId: camp_id },
+                    type: sequelize.QueryTypes.SELECT,
+                }
+            );
+
+
+            // Extraer resultados
+            const { total_cursos, total_cursos_sostenibles, porcentaje_sostenibilidad } = cursosResumen[0];
+
+            const cursosDetalles = await Curso.findAll({
+                where: { camp_id: camp_id },
+                attributes: ['cur_id', 'cur_descripcion', 'cur_es_sostenible'],
+                order: [['cur_es_sostenible', 'DESC'], ['cur_id', 'ASC']], // Ordena los sostenibles primero
+                raw: true, // Devuelve objetos planos
+            });
+
             // Renderizar la vista
             res.render("reportes/reporteCampus", {
                 title: `Reporte de Vehículos - Campus ${campus.camp_nom}`,
                 campus,
                 fondo,
                 resultados,
+                resumenEmisiones,
                 emisiones,
                 shuttles,
                 totalShuttles: totalShuttles[0].total_shuttles,
                 infraestructuras,
+                total_cursos,
+                total_cursos_sostenibles,
+                porcentaje_sostenibilidad,
+                cursosDetalles,
             });
         } catch (error) {
             console.error("Error al generar el reporte del campus:", error);

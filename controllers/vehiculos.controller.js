@@ -205,6 +205,7 @@ listarVehiculos: async (req, res) => {
                 { model: Frecuencia, attributes: ['fre_id', 'fre_detalle'], as: 'Frecuencia' },
                 { model: TipoEmision, attributes: ['tpe_id', 'tpe_detalle'] },
             ],
+            order: [['tpe_id', 'DESC']],
             raw: true,
             nest: true,
         });

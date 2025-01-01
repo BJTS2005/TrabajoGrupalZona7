@@ -27,6 +27,7 @@
                     <th>Tipo</th>
                     <th>Fecha</th>
                     <th>Por Estudiantes</th>
+                    <th>URL</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -38,6 +39,7 @@
                         <td><%= evento.TipoEvento.tpe_detalle %></td>
                         <td><%= new Date(evento.eve_fecha).toLocaleDateString() %></td>
                         <td><%= evento.eve_por_estudiantes ? "Sí" : "No" %></td>
+                        <td><%= evento.eve_url ? `<a href="${evento.eve_url}" target="_blank">Ver más</a>` : "N/A" %></td>
                         <td>
                             <!-- Botón para abrir el modal de editar -->
                             <button 
@@ -48,7 +50,8 @@
                                 data-detalle="<%= evento.eve_detalle %>" 
                                 data-tipo="<%= evento.tpe_id %>" 
                                 data-fecha="<%= evento.eve_fecha %>" 
-                                data-estudiantes="<%= evento.eve_por_estudiantes %>">
+                                data-estudiantes="<%= evento.eve_por_estudiantes %>"
+                                data-url="<%= evento.eve_url %>">
                                 Editar
                             </button>
                             <!-- Botón de eliminar -->
@@ -80,6 +83,10 @@
                                 <textarea class="form-control" id="eve_detalle" name="eve_detalle" rows="3" required></textarea>
                             </div>
                             <div class="mb-3">
+                                <label for="eve_url" class="form-label">URL del Evento</label>
+                                <input type="url" class="form-control" id="eve_url" name="eve_url" placeholder="https://example.com">
+                            </div>
+                            <div class="mb-3">
                                 <label for="tpe_id" class="form-label">Tipo de Evento</label>
                                 <select id="tpe_id" name="tpe_id" class="form-select" required>
                                     <% tiposEvento.forEach(tipo => { %>
@@ -92,7 +99,7 @@
                                 <input type="date" class="form-control" id="eve_fecha" name="eve_fecha" required>
                             </div>
                             <div class="mb-3">
-                                <label for="eve_por_estudiantes" class="form-label">¿Organizado por Estudiantes?</label>
+                                <label for="eve_por_estudiantes" class="form-label">¿Involucra Estudiantes?</label>
                                 <select id="eve_por_estudiantes" name="eve_por_estudiantes" class="form-select" required>
                                     <option value="true">Sí</option>
                                     <option value="false">No</option>
@@ -124,6 +131,10 @@
                                 <textarea class="form-control" id="eve_detalle_editar" name="eve_detalle" rows="3" required></textarea>
                             </div>
                             <div class="mb-3">
+                                <label for="eve_url_editar" class="form-label">URL del Evento</label>
+                                <input type="url" class="form-control" id="eve_url_editar" name="eve_url" placeholder="https://example.com">
+                            </div>
+                            <div class="mb-3">
                                 <label for="tpe_id_editar" class="form-label">Tipo de Evento</label>
                                 <select id="tpe_id_editar" name="tpe_id" class="form-select" required>
                                     <% tiposEvento.forEach(tipo => { %>
@@ -136,7 +147,7 @@
                                 <input type="date" class="form-control" id="eve_fecha_editar" name="eve_fecha" required>
                             </div>
                             <div class="mb-3">
-                                <label for="eve_por_estudiantes_editar" class="form-label">¿Organizado por Estudiantes?</label>
+                                <label for="eve_por_estudiantes_editar" class="form-label">¿Involucra Estudiantes?</label>
                                 <select id="eve_por_estudiantes_editar" name="eve_por_estudiantes" class="form-select" required>
                                     <option value="true">Sí</option>
                                     <option value="false">No</option>
@@ -160,19 +171,20 @@
     <script>
         const modalEditar = document.getElementById('modalEditarEvento');
         modalEditar.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget; // Botón que abrió el modal
+            const button = event.relatedTarget;
             const id = button.getAttribute('data-id');
             const detalle = button.getAttribute('data-detalle');
             const tipo = button.getAttribute('data-tipo');
             const fecha = button.getAttribute('data-fecha');
             const estudiantes = button.getAttribute('data-estudiantes') === "true";
+            const url = button.getAttribute('data-url');
 
-            // Cargar los valores en los campos del modal
             modalEditar.querySelector('#id_eve_editar').value = id;
             modalEditar.querySelector('#eve_detalle_editar').value = detalle;
             modalEditar.querySelector('#tpe_id_editar').value = tipo;
             modalEditar.querySelector('#eve_fecha_editar').value = fecha.split('T')[0];
             modalEditar.querySelector('#eve_por_estudiantes_editar').value = estudiantes.toString();
+            modalEditar.querySelector('#eve_url_editar').value = url || '';
         });
     </script>
 </body>
