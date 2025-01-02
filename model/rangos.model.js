@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/conexion.js";
-import Indicador from "./indicadores.model.js";
+//import Indicador from "./indicadores.model.js";
 
 const RangoIndicador = sequelize.define("RangoIndicador", {
     id_ran: {
@@ -10,11 +10,7 @@ const RangoIndicador = sequelize.define("RangoIndicador", {
     },
     ind_cod: {
         type: DataTypes.STRING(10),
-        allowNull: true,
-        references: {
-            model: Indicador,
-            key: "ind_cod",
-        },
+        allowNull: true,     
     },
     descripcion_ran: {
         type: DataTypes.TEXT,
@@ -34,7 +30,7 @@ const RangoIndicador = sequelize.define("RangoIndicador", {
     timestamps: false,
 });
 
-RangoIndicador.belongsTo(Indicador, { foreignKey: "ind_cod" });
-Indicador.hasMany(RangoIndicador, { foreignKey: "ind_cod" });
+//RangoIndicador.belongsTo(Indicador, { foreignKey: "ind_cod" });
+//Indicador.hasMany(RangoIndicador, { foreignKey: "ind_cod" });
 
 export default RangoIndicador;

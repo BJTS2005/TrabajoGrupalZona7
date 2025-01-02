@@ -34,7 +34,8 @@
                     <tr>
                         <th>Código</th>
                         <th>Criterio</th>
-                        <th>Puntos</th>
+                        <th>Puntaje Máximo</th>
+                        <th>Puntaje Actual</th>
                         <th>Responsable</th>
                         <th>Acciones</th>
                     </tr>
@@ -50,6 +51,16 @@
                             </td>
                             <td>
                                 <%= indicador.ind_puntos %>
+                            </td>
+                            <td>
+                                <% if (indicador.RangoIndicadors) { %>
+                                    <span class="text-primary fw-bold">
+                                        <%= indicador.RangoIndicadors.valor_ran * indicador.ind_puntos / 100 %>
+                                    </span>
+                                    <small>(<%= indicador.RangoIndicadors.descripcion_ran %>)</small>
+                                    <% } else { %>
+                                        <span class="text-danger fw-bold">Sin rango seleccionado</span>
+                                        <% } %>
                             </td>
                             <td>
                                 <%= indicador.MiembroUnidad.mie_nombres %>

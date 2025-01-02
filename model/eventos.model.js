@@ -64,6 +64,10 @@ const EventoSostenible = sequelize.define(
             type: DataTypes.BOOLEAN,
             allowNull: false,
         },
+        eve_url: {
+            type: DataTypes.TEXT, // Campo nuevo para almacenar URLs
+            allowNull: true, // Opcional
+        },
     },
     {
         tableName: "gm_te_eventos_sostenibles",
