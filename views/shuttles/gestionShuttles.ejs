@@ -7,7 +7,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <title>Gestión de Servicios de Transporte</title>
-    <style>
+    <!-- <style>
         :root {
 
             --color-primary-btn: #4ade80;
@@ -110,13 +110,40 @@
         .btn-delete:hover {
             color: var(--color-delete-btn);
         }
-    </style>
+    </style> -->
 </head>
 
 <body>
     <%- include ../../views/layout/cabecera.ejs %>
+    <%
+        const columnas = [
+            { nombre: "ID", campo: "sti_id", tipo: "texto" },
+            { nombre: "Tipo de Emision", campo: "TipoEmision", subCampo: "tpe_detalle", tipo: "texto" },
+            { nombre: "Descripsion", campo: "sti_descripcion", tipo: "resaltado" },
+            { nombre: "Promedio Pasajerps", campo: "sti_prom_pasajeros", tipo: "texto" },
+            { nombre: "Viajes al día", campo: "sti_tot_viajes_dia", tipo: "texto" },
+            { nombre: "Fecha de Registro", campo: "sti_fecha_registro", tipo: "texto" }
+        ];
+        %>
 
-        <div class="container mt-5">
+    <div class="container mt-5">
+        <div class="page-header d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="page-title">Gestión de Servicios de Transporte</h1>
+                <p class="page-subtitle">Administra los servicios de transporte del campus</p>
+            </div>
+            <button class="add-service-btn" onclick="location.href='';">
+                <i class="fas fa-plus me-2"></i>Registrar Nuevo Servicio
+            </button>
+        </div>
+
+        <%- include('../../views/parciales/tablaReutilizable.ejs', { columnas, datos: shuttles }) %>
+    </div>
+    
+
+        
+
+        <!-- <div class="container mt-5">
             <div class="page-header d-flex justify-content-between align-items-center">
                 <div>
                     <h1 class="page-title">Gestión de Servicios de Transporte</h1>
@@ -207,7 +234,7 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div> -->
 </body>
 
 </html>
