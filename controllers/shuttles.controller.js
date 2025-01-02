@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import Shuttle from "../model/shuttle.model.js";
 import Campus from "../model/campus.model.js";
 import modelos from "../model/vehiculos.model.js";
@@ -7,27 +8,54 @@ export const shuttlesController = {
 
     listarShuttles: async (req, res) => {
         try {
-
             const { camp_id } = req.params;
+            const { tipoEmision, orderBy, orderDir, fechaInicio, fechaFin } = req.query;
+
+            // Condición inicial (por campus)
             const condicion = camp_id ? { camp_id } : {};
 
+            // Filtro por Tipo de Emisión
+            if (tipoEmision) {
+                condicion.tpe_id = tipoEmision;
+            }
+
+            // Filtro por rango de fechas
+            if (fechaInicio && fechaFin) {
+                condicion.sti_fecha_registro = {
+                    [Op.between]: [new Date(fechaInicio), new Date(fechaFin)],
+                };
+            }
+
+            // Orden dinámico
+            const order = [];
+            if (orderBy) {
+                order.push([orderBy, orderDir || "ASC"]);
+            }
+
+            // Obtener los shuttles con los filtros aplicados
             const shuttles = await Shuttle.findAll({
                 where: condicion,
-                include: [
-                    { model: TipoEmision, attributes: ['tpe_id', 'tpe_detalle'] },
-                ],
+                include: [{ model: TipoEmision, attributes: ['tpe_id', 'tpe_detalle'] }],
+                order,
                 raw: true,
                 nest: true,
             });
 
+            // Datos auxiliares
             const tiposEmision = await TipoEmision.findAll({ raw: true });
             const campuses = await Campus.findAll({ raw: true });
 
+            // Renderizar vista
             res.render('shuttles/gestionShuttles.ejs', {
                 shuttles,
                 tiposEmision,
                 campuses,
                 currentCampus: camp_id || null,
+                tipoEmision,
+                orderBy,
+                orderDir,
+                fechaInicio,
+                fechaFin,
             });
         } catch (error) {
             console.error("Error al listar los servicios de transporte:", error);

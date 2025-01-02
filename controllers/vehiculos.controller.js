@@ -195,9 +195,21 @@ actualizarTpVehiculo: async (req, res) => {
 listarVehiculos: async (req, res) => {
     try {
         const { camp_id } = req.params;
+        const { tipoVehiculo, tipoEmision, frecuencia, orderBy, orderDir } = req.query;
 
-        // Obtener vehículos filtrados por campus (si se especifica)
-        const whereCondition = camp_id ? { camp_id } : {};
+        // Filtros dinámicos
+        const whereCondition = { camp_id };
+        if (tipoVehiculo) whereCondition.tpv_id = tipoVehiculo;
+        if (tipoEmision) whereCondition.tpe_id = tipoEmision;
+        if (frecuencia) whereCondition.fre_id = frecuencia;
+
+        // Configuración del orden
+        const order = [];
+        if (orderBy) {
+            order.push([orderBy, orderDir || "ASC"]);
+        }
+
+        // Obtener vehículos con filtros
         const vehiculos = await Vehiculo.findAll({
             where: whereCondition,
             include: [
@@ -205,7 +217,7 @@ listarVehiculos: async (req, res) => {
                 { model: Frecuencia, attributes: ['fre_id', 'fre_detalle'], as: 'Frecuencia' },
                 { model: TipoEmision, attributes: ['tpe_id', 'tpe_detalle'] },
             ],
-            order: [['tpe_id', 'DESC']],
+            order,
             raw: true,
             nest: true,
         });
@@ -215,7 +227,6 @@ listarVehiculos: async (req, res) => {
         const frecuencias = await Frecuencia.findAll({ raw: true });
         const tiposEmision = await TipoEmision.findAll({ raw: true });
         const campuses = await Campus.findAll({ raw: true });
- 
 
         // Renderizar vista
         res.render('vehiculos/gestionVehiculos.ejs', {
@@ -224,7 +235,12 @@ listarVehiculos: async (req, res) => {
             frecuencias,
             tiposEmision,
             campuses,
-            currentCampus: camp_id || null, // Pasar el campus actual si está definido
+            currentCampus: camp_id || null,
+            tipoVehiculo,
+            tipoEmision,
+            frecuencia,
+            orderBy,
+            orderDir,
         });
     } catch (error) {
         console.error("Error al listar los vehículos:", error);

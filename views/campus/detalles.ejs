@@ -16,7 +16,7 @@
 
         <div class="container campus-details">
             <div class="campus-header">
-                <h2>Detalles del Campus Olivo</h2>
+                <h2>Detalles del Campus <%= campus.camp_nom %></h2>
                 <p>Administra la información y recursos del campus</p>
             </div>
 
@@ -46,7 +46,8 @@
                             </p>
                             <p class=" text-muted">Población Actual: <%= campus.camp_cant_pobla %>
                             </p>
-                            <p class=" text-muted">Densidad (Personas/m²): <%= campus.camp_dens_pobla %>
+                            <p class=" text-muted">Densidad (Personas/m²): <%=
+                                    parseFloat(campus.camp_dens_pobla).toFixed(2) %>
                             </p>
                         </div>
 
@@ -97,6 +98,12 @@
                 <% } else { %>
                     <div class="alert alert-warning text-center mt-4">
                         No hay fondo asociado a este campus.
+                    </div>
+                    <div class="text-center mt-3">
+                        <!-- Botón para abrir el modal -->
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFondoModal">
+                            Registrar Fondo
+                        </button>
                     </div>
                     <% } %>
                         <!-- Gestión de Transporte -->
@@ -333,324 +340,47 @@
                             </div>
                         </div>
 
+                        <!-- Modal para registrar fondo -->
+                        <div class="modal fade" id="addFondoModal" tabindex="-1" aria-labelledby="addFondoModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form method="post" action="/campus/fondos/registrar">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="addFondoModalLabel">Registrar Fondo</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label for="fondo_total" class="form-label">Presupuesto Total</label>
+                                                <input type="number" step="0.01" class="form-control" id="fondo_total"
+                                                    name="fondo_total" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="fondo_sostenibilidad" class="form-label">Presupuesto para
+                                                    Investigación</label>
+                                                <input type="number" step="0.01" class="form-control"
+                                                    id="fondo_sostenibilidad" name="fondo_sostenibilidad" required>
+                                            </div>
+                                            <!-- Campo oculto para asociar el fondo al campus -->
+                                            <input type="hidden" name="camp_id" value="<%= campus.camp_id %>">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Cancelar</button>
+                                            <button type="submit" class="btn btn-primary">Guardar Fondo</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
 
         </div>
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
 
-
-
-
-
-
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        <%= title %>
-    </title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-
-<body>
-    <div class="container mt-5">
-        <h1 class="text-center mb-4">Detalles del Campus</h1>
-        <table class="table table-bordered">
-            <tr>
-                <th>ID del Campus</th>
-                <td>
-                    <%= campus.camp_id %>
-                </td>
-            </tr>
-            <tr>
-                <th>Nombre del Campus</th>
-                <td>
-                    <%= campus.camp_nom %>
-                </td>
-            </tr>
-            <tr>
-                <th>Área</th>
-                <td>
-                    <%= campus.camp_area %> m²
-                </td>
-            </tr>
-            <tr>
-                <th>Perímetro</th>
-                <td>
-                    <%= campus.camp_perimetro %> m
-                </td>
-            </tr>
-            <tr>
-                <th>Capacidad</th>
-                <td>
-                    <%= campus.camp_capacidad %>
-                </td>
-            </tr>
-            <tr>
-                <th>Cantidad de Población Actual</th>
-                <td>
-                    <%= campus.camp_cant_pobla %>
-                </td>
-            </tr>
-            <tr>
-                <th>Densidad de Población</th>
-                <td>
-                    <%= campus.camp_dens_pobla %>
-                </td>
-            </tr>
-            <tr>
-                <th>Calle Principal</th>
-                <td>
-                    <%= campus.camp_calle_principal %>
-                </td>
-            </tr>
-            <tr>
-                <th>Calle Secundaria</th>
-                <td>
-                    <%= campus.camp_calle_secundaria %>
-                </td>
-            </tr>
-        </table>
-
-        <% if (fondo) { %>
-            <h3 class="text-center mt-4">Detalles de los fondos</h3>
-            <table class="table table-bordered">
-                <tr>
-                    <th>Presupuesto Total</th>
-                    <td>$ <%= fondo.fondo_total %>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Presupuesto para Investigación</th>
-                    <td>$ <%= fondo.fondo_sostenibilidad %>
-                    </td>
-                </tr>
-            </table>
-            <% } else { %>
-                <div class="alert alert-warning text-center mt-4">
-                    No hay fondo asociado a este campus.
-                </div>
-                <div class="text-center mt-3">
-                    <!-- Botón para abrir el modal -->
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#addFondoModal">
-                        Registrar Fondo
-                    </button>
-                </div>
-                <% } %>
-
-
-                    <!-- Modal para registrar fondo -->
-                    <div class="modal fade" id="addFondoModal" tabindex="-1" aria-labelledby="addFondoModalLabel"
-                        aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <form method="post" action="/campus/fondos/registrar">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="addFondoModalLabel">Registrar Fondo</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="mb-3">
-                                            <label for="fondo_total" class="form-label">Presupuesto Total</label>
-                                            <input type="number" step="0.01" class="form-control" id="fondo_total"
-                                                name="fondo_total" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="fondo_sostenibilidad" class="form-label">Presupuesto para
-                                                Investigación</label>
-                                            <input type="number" step="0.01" class="form-control"
-                                                id="fondo_sostenibilidad" name="fondo_sostenibilidad" required>
-                                        </div>
-                                        <!-- Campo oculto para asociar el fondo al campus -->
-                                        <input type="hidden" name="camp_id" value="<%= campus.camp_id %>">
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                            data-bs-dismiss="modal">Cancelar</button>
-                                        <button type="submit" class="btn btn-primary">Guardar Fondo</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-
-
-
-                    <div class="text-center mt-4">
-                        <a href="/campus" class="btn btn-secondary">Regresar</a>
-                    </div>
-                    <div class="row mt-4">
-                        <div class="col-md-4 mb-3">
-                            <div class="card">
-                                <div class="card-header text-center bg-primary text-white">
-                                    Vehículos
-                                </div>
-                                <div class="card-body">
-                                    <p class="card-text">
-                                        Gestionar los vehículos asociados a este campus.
-                                    </p>
-                                    <div class="d-grid gap-2">
-
-                                        <a href="/vehiculos/gestionar/<%= campus.camp_id %>"
-                                            class="btn btn-success">Gestionar
-                                            Vehículos</a>
-                                        <a href="/vehiculos/tipos-vehiculo" class="btn btn-secondary">Tipos de
-                                            Vehículo</a>
-                                        <a href="/vehiculos/frecuencias" class="btn btn-secondary">Frecuencias</a>
-                                        <a href="/vehiculos/tipos-emision" class="btn btn-secondary">Tipos de
-                                            Emisión</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4 mb-3">
-                            <div class="card">
-                                <div class="card-header text-center bg-success text-white">
-                                    Servicios de Transporte
-                                </div>
-                                <div class="card-body">
-                                    <p class="card-text">
-                                        Gestionar los Servicios de Transporte asociados a este campus.
-                                    </p>
-                                    <div class="d-grid gap-2">
-                                        <a href="/shuttles/gestionar/<%= campus.camp_id %>"
-                                            class="btn btn-primary">Gestionar
-                                            Servicios de Transporte</a>
-                                        <a href="/vehiculos/tipos-emision" class="btn btn-secondary">Tipos de
-                                            Emisión</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4 mb-3">
-                            <div class="card">
-                                <div class="card-header text-center bg-warning text-dark">
-                                    Infraestructuras de Transporte
-                                </div>
-                                <div class="card-body">
-                                    <p class="card-text">
-                                        Gestionar las infraestructuras de transporte asociadas a este campus.
-                                    </p>
-                                    <div class="d-grid gap-2">
-                                        <a href="/infra-transporte/gestionar/<%= campus.camp_id %>"
-                                            class="btn btn-primary">Gestionar
-                                            Infraestructuras</a>
-                                        <a href="/infra-transporte/tipos" class="btn btn-secondary">Tipos de
-                                            Infraestructura</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-         
-                        <div class="col-md-4 mb-3">
-                            <div class="card">
-                                <div class="card-header text-center bg-success text-white">
-                                    Eventos Sostenibles
-                                </div>
-                                <div class="card-body">
-                                    <p class="card-text">
-                                        Gestiona los eventos sostenibles organizados en este campus.
-                                    </p>
-                                    <div class="d-grid gap-2">
-                                        <a href="/eventos-sostenibles/gestionar/<%= campus.camp_id %>"
-                                            class="btn btn-primary">Gestionar
-                                            Eventos</a>
-                                        <a href="/eventos-sostenibles/tipos" class="btn btn-secondary">Tipos de
-                                            Evento</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-        
-                        <div class="col-md-4 mb-3">
-                            <div class="card">
-                                <div class="card-header text-center bg-info text-white">
-                                    Sitios Web
-                                </div>
-                                <div class="card-body">
-                                    <p class="card-text">
-                                        Gestiona los sitios web asociados a este campus, incluyendo reportes y enlaces
-                                        relacionados.
-                                    </p>
-                                    <div class="d-grid gap-2">
-                                        <a href="/sitiosWeb/gestionar/<%= campus.camp_id %>"
-                                            class="btn btn-primary">Gestionar
-                                            Sitios Web</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-    
-                        <div class="col-md-4 mb-3">
-                            <div class="card">
-                                <div class="card-header text-center bg-success text-white">
-                                    Green Jobs
-                                </div>
-                                <div class="card-body">
-                                    <p class="card-text">
-                                        Gestiona los trabajos sostenibles y los graduados asociados a este campus.
-                                    </p>
-                                    <div class="d-grid gap-2">
-                                        <a href="/greenJobs/gestionar/<%= campus.camp_id %>"
-                                            class="btn btn-primary">Gestionar
-                                            Graduados</a>
-                                        <a href="/greenJobs/listar" class="btn btn-secondary">Gestionar Green Jobs</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="col-md-4 mb-3">
-                            <div class="card">
-                                <div class="card-header text-center bg-primary text-white">
-                                    Cursos
-                                </div>
-                                <div class="card-body">
-                                    <p class="card-text">
-                                        Gestiona los cursos asociados a este campus.
-                                    </p>
-                                    <div class="d-grid gap-2">
-
-                                        <a href="/cursos/gestionar/<%= campus.camp_id %>"
-                                            class="btn btn-primary">Gestionar
-                                            Cursos</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-
-
-
-
-
-
-
-
-
-                    </div>
-
-
-
-
-
-                    <script
-                        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-
-</html> -->

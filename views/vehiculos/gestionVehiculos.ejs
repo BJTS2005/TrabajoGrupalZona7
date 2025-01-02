@@ -21,6 +21,81 @@
             </button>
         </div>
 
+        <div class="mb-4">
+            <form method="GET" action="/vehiculos/gestionar/<%= currentCampus %>">
+                <div class="row g-2 align-items-end">
+                    <!-- Filtro por Tipo de Vehículo -->
+                    <div class="col">
+                        <label for="filterTipoVehiculo" class="form-label">Tipo de Vehículo</label>
+                        <select id="filterTipoVehiculo" name="tipoVehiculo" class="form-select">
+                            <option value="">Todos</option>
+                            <% tiposVehiculo.forEach(tipo=> { %>
+                                <option value="<%= tipo.tpv_id %>" <%=tipo.tpv_id===tipoVehiculo ? "selected" : "" %>>
+                                    <%= tipo.tpv_detalle %>
+                                </option>
+                                <% }); %>
+                        </select>
+                    </div>
+
+                    <!-- Filtro por Tipo de Emisión -->
+                    <div class="col">
+                        <label for="filterTipoEmision" class="form-label">Tipo de Emisión</label>
+                        <select id="filterTipoEmision" name="tipoEmision" class="form-select">
+                            <option value="">Todos</option>
+                            <% tiposEmision.forEach(emision=> { %>
+                                <option value="<%= emision.tpe_id %>" <%=emision.tpe_id===tipoEmision ? "selected" : ""
+                                    %>>
+                                    <%= emision.tpe_detalle %>
+                                </option>
+                                <% }); %>
+                        </select>
+                    </div>
+
+                    <!-- Filtro por Frecuencia -->
+                    <div class="col">
+                        <label for="filterFrecuencia" class="form-label">Frecuencia</label>
+                        <select id="filterFrecuencia" name="frecuencia" class="form-select">
+                            <option value="">Todos</option>
+                            <% frecuencias.forEach(frecuencia=> { %>
+                                <option value="<%= frecuencia.fre_id %>" <%=frecuencia.fre_id===frecuencia
+                                    ? "selected" : "" %>>
+                                    <%= frecuencia.fre_detalle %>
+                                </option>
+                                <% }); %>
+                        </select>
+                    </div>
+
+                    <!-- Orden -->
+                    <div class="col">
+                        <label for="orderBy" class="form-label">Ordenar por</label>
+                        <select id="orderBy" name="orderBy" class="form-select">
+                            <option value="">Por Defecto</option>
+                            <option value="veh_id" <%=orderBy==="veh_id" ? "selected" : "" %>>ID</option>
+                            <option value="veh_cantidad" <%=orderBy==="veh_cantidad" ? "selected" : "" %>>Cantidad
+                            </option>
+                            <option value="veh_distancia_aprox_recorrida" <%=orderBy==="veh_distancia_aprox_recorrida"
+                                ? "selected" : "" %>>Distancia</option>
+                        </select>
+                    </div>
+
+                    <!-- Dirección del Orden -->
+                    <div class="col">
+                        <label for="orderDir" class="form-label">Dirección</label>
+                        <select id="orderDir" name="orderDir" class="form-select">
+                            <option value="ASC" <%=orderDir==="ASC" ? "selected" : "" %>>Ascendente</option>
+                            <option value="DESC" <%=orderDir==="DESC" ? "selected" : "" %>>Descendente</option>
+                        </select>
+                    </div>
+
+                    <!-- Botón de Filtrar -->
+                    <div class="col">
+                        <button type="submit" class="btn btn-primary">Filtrar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
         <!-- Tabla de vehículos -->
         <div class="table-responsive">
             <table class="table table-striped table-bordered">
@@ -281,7 +356,7 @@
                 modalEditar.querySelector('#veh_distancia_aprox_recorrida_editar').value = distancia;
             });
 
-           
+
 
         </script>
 </body>

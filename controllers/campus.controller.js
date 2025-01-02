@@ -8,6 +8,7 @@ export const campusController = {
             const campus = await Campus.findAll({
                 raw: true,
                 nest: true,
+                order: [['camp_area', 'DESC']],
             });
             res.render("campus/listarCampus", { title: 'Campus Registrados', datos: campus });
         } catch (error) {
@@ -152,7 +153,7 @@ export const campusController = {
 
             if (!campus) return res.status(404).send("Campus no encontrado");
 
-            res.render("campus/detalles", { title: "Detalles del Campus", campus, fondo });
+            res.render("campus/detalles.ejs", { title: "Detalles del Campus", campus, fondo });
         } catch (error) {
             console.error("Error al obtener los detalles del campus:", error);
             res.status(500).send("Error al cargar los detalles del campus.");
