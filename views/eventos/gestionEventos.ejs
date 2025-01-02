@@ -39,7 +39,8 @@
                         <td><%= evento.TipoEvento.tpe_detalle %></td>
                         <td><%= new Date(evento.eve_fecha).toLocaleDateString() %></td>
                         <td><%= evento.eve_por_estudiantes ? "Sí" : "No" %></td>
-                        <td><%= evento.eve_url ? `<a href="${evento.eve_url}" target="_blank">Ver más</a>` : "N/A" %></td>
+                        <td> <%= evento.eve_url ? `${evento.eve_url}` :  `N/A`%></td>
+                        
                         <td>
                             <!-- Botón para abrir el modal de editar -->
                             <button 

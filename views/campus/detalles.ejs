@@ -90,7 +90,52 @@
                 <div class="alert alert-warning text-center mt-4">
                     No hay fondo asociado a este campus.
                 </div>
+                <div class="text-center mt-3">
+                    <!-- Botón para abrir el modal -->
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#addFondoModal">
+                        Registrar Fondo
+                    </button>
+                </div>
                 <% } %>
+
+
+                    <!-- Modal para registrar fondo -->
+                    <div class="modal fade" id="addFondoModal" tabindex="-1" aria-labelledby="addFondoModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form method="post" action="/campus/fondos/registrar">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="addFondoModalLabel">Registrar Fondo</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="fondo_total" class="form-label">Presupuesto Total</label>
+                                            <input type="number" step="0.01" class="form-control" id="fondo_total"
+                                                name="fondo_total" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="fondo_sostenibilidad" class="form-label">Presupuesto para
+                                                Investigación</label>
+                                            <input type="number" step="0.01" class="form-control"
+                                                id="fondo_sostenibilidad" name="fondo_sostenibilidad" required>
+                                        </div>
+                                        <!-- Campo oculto para asociar el fondo al campus -->
+                                        <input type="hidden" name="camp_id" value="<%= campus.camp_id %>">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-primary">Guardar Fondo</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
 
 
                     <div class="text-center mt-4">
@@ -155,7 +200,8 @@
                                     </p>
                                     <div class="d-grid gap-2">
                                         <a href="/infra-transporte/gestionar/<%= campus.camp_id %>"
-                                            class="btn btn-primary">Gestionar Infraestructuras</a>
+                                            class="btn btn-primary">Gestionar
+                                            Infraestructuras</a>
                                         <a href="/infra-transporte/tipos" class="btn btn-secondary">Tipos de
                                             Infraestructura</a>
                                     </div>

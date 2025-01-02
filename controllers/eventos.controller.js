@@ -75,6 +75,7 @@ export const eventosController = {
                     { model: TipoEvento, attributes: ["tpe_id", "tpe_detalle"] },
                     { model: Campus, attributes: ["camp_id", "camp_nom"] },
                 ],
+                order: [['tpe_id', 'ASC']],
                 raw: true,
                 nest: true,
             });
@@ -105,8 +106,8 @@ export const eventosController = {
                 camp_id,
                 eve_detalle,
                 eve_fecha,
-                eve_por_estudiantes: eve_por_estudiantes === "true", // Convertir a booleano
-                eve_url, // Nuevo campo
+                eve_por_estudiantes: eve_por_estudiantes === "true", 
+                eve_url, 
             });
     
             res.redirect(`/eventos-sostenibles/gestionar/${camp_id}`);

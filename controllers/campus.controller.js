@@ -158,4 +158,30 @@ export const campusController = {
             res.status(500).send("Error al cargar los detalles del campus.");
         }
     },
+
+    registrarFondo: async (req, res) => {
+        try {
+            const { camp_id, fondo_total, fondo_sostenibilidad } = req.body;
+
+            // Verificar que el campus existe
+            const campus = await Campus.findByPk(camp_id);
+            if (!campus) {
+                return res.status(404).send("El campus especificado no existe.");
+            }
+
+            // Crear el fondo asociado al campus
+            await FondoInvestigacion.create({
+                fondo_id: `FON${camp_id}`, // Generar un ID único basado en el ID del campus
+                camp_id,
+                fondo_total: parseFloat(fondo_total),
+                fondo_sostenibilidad: parseFloat(fondo_sostenibilidad),
+            });
+
+            // Redirigir a la página de detalles del campus
+            res.redirect(`/campus/${camp_id}`);
+        } catch (error) {
+            console.error("Error al registrar el fondo:", error);
+            res.status(500).send("Hubo un error al registrar el fondo.");
+        }
+    },
 };
