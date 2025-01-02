@@ -1,4 +1,332 @@
 <!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles del Campus</title>
+    <!-- Simplificando las importaciones de CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/stylesheets/campus_style/detallesCampus.css">
+</head>
+
+<body>
+    <%- include('../../views/layout/cabecera') %>
+
+        <div class="container campus-details">
+            <div class="campus-header">
+                <h2>Detalles del Campus Olivo</h2>
+                <p>Administra la información y recursos del campus</p>
+            </div>
+
+            <div class="info-card card">
+                <div class="card-body">
+                    <div class="info-header d-flex align-items-center">
+                        <div class="info-icon">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <h3 class="info-title">Información básica</h3>
+                    </div>
+
+                    <div class="row g-4">
+                        <!-- Información básica -->
+                        <div class="col-12 col-md-4">
+                            <p class=" text-muted">ID del campus: <%= campus.camp_id %>
+                            </p>
+                            <p class=" text-muted">Nombre: <%= campus.camp_nom %>
+                            </p>
+                            <p class=" text-muted">Área: <%= campus.camp_area %> m²</p>
+                            <p class=" text-muted">Perimetro: <%= campus.camp_perimetro %> m</p>
+                        </div>
+
+                        <!-- Métricas -->
+                        <div class="col-12 col-md-4">
+                            <p class=" text-muted">Capacidad Total: <%= campus.camp_capacidad %>
+                            </p>
+                            <p class=" text-muted">Población Actual: <%= campus.camp_cant_pobla %>
+                            </p>
+                            <p class=" text-muted">Densidad (Personas/m²): <%= campus.camp_dens_pobla %>
+                            </p>
+                        </div>
+
+                        <!-- Ubicación -->
+                        <div class="col-12 col-md-4">
+                            <div class="location-item">
+                                <i class="fas fa-map-marker-alt location-icon mb-3"></i>
+                                <p class=" text-muted">Calle principal: <%= campus.camp_calle_principal %>
+                                </p>
+                            </div>
+                            <div class="location-item">
+                                <i class="fas fa-map-marker-alt location-icon mb-3"></i>
+                                <p class=" text-muted">Calle secundaria: <%= campus.camp_calle_secundaria %>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <div class="info-card card mt-3">
+                <div class="card-body">
+                    <div class="info-header d-flex align-items-center">
+                        <div class="info-icon">
+                            <i class="fas fa-money-bill"></i>
+                        </div>
+                        <h3 class="info-title">Detalles de los fondos</h3>
+                    </div>
+
+                    <div class="row g-4">
+                        <!-- Información básica -->
+                        <div class="col-12 col-md-6">
+                            <h5 class="">Presupuesto Total:</h5>
+                            <p class=" text-muted">$ <%= fondo.fondo_total %>
+                            </p>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <h5>Presupuesto para Sostenibilidad:</h5>
+                            <p class=" text-muted">$ <%= fondo.fondo_sostenibilidad %>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            
+                <!-- Gestión de Transporte -->
+                <div class="row g-4 mt-0">
+                    <!-- Card de Vehículos -->
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="info-card card h-100">
+                            <div class="card-body d-flex flex-column">
+                                <!-- Header -->
+                                <div class="info-header-mini d-flex align-items-center mb-3">
+                                    <div class="info-icon me-2">
+                                        <i class="fas fa-car"></i>
+                                    </div>
+                                    <h3 class="info-title mb-0">Vehículos</h3>
+                                </div>
+
+                                <!-- Descripción -->
+                                <p class="text-muted mb-3">
+                                    Gestiona los vehículos y su impacto ambiental en el campus.
+                                </p>
+
+                                <!-- Botones -->
+                                <div class="mt-auto">
+                                    <div class="d-grid gap-2">
+                                        <!-- Botón principal -->
+                                        <button
+                                            class="btn btn-primary d-flex align-items-center justify-content-center" onclick="location.href='/vehiculos/gestionar/<%= campus.camp_id %>'">
+                                            <i class="fas fa-cog me-2"></i>Gestionar
+                                        </button>
+
+                                        <!-- Botones secundarios -->
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <button
+                                                class="btn btn-outline-primary flex-grow-1 d-flex align-items-center justify-content-center"
+                                                style="min-width: 100px" onclick="location.href='/vehiculos/tipos-vehiculo'">
+                                                <i class="fas fa-car-side me-1"></i>Tipo
+                                            </button>
+                                            <button
+                                                class="btn btn-outline-primary flex-grow-1 d-flex align-items-center justify-content-center"
+                                                style="min-width: 100px" onclick="location.href='/vehiculos/frecuencias'">
+                                                <i class="fas fa-clock me-1"></i>Frecuencia
+                                            </button>
+                                            <button
+                                                class="btn btn-outline-primary flex-grow-1 d-flex align-items-center justify-content-center"
+                                                style="min-width: 100px" onclick="location.href='/vehiculos/tipos-emision'">
+                                                <i class="fas fa-leaf me-1"></i>Emisión
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card de Servicios de Transporte -->
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="info-card card h-100">
+                            <div class="card-body d-flex flex-column">
+                                <div class="info-header-mini d-flex align-items-center">
+                                    <div class="info-icon">
+                                        <i class="fas fa-bus"></i>
+                                    </div>
+                                    <h3 class="info-title">Servicios de Transporte</h3>
+                                </div>
+                                <p class="text-muted my-3">Gestiona los servicios de transporte asociados al
+                                    campus.</p>
+                                <div class="mt-auto">
+                                    <div class="d-grid gap-3">
+                                        <button
+                                            class="btn btn-primary d-flex align-items-center justify-content-center" onclick="location.href='/shuttles/gestionar/<%= campus.camp_id %>'">
+                                            <i class="fas fa-cog me-2"></i>Gestionar
+                                        </button>
+                                        <button
+                                            class="btn btn-outline-primary d-flex align-items-center justify-content-center" onclick="location.href='/vehiculos/tipos-vehiculo'">
+                                            <i class="fas fa-list me-2"></i>Tipo de Servicios
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card de Infraestructura -->
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="info-card card h-100">
+                            <div class="card-body d-flex flex-column">
+                                <div class="info-header-mini d-flex align-items-center">
+                                    <div class="info-icon">
+                                        <i class="fas fa-road"></i>
+                                    </div>
+                                    <h3 class="info-title">Infraestructura</h3>
+                                </div>
+                                <p class="text-muted my-3">Gestiona la infraestructura de transporte asociadas al
+                                    campus.</p>
+                                <div class="mt-auto">
+                                    <div class="d-grid gap-3">
+                                        <button
+                                            class="btn btn-primary d-flex align-items-center justify-content-center" onclick="location.href='/infra-transporte/gestionar/<%= campus.camp_id %>'">
+                                            <i class="fas fa-cog me-2"></i>Gestionar
+                                        </button>
+                                        <button
+                                            class="btn btn-outline-primary d-flex align-items-center justify-content-center" onclick="location.href='/infra-transporte/tipos'">
+                                            <i class="fas fa-network-wired me-2"></i>Tipos de Infraestructura
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Segunda fila: Eventos, Sitios Web y Green Jobs -->
+                <div class="row g-4 mt-0">
+                    <!-- Card de Eventos Sostenibles -->
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="info-card card h-100">
+                            <div class="card-body d-flex flex-column">
+                                <div class="info-header-mini d-flex align-items-center">
+                                    <div class="info-icon">
+                                        <i class="fas fa-calendar-check"></i>
+                                    </div>
+                                    <h3 class="info-title">Eventos Sostenibles</h3>
+                                </div>
+                                <p class="text-muted my-3">Ggestiona los eventos enfocados en la sostenibilidad organizados por este campus.
+                                </p>
+                                <div class="mt-auto">
+                                    <div class="d-grid gap-3">
+                                        <button
+                                            class="btn btn-primary d-flex align-items-center justify-content-center" onclick="location.href='/eventos-sostenibles/gestionar/<%= campus.camp_id %>'">
+                                            <i class="fas fa-cog me-2"></i>Gestionar
+                                        </button>
+                                        <button
+                                            class="btn btn-outline-primary d-flex align-items-center justify-content-center" onclick="location.href='/eventos-sostenibles/tipos'">
+                                            <i class="fas fa-tags me-2"></i>Categorías
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card de Sitios Web -->
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="info-card card h-100">
+                            <div class="card-body d-flex flex-column">
+                                <div class="info-header-mini d-flex align-items-center">
+                                    <div class="info-icon">
+                                        <i class="fas fa-globe"></i>
+                                    </div>
+                                    <h3 class="info-title">Sitios Web</h3>
+                                </div>
+                                <p class="text-muted my-3">Gestiona los sitios web asociados a este campus, incluyendo reportes y enlaces
+                                    relacionados.</p>
+                                <div class="mt-auto">
+                                    <div class="d-grid">
+                                        <button
+                                            class="btn btn-primary d-flex align-items-center justify-content-center" onclick="location.href='/sitiosWeb/gestionar/<%= campus.camp_id %>'">
+                                            <i class="fas fa-cog me-2"></i>Gestionar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card de Green Jobs -->
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="info-card card h-100">
+                            <div class="card-body d-flex flex-column">
+                                <div class="info-header-mini d-flex align-items-center">
+                                    <div class="info-icon">
+                                        <i class="fas fa-briefcase"></i>
+                                    </div>
+                                    <h3 class="info-title">Green Jobs</h3>
+                                </div>
+                                <p class="text-muted my-3">Gestiona los trabajos sostenibles y los graduados asociados a este campus.</p>
+                                <div class="mt-auto">
+                                    <div class="d-grid gap-3">
+                                        <button
+                                            class="btn btn-primary d-flex align-items-center justify-content-center" onclick="location.href='/greenJobs/gestionar/<%= campus.camp_id %>'">
+                                            <i class="fas fa-user-graduate me-2"></i>Gestionar Graduados
+                                        </button>
+                                        <button
+                                            class="btn btn-outline-primary d-flex align-items-center justify-content-center" onclick="location.href='/greenJobs/listar'">
+                                            <i class="fas fa-search me-2"></i>Explorar Green Jobs
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tercera fila: Cursos -->
+                <div class="row g-4 mt-0 justify-content-center">
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="info-card card h-100">
+                            <div class="card-body d-flex flex-column">
+                                <div class="info-header-mini d-flex align-items-center">
+                                    <div class="info-icon">
+                                        <i class="fas fa-graduation-cap"></i>
+                                    </div>
+                                    <h3 class="info-title">Cursos</h3>
+                                </div>
+                                <p class="text-muted my-3">Gestiona los cursos asociados a este campus.</p>
+                                <div class="mt-auto">
+                                    <div class="d-grid">
+                                        <button
+                                            class="btn btn-primary d-flex align-items-center justify-content-center" onclick="location.href='/cursos/gestionar/<%= campus.camp_id %>'">
+                                            <i class="fas fa-cog me-2"></i>Gestionar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+
+        </div>
+</body>
+
+</html>
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -7,7 +335,6 @@
     <title>
         <%= title %>
     </title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
@@ -71,7 +398,6 @@
             </tr>
         </table>
 
-        <!-- Información del Fondo -->
         <% if (fondo) { %>
             <h3 class="text-center mt-4">Detalles de los fondos</h3>
             <table class="table table-bordered">
@@ -97,7 +423,6 @@
                         <a href="/campus" class="btn btn-secondary">Regresar</a>
                     </div>
                     <div class="row mt-4">
-                        <!-- Card para Vehículos -->
                         <div class="col-md-4 mb-3">
                             <div class="card">
                                 <div class="card-header text-center bg-primary text-white">
@@ -122,7 +447,6 @@
                             </div>
                         </div>
 
-                        <!-- Card para Shuttles -->
                         <div class="col-md-4 mb-3">
                             <div class="card">
                                 <div class="card-header text-center bg-success text-white">
@@ -143,7 +467,6 @@
                             </div>
                         </div>
 
-                        <!-- Card para Infraestructuras de Transporte -->
                         <div class="col-md-4 mb-3">
                             <div class="card">
                                 <div class="card-header text-center bg-warning text-dark">
@@ -163,7 +486,7 @@
                             </div>
                         </div>
 
-                        <!-- Card para Eventos Sostenibles -->
+         
                         <div class="col-md-4 mb-3">
                             <div class="card">
                                 <div class="card-header text-center bg-success text-white">
@@ -184,7 +507,7 @@
                             </div>
                         </div>
 
-                        <!-- Card para Sitios Web -->
+        
                         <div class="col-md-4 mb-3">
                             <div class="card">
                                 <div class="card-header text-center bg-info text-white">
@@ -204,7 +527,7 @@
                             </div>
                         </div>
 
-                        <!-- Card para Green Jobs -->
+    
                         <div class="col-md-4 mb-3">
                             <div class="card">
                                 <div class="card-header text-center bg-success text-white">
@@ -224,7 +547,7 @@
                             </div>
                         </div>
 
-                        <!-- Card para Cursos -->
+
                         <div class="col-md-4 mb-3">
                             <div class="card">
                                 <div class="card-header text-center bg-primary text-white">
@@ -235,7 +558,7 @@
                                         Gestiona los cursos asociados a este campus.
                                     </p>
                                     <div class="d-grid gap-2">
-                                        <!-- Gestión de Cursos -->
+
                                         <a href="/cursos/gestionar/<%= campus.camp_id %>"
                                             class="btn btn-primary">Gestionar
                                             Cursos</a>
@@ -260,9 +583,9 @@
 
 
 
-                    <!-- Bootstrap JS -->
+
                     <script
                         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
-</html>
+</html> -->
