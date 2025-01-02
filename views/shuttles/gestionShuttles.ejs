@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>Gestión de Servicios de Transporte</title>
+    <!-- <style>
+        :root {
+
+            --color-primary-btn: #4ade80;
+            --color-info-btn: #3b82f6;
+            --color-delete-btn: #ef4444;
+
+            /* Variables de diseño */
+
+            --transition-default-btn: all 0.3s ease;
+
+            --primary-color: #4ade80;
+            --primary-hover: #22c55e;
+            --danger-color: #ef4444;
+            --danger-hover: #dc2626;
+            --info-color: #3b82f6;
+            --info-hover: #2563eb;
+            --bg-header: #101d3f;
+            --text-light: #f8fafc;
+        }
+
+        body {
+            background-color: #ffffff;
+            color: #334155;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        .add-service-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .add-service-btn:hover {
+            background-color: var(--primary-hover);
+            color: white;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background-color: var(--bg-header);
+            color: var(--text-light);
+            font-weight: 500;
+            padding: 1rem;
+            border: none;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .emission-type {
+            background-color: #dbeaff;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            color: #25488a;
+            display: inline-block;
+        }
+
+        .btn-action {
+            padding: 0.5rem;
+            transition: var(--transition-default-btn);
+            background: none;
+            border: none;
+            color: #333;
+        }
+
+        .btn-view:hover {
+            color: var(--color-primary-btn);
+        }
+
+        .btn-edit:hover {
+            color: var(--color-info-btn);
+        }
+
+        .btn-delete:hover {
+            color: var(--color-delete-btn);
+        }
+    </style> -->
+</head>
+
+<body>
+    <%- include ../../views/layout/cabecera.ejs %>
+    <%
+        const columnas = [
+            { nombre: "ID", campo: "sti_id", tipo: "texto" },
+            { nombre: "Tipo de Emision", campo: "TipoEmision", subCampo: "tpe_detalle", tipo: "texto" },
+            { nombre: "Descripsion", campo: "sti_descripcion", tipo: "resaltado" },
+            { nombre: "Promedio Pasajerps", campo: "sti_prom_pasajeros", tipo: "texto" },
+            { nombre: "Viajes al día", campo: "sti_tot_viajes_dia", tipo: "texto" },
+            { nombre: "Fecha de Registro", campo: "sti_fecha_registro", tipo: "texto" }
+        ];
+        %>
+
+    <div class="container mt-5">
+        <div class="page-header d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="page-title">Gestión de Servicios de Transporte</h1>
+                <p class="page-subtitle">Administra los servicios de transporte del campus</p>
+            </div>
+            <button class="add-service-btn" onclick="location.href='';">
+                <i class="fas fa-plus me-2"></i>Registrar Nuevo Servicio
+            </button>
+        </div>
+
+        <%- include('../../views/parciales/tablaReutilizable.ejs', { columnas, datos: shuttles }) %>
+    </div>
+    
+
+        
+
+        <!-- <div class="container mt-5">
+            <div class="page-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="page-title">Gestión de Servicios de Transporte</h1>
+                    <p class="page-subtitle">Administra los servicios de transporte del campus</p>
+                </div>
+                <button class="add-service-btn" onclick="location.href='';">
+                    <i class="fas fa-plus me-2"></i>Registrar Nuevo Servicio
+                </button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table rounded-3 border">
+                    <thead>
+                        <tr >
+                            <th class="text-center align-middle">ID</th>
+                            <th class="text-center align-middle">TIPO DE EMISIÓN</th>
+                            <th class="text-center align-middle">DESCRIPCIÓN</th>
+                            <th class="text-center align-middle">PROMEDIO DE PASAJEROS</th>
+                            <th class="text-center align-middle">VIAJES AL DÍA</th>
+                            <th class="text-center align-middle">FECHA DE REGISTRO</th>
+                            <th class="text-center align-middle">ACCIONES</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-center fw-bold">SEX</td>
+                            <td class="text-center"><span class="emission-type">Motor a combustión</span></td>
+                            <td class="text-center" >EL PAPU</td>
+                            <td class="text-center">10</td>
+                            <td class="text-center">5</td>
+                            <td class="text-center">10/4/2024</td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-end">
+                                    <button class="btn-action btn-edit" onclick="">
+                                        <i class="fas fa-edit mr-1"></i>Editar
+                                    </button>
+                                    <form action="" method="POST"
+                                        onsubmit="return confirm('¿Estás seguro de eliminar este campus?');">
+                                        <button class="btn-action btn-delete">
+                                            <i class="fas fa-trash-alt mr-1"></i>Eliminar
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-center fw-bold">BUS01</td>
+                            <td class="text-center"><span class="emission-type">Motor eléctrico</span></td>
+                            <td class="text-center">Bus Central</td>
+                            <td class="text-center">25</td>
+                            <td class="text-center">8</td>
+                            <td class="text-center">10/4/2024</td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-end">
+                                    <button class="btn-action btn-edit" onclick="">
+                                        <i class="fas fa-edit mr-1"></i>Editar
+                                    </button>
+                                    <form action="" method="POST"
+                                        onsubmit="return confirm('¿Estás seguro de eliminar este campus?');">
+                                        <button class="btn-action btn-delete">
+                                            <i class="fas fa-trash-alt mr-1"></i>Eliminar
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-center fw-bold">VAN02</td>
+                            <td class="text-center"><span class="emission-type">Motor híbrido</span></td>
+                            <td class="text-center">Van Express</td>
+                            <td class="text-center">15</td>
+                            <td class="text-center">12</td>
+                            <td class="text-center">10/4/2024</td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-end">
+                                    <button class="btn-action btn-edit" onclick="">
+                                        <i class="fas fa-edit mr-1"></i>Editar
+                                    </button>
+                                    <form action="" method="POST"
+                                        onsubmit="return confirm('¿Estás seguro de eliminar este campus?');">
+                                        <button class="btn-action btn-delete">
+                                            <i class="fas fa-trash-alt mr-1"></i>Eliminar
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div> -->
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Servicios de Transporte</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="container mt-5">
+        <h1 class="text-center mb-4"> Gestión de Servicios de Transporte</h1>
+
+        <div class="text-end mb-3">
+            <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                data-bs-target="#modalRegistrarShuttle">
+                Registrar Nuevo Servicio
+            </button>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead class="table-primary">
+                    <tr>
+                        <th>ID</th>
+                        <th>Tipo de Emisión</th>
+                        <th>Descripción</th>
+                        <th>Promedio de Pasajeros</th>
+                        <th>Viajes al día</th>
+                        <th>Fecha de Registro</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% shuttles.forEach(shuttle=> { %>
+                        <tr>
+                            <td>
+                                <%= shuttle.sti_id %>
+                            </td>
+                            <td>
+                                <%= shuttle.TipoEmision.tpe_detalle %>
+                            </td>
+                            <td>
+                                <%= shuttle.sti_descripcion %>
+                            </td>
+                            <td>
+                                <%= shuttle.sti_prom_pasajeros %>
+                            </td>
+                            <td>
+                                <%= shuttle.sti_tot_viajes_dia %>
+                            </td>
+                            <td>
+                                <%= new Date(shuttle.sti_fecha_registro).toLocaleDateString() %>
+                            </td>
+                            <td>
+
+                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#modalEditarShuttle" data-id="<%= shuttle.sti_id%>"
+                                    data-tpe_id="<%= shuttle.tpe_id %>"
+                                    data-descripcion="<%= shuttle.sti_descripcion %>"
+                                    data-pajeros="<%= shuttle.sti_prom_pasajeros %>"
+                                    data-viajes="<%= shuttle.sti_tot_viajes_dia %>">
+                                    Editar
+                                </button>
+
+                                <form action="/shuttles/gestionar/<%= currentCampus %>/eliminar/<%= shuttle.sti_id %>"
+                                    method="POST" class="d-inline"
+                                    onsubmit="return confirm('¿Estás seguro de eliminar este servicio?');">
+                                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <% }); %>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="modal fade" id="modalRegistrarShuttle" tabindex="-1" aria-labelledby="modalRegistrarShuttleLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalRegistrarShuttleLabel">Registrar Servicio de Transporte</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="/shuttles/gestionar/<%= currentCampus %>" method="post">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="sti_id" class="form-label">ID del Servicio</label>
+                                <input type="text" class="form-control" id="sti_id" name="sti_id" maxlength="5"
+                                    required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="camp_id" class="form-label">Campus</label>
+                                <select id="camp_id" name="camp_id" class="form-select" required>
+                                    <% campuses.forEach(campus=> { %>
+                                        <option value="<%= campus.camp_id %>" <%=(currentCampus===campus.camp_id)
+                                            ? 'selected' : '' %>>
+                                            <%= campus.camp_nom %>
+                                        </option>
+                                        <% }); %>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tpe_id" class="form-label">Tipo de Emisión</label>
+                                <select id="tpe_id" name="tpe_id" class="form-select" required>
+                                    <% tiposEmision.forEach(tipo=> { %>
+                                        <option value="<%= tipo.tpe_id %>">
+                                            <%= tipo.tpe_detalle %>
+                                        </option>
+                                        <% }); %>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="sti_descripcion" class="form-label">Describa el servicio</label>
+                                <textarea class="form-control" name="sti_descripcion" id="sti_descripcion" rows="3"
+                                    required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="sti_prom_pasajeros" class="form-label">Aproximado de pasajeros</label>
+                                <input type="number" class="form-control" id="sti_prom_pasajeros"
+                                    name="sti_prom_pasajeros" required min="0">
+                            </div>
+                            <div class="mb-3">
+                                <label for="sti_tot_viajes_dia" class="form-label">Viajes al día</label>
+                                <input type="number" class="form-control" id="sti_tot_viajes_dia"
+                                    name="sti_tot_viajes_dia" required min="0">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Registrar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalEditarShuttle" tabindex="-1" aria-labelledby="modalEditarShuttleLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalEditarShuttleLabel">Editar Servicio de Transporte</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="/shuttles/gestionar/<%= currentCampus %>/actualizar" method="post">
+                        <div class="modal-body">
+                            <input type="hidden" id="sti_id_editar" name="sti_id">
+                            <div class="mb-3">
+                                <label for="tpe_id_editar" class="form-label">Tipo de Emisión</label>
+                                <select id="tpe_id_editar" name="tpe_id" class="form-select" required>
+                                    <% tiposEmision.forEach(tipo=> { %>
+                                        <option value="<%= tipo.tpe_id %>">
+                                            <%= tipo.tpe_detalle %>
+                                        </option>
+                                        <% }); %>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="sti_descripcion_editar" class="form-label">Describa el servicio</label>
+                                <textarea class="form-control" name="sti_descripcion" id="sti_descripcion_editar"
+                                    rows="3" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="sti_prom_pasajeros_editar" class="form-label">Aproximado de
+                                    pasajeros</label>
+                                <input type="number" class="form-control" id="sti_prom_pasajeros_editar"
+                                    name="sti_prom_pasajeros" required min="0">
+                            </div>
+                            <div class="mb-3">
+                                <label for="sti_tot_viajes_dia_editar" class="form-label">Viajes al día</label>
+                                <input type="number" class="form-control" id="sti_tot_viajes_dia_editar"
+                                    name="sti_tot_viajes_dia" required min="0">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const modalEditar = document.getElementById('modalEditarShuttle');
+
+        modalEditar.addEventListener('show.bs.modal',  (event) => {
+            const boton = event.relatedTarget;
+
+            const sti_id = boton.getAttribute('data-id');
+            const tpe_id = boton.getAttribute('data-tpe_id');
+            const sti_descripcion = boton.getAttribute('data-descripcion');
+            const sti_prom_pasajeros = boton.getAttribute('data-pajeros');
+            const sti_tot_viajes_dia = boton.getAttribute('data-viajes');
+
+            modalEditar.querySelector('#sti_id_editar').value = sti_id;
+            modalEditar.querySelector('#tpe_id_editar').value = tpe_id;
+            modalEditar.querySelector('#sti_descripcion_editar').value = sti_descripcion;
+            modalEditar.querySelector('#sti_prom_pasajeros_editar').value = sti_prom_pasajeros;
+            modalEditar.querySelector('#sti_tot_viajes_dia_editar').value = sti_tot_viajes_dia;
+
+        });
+
+
+    </script>
+
+</body>
+
+</html> -->

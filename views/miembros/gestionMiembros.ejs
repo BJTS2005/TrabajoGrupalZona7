@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Miembros</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Gestión de Miembros</h1>
+
+        <div class="text-end mb-4">
+            <a href="/categorias" class="btn btn-secondary">Volver a Gestión de Categorías</a>
+        </div>
+
+        <!-- Botón para ir a gestionar los tipos de miembros -->
+        <div class="text-end mb-4">
+            <a href="/miembros/tipos" class="btn btn-info">Gestionar Tipos de Miembro</a>
+        </div>
+
+        <!-- Botón para abrir el modal de registrar -->
+        <div class="text-end mb-3">
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalRegistrarMiembro">
+                Registrar Nuevo Miembro
+            </button>
+        </div>
+
+        <!-- Tabla de miembros -->
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead class="table-primary">
+                    <tr>
+                        <th>CI</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Teléfono</th>
+                        <th>Correo</th>
+                        <th>Tipo de Miembro</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% miembros.forEach(miembro => { %>
+                        <tr>
+                            <td><%= miembro.mie_ci %></td>
+                            <td><%= miembro.mie_nombres %></td>
+                            <td><%= miembro.mie_apellidos %></td>
+                            <td><%= miembro.mie_telefono %></td>
+                            <td><%= miembro.mie_mail %></td>
+                            <td><%= miembro.TipoMiembro.tipmi_detalle %></td>
+                            <td>
+                                <!-- Botón para abrir el modal de editar -->
+                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#modalEditarMiembro"
+                                    data-ci="<%= miembro.mie_ci %>"
+                                    data-nombres="<%= miembro.mie_nombres %>"
+                                    data-apellidos="<%= miembro.mie_apellidos %>"
+                                    data-telefono="<%= miembro.mie_telefono %>"
+                                    data-mail="<%= miembro.mie_mail %>"
+                                    data-tipmi_id="<%= miembro.TipoMiembro.tipmi_id %>">
+                                    Editar
+                                </button>
+                                <!-- Botón de eliminar -->
+                                <form action="/miembros/eliminar/<%= miembro.mie_ci %>" method="POST" class="d-inline"
+                                    onsubmit="return confirm('¿Estás seguro de eliminar este miembro?');">
+                                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal para registrar nuevo miembro -->
+    <div class="modal fade" id="modalRegistrarMiembro" tabindex="-1" aria-labelledby="modalRegistrarMiembroLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalRegistrarMiembroLabel">Registrar Miembro</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/miembros" method="POST">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="mie_ci" class="form-label">CI</label>
+                            <input type="text" class="form-control" id="mie_ci" name="mie_ci" maxlength="10" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="mie_nombres" class="form-label">Nombres</label>
+                            <input type="text" class="form-control" id="mie_nombres" name="mie_nombres" maxlength="25"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="mie_apellidos" class="form-label">Apellidos</label>
+                            <input type="text" class="form-control" id="mie_apellidos" name="mie_apellidos"
+                                maxlength="25" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="mie_telefono" class="form-label">Teléfono</label>
+                            <input type="text" class="form-control" id="mie_telefono" name="mie_telefono"
+                                maxlength="10" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="mie_mail" class="form-label">Correo</label>
+                            <input type="email" class="form-control" id="mie_mail" name="mie_mail" maxlength="50"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tipmi_id" class="form-label">Tipo de Miembro</label>
+                            <select id="tipmi_id" name="tipmi_id" class="form-select" required>
+                                <% tiposMiembro.forEach(tipo => { %>
+                                    <option value="<%= tipo.tipmi_id %>"><%= tipo.tipmi_detalle %></option>
+                                <% }); %>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Registrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar miembro -->
+    <div class="modal fade" id="modalEditarMiembro" tabindex="-1" aria-labelledby="modalEditarMiembroLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEditarMiembroLabel">Editar Miembro</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/miembros/actualizar" method="POST">
+                    <div class="modal-body">
+                        <input type="hidden" id="mie_ci_editar" name="mie_ci">
+                        <div class="mb-3">
+                            <label for="mie_nombres_editar" class="form-label">Nombres</label>
+                            <input type="text" class="form-control" id="mie_nombres_editar" name="mie_nombres"
+                                maxlength="25" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="mie_apellidos_editar" class="form-label">Apellidos</label>
+                            <input type="text" class="form-control" id="mie_apellidos_editar" name="mie_apellidos"
+                                maxlength="25" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="mie_telefono_editar" class="form-label">Teléfono</label>
+                            <input type="text" class="form-control" id="mie_telefono_editar" name="mie_telefono"
+                                maxlength="10" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="mie_mail_editar" class="form-label">Correo</label>
+                            <input type="email" class="form-control" id="mie_mail_editar" name="mie_mail" maxlength="50"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tipmi_id_editar" class="form-label">Tipo de Miembro</label>
+                            <select id="tipmi_id_editar" name="tipmi_id" class="form-select" required>
+                                <% tiposMiembro.forEach(tipo => { %>
+                                    <option value="<%= tipo.tipmi_id %>"><%= tipo.tipmi_detalle %></option>
+                                <% }); %>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script para cargar datos en el modal de editar -->
+    <script>
+        const modalEditar = document.getElementById('modalEditarMiembro');
+        modalEditar.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const ci = button.getAttribute('data-ci');
+            const nombres = button.getAttribute('data-nombres');
+            const apellidos = button.getAttribute('data-apellidos');
+            const telefono = button.getAttribute('data-telefono');
+            const mail = button.getAttribute('data-mail');
+            const tipmi_id = button.getAttribute('data-tipmi_id');
+
+            modalEditar.querySelector('#mie_ci_editar').value = ci;
+            modalEditar.querySelector('#mie_nombres_editar').value = nombres;
+            modalEditar.querySelector('#mie_apellidos_editar').value = apellidos;
+            modalEditar.querySelector('#mie_telefono_editar').value = telefono;
+            modalEditar.querySelector('#mie_mail_editar').value = mail;
+            modalEditar.querySelector('#tipmi_id_editar').value = tipmi_id;
+        });
+    </script>
+</body>
+
+</html>

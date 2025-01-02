@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Tipos de Miembro</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Gestión de Tipos de Miembro</h1>
+
+        <!-- Botón para volver a la gestión de miembros -->
+        <div class="text-end mb-4">
+            <a href="/miembros" class="btn btn-secondary">Volver a Gestión de Miembros</a>
+        </div>
+
+        <!-- Botón para abrir el modal de registrar -->
+        <div class="text-end mb-3">
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalRegistrarTipo">
+                Registrar Nuevo Tipo de Miembro
+            </button>
+        </div>
+
+        <!-- Tabla de tipos de miembro -->
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead class="table-primary">
+                    <tr>
+                        <th>ID</th>
+                        <th>Detalle</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% tiposMiembro.forEach(tipo => { %>
+                        <tr>
+                            <td><%= tipo.tipmi_id %></td>
+                            <td><%= tipo.tipmi_detalle %></td>
+                            <td>
+                                <!-- Botón para abrir el modal de editar -->
+                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#modalEditarTipo"
+                                    data-id="<%= tipo.tipmi_id %>"
+                                    data-detalle="<%= tipo.tipmi_detalle %>">
+                                    Editar
+                                </button>
+                                <!-- Botón de eliminar -->
+                                <form action="/miembros/tipos/eliminar/<%= tipo.tipmi_id %>" method="POST" class="d-inline"
+                                    onsubmit="return confirm('¿Estás seguro de eliminar este tipo de miembro?');">
+                                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal para registrar nuevo tipo de miembro -->
+    <div class="modal fade" id="modalRegistrarTipo" tabindex="-1" aria-labelledby="modalRegistrarTipoLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalRegistrarTipoLabel">Registrar Tipo de Miembro</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/miembros/tipos" method="POST">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="tipmi_id" class="form-label">ID</label>
+                            <input type="text" class="form-control" id="tipmi_id" name="tipmi_id" maxlength="4"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tipmi_detalle" class="form-label">Detalle</label>
+                            <input type="text" class="form-control" id="tipmi_detalle" name="tipmi_detalle"
+                                maxlength="20" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Registrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar tipo de miembro -->
+    <div class="modal fade" id="modalEditarTipo" tabindex="-1" aria-labelledby="modalEditarTipoLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEditarTipoLabel">Editar Tipo de Miembro</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/miembros/tipos/actualizar" method="POST">
+                    <div class="modal-body">
+                        <input type="hidden" id="tipmi_id_editar" name="tipmi_id">
+                        <div class="mb-3">
+                            <label for="tipmi_detalle_editar" class="form-label">Detalle</label>
+                            <input type="text" class="form-control" id="tipmi_detalle_editar" name="tipmi_detalle"
+                                maxlength="20" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script para cargar datos en el modal de editar -->
+    <script>
+        const modalEditar = document.getElementById('modalEditarTipo');
+        modalEditar.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const id = button.getAttribute('data-id');
+            const detalle = button.getAttribute('data-detalle');
+
+            modalEditar.querySelector('#tipmi_id_editar').value = id;
+            modalEditar.querySelector('#tipmi_detalle_editar').value = detalle;
+        });
+    </script>
+</body>
+
+</html>

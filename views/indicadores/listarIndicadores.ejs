@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Indicadores</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Indicadores de la Categoría: <%= categoria.cat_nombre %>
+        </h1>
+
+        <!-- Botón para volver a la gestión de categorías -->
+        <div class="text-end mb-3">
+            <a href="/categorias" class="btn btn-secondary">Volver a Gestión de Categorías</a>
+        </div>
+
+        <!-- Botón para abrir el modal de registrar -->
+        <div class="text-end mb-3">
+            <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                data-bs-target="#modalRegistrarIndicador">
+                Registrar Nuevo Indicador
+            </button>
+        </div>
+
+        <!-- Tabla de indicadores -->
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Código</th>
+                        <th>Criterio</th>
+                        <th>Puntaje Máximo</th>
+                        <th>Puntaje Actual</th>
+                        <th>Responsable</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% indicadores.forEach(indicador=> { %>
+                        <tr>
+                            <td>
+                                <%= indicador.ind_cod %>
+                            </td>
+                            <td class="text-wrap">
+                                <%= indicador.ind_nombre %>
+                            </td>
+                            <td>
+                                <%= indicador.ind_puntos %>
+                            </td>
+                            <td>
+                                <% if (indicador.RangoIndicadors) { %>
+                                    <span class="text-primary fw-bold">
+                                        <%= indicador.RangoIndicadors.valor_ran * indicador.ind_puntos / 100 %>
+                                    </span>
+                                    <small>(<%= indicador.RangoIndicadors.descripcion_ran %>)</small>
+                                    <% } else { %>
+                                        <span class="text-danger fw-bold">Sin rango seleccionado</span>
+                                        <% } %>
+                            </td>
+                            <td>
+                                <%= indicador.MiembroUnidad.mie_nombres %>
+                                    <%= indicador.MiembroUnidad.mie_apellidos %>
+                            </td>
+                            <td>
+                                <!-- Botón para abrir el modal de editar -->
+                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#modalEditarIndicador" data-cod="<%= indicador.ind_cod %>"
+                                    data-nombre="<%= indicador.ind_nombre %>" data-puntos="<%= indicador.ind_puntos %>"
+                                    data-mie_ci="<%= indicador.mie_ci %>">
+                                    Editar
+                                </button>
+                                <!-- Botón de eliminar -->
+                                <form action="/indicadores/eliminar/<%= categoria.cat_cod %>/<%= indicador.ind_cod %>"
+                                    method="POST" class="d-inline"
+                                    onsubmit="return confirm('¿Estás seguro de eliminar este indicador?');">
+                                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                                </form>
+
+                                <!-- gestión de rangos :v -->
+                                <a href="/indicadores/<%= categoria.cat_cod %>/rangos/listar/<%= indicador.ind_cod %>"
+                                    class="btn btn-info btn-sm">Gestionar Rangos</a>
+                            </td>
+                        </tr>
+                        <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal para registrar indicador -->
+    <div class="modal fade" id="modalRegistrarIndicador" tabindex="-1" aria-labelledby="modalRegistrarIndicadorLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalRegistrarIndicadorLabel">Registrar Indicador</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/indicadores/registrar" method="POST">
+                    <div class="modal-body">
+                        <input type="hidden" name="cat_cod" value="<%= categoria.cat_cod %>">
+                        <div class="mb-3">
+                            <label for="ind_cod" class="form-label">Código</label>
+                            <input type="text" class="form-control" id="ind_cod" name="ind_cod" maxlength="10" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ind_nombre" class="form-label">Criterio</label>
+                            <textarea class="form-control" id="ind_nombre" name="ind_nombre" rows="3"
+                                required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ind_puntos" class="form-label">Puntos</label>
+                            <input type="number" class="form-control" id="ind_puntos" name="ind_puntos" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="mie_ci" class="form-label">Responsable</label>
+                            <select id="mie_ci" name="mie_ci" class="form-select" required>
+                                <% miembros.forEach(miembro=> { %>
+                                    <option value="<%= miembro.mie_ci %>">
+                                        <%= miembro.mie_nombres %>
+                                            <%= miembro.mie_apellidos %>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Registrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar indicador -->
+    <div class="modal fade" id="modalEditarIndicador" tabindex="-1" aria-labelledby="modalEditarIndicadorLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEditarIndicadorLabel">Editar Indicador</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/indicadores/editar" method="POST">
+                    <div class="modal-body">
+                        <input type="hidden" id="ind_cod_editar" name="ind_cod">
+                        <div class="mb-3">
+                            <label for="ind_nombre_editar" class="form-label">Criterio</label>
+                            <textarea class="form-control" id="ind_nombre_editar" name="ind_nombre" rows="3"
+                                required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ind_puntos_editar" class="form-label">Puntos</label>
+                            <input type="number" class="form-control" id="ind_puntos_editar" name="ind_puntos" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="mie_ci_editar" class="form-label">Responsable</label>
+                            <select id="mie_ci_editar" name="mie_ci" class="form-select" required>
+                                <% miembros.forEach(miembro=> { %>
+                                    <option value="<%= miembro.mie_ci %>">
+                                        <%= miembro.mie_nombres %>
+                                            <%= miembro.mie_apellidos %>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Gestionar Rangos -->
+    <div class="modal fade" id="modalGestionarRangos" tabindex="-1" aria-labelledby="modalGestionarRangosLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalGestionarRangosLabel">Gestionar Rangos</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Formulario de Registro de Rango -->
+                    <form id="formRegistrarRango">
+                        <input type="text" id="ind_cod_rango" name="ind_cod">
+                        <input type="text" id="cat_cod_rango" name="cat_cod">
+                        <div class="mb-3">
+                            <label for="descripcion_ran" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="descripcion_ran" name="descripcion_ran"
+                                required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="valor_ran" class="form-label">Valor</label>
+                            <input type="number" class="form-control" id="valor_ran" name="valor_ran" required>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="esta_seleccionado"
+                                name="esta_seleccionado">
+                            <label class="form-check-label" for="esta_seleccionado">Seleccionar como rango
+                                actual</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Agregar Rango</button>
+                    </form>
+
+                    <!-- Tabla de Rangos Existentes -->
+                    <h5 class="mt-4">Rangos Existentes</h5>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Descripción</th>
+                                <th>Valor</th>
+                                <th>Seleccionado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-rangos">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalEditarRango" tabindex="-1" aria-labelledby="modalEditarRangoLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEditarRangoLabel">Editar Rango</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formEditarRango">
+                    <div class="modal-body">
+                        <input type="hidden" id="id_ran_editar" name="id_ran">
+                        <input type="hidden" id="ind_cod_editar" name="ind_cod">
+                        <div class="mb-3">
+                            <label for="descripcion_ran_editar" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="descripcion_ran_editar" name="descripcion_ran"
+                                required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="valor_ran_editar" class="form-label">Valor</label>
+                            <input type="number" class="form-control" id="valor_ran_editar" name="valor_ran" required>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="esta_seleccionado_editar"
+                                name="esta_seleccionado">
+                            <label class="form-check-label" for="esta_seleccionado_editar">Seleccionar como rango
+                                actual</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/javascripts/listarIndicadores.script.js"></script>
+
+
+
+
+
+</body>
+
+</html>

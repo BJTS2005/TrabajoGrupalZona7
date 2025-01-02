@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Eventos Sostenibles</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Gestión de Eventos Sostenibles</h1>
+
+        <!-- Botón para abrir el modal de registrar -->
+        <div class="text-end mb-3">
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalRegistrarEvento">
+                Registrar Nuevo Evento
+            </button>
+        </div>
+
+        <!-- Tabla de eventos -->
+        <table class="table table-striped table-bordered">
+            <thead class="table-primary">
+                <tr>
+                    <th>ID</th>
+                    <th>Detalle</th>
+                    <th>Tipo</th>
+                    <th>Fecha</th>
+                    <th>Por Estudiantes</th>
+                    <th>URL</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% eventos.forEach(evento => { %>
+                    <tr>
+                        <td><%= evento.id_eve %></td>
+                        <td><%= evento.eve_detalle %></td>
+                        <td><%= evento.TipoEvento.tpe_detalle %></td>
+                        <td><%= new Date(evento.eve_fecha).toLocaleDateString() %></td>
+                        <td><%= evento.eve_por_estudiantes ? "Sí" : "No" %></td>
+                        <td> <%= evento.eve_url ? `${evento.eve_url}` :  `N/A`%></td>
+                        
+                        <td>
+                            <!-- Botón para abrir el modal de editar -->
+                            <button 
+                                class="btn btn-warning btn-sm" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#modalEditarEvento" 
+                                data-id="<%= evento.id_eve %>" 
+                                data-detalle="<%= evento.eve_detalle %>" 
+                                data-tipo="<%= evento.tpe_id %>" 
+                                data-fecha="<%= evento.eve_fecha %>" 
+                                data-estudiantes="<%= evento.eve_por_estudiantes %>"
+                                data-url="<%= evento.eve_url %>">
+                                Editar
+                            </button>
+                            <!-- Botón de eliminar -->
+                            <form action="/eventos-sostenibles/gestionar/<%= currentCampus %>/eliminar/<%= evento.id_eve %>" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar este evento?');">
+                                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+
+        <!-- Modal para registrar nuevo evento -->
+        <div class="modal fade" id="modalRegistrarEvento" tabindex="-1" aria-labelledby="modalRegistrarEventoLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalRegistrarEventoLabel">Registrar Nuevo Evento</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="/eventos-sostenibles/gestionar/<%= currentCampus %>" method="POST">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="id_eve" class="form-label">ID del Evento</label>
+                                <input type="text" class="form-control" id="id_eve" name="id_eve" maxlength="5" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="eve_detalle" class="form-label">Detalle</label>
+                                <textarea class="form-control" id="eve_detalle" name="eve_detalle" rows="3" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="eve_url" class="form-label">URL del Evento</label>
+                                <input type="url" class="form-control" id="eve_url" name="eve_url" placeholder="https://example.com">
+                            </div>
+                            <div class="mb-3">
+                                <label for="tpe_id" class="form-label">Tipo de Evento</label>
+                                <select id="tpe_id" name="tpe_id" class="form-select" required>
+                                    <% tiposEvento.forEach(tipo => { %>
+                                        <option value="<%= tipo.tpe_id %>"><%= tipo.tpe_detalle %></option>
+                                    <% }); %>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="eve_fecha" class="form-label">Fecha</label>
+                                <input type="date" class="form-control" id="eve_fecha" name="eve_fecha" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="eve_por_estudiantes" class="form-label">¿Involucra Estudiantes?</label>
+                                <select id="eve_por_estudiantes" name="eve_por_estudiantes" class="form-select" required>
+                                    <option value="true">Sí</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Registrar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para editar evento -->
+        <div class="modal fade" id="modalEditarEvento" tabindex="-1" aria-labelledby="modalEditarEventoLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalEditarEventoLabel">Editar Evento</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="/eventos-sostenibles/gestionar/<%= currentCampus %>/actualizar" method="POST">
+                        <div class="modal-body">
+                            <input type="hidden" id="id_eve_editar" name="id_eve">
+                            <div class="mb-3">
+                                <label for="eve_detalle_editar" class="form-label">Detalle</label>
+                                <textarea class="form-control" id="eve_detalle_editar" name="eve_detalle" rows="3" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="eve_url_editar" class="form-label">URL del Evento</label>
+                                <input type="url" class="form-control" id="eve_url_editar" name="eve_url" placeholder="https://example.com">
+                            </div>
+                            <div class="mb-3">
+                                <label for="tpe_id_editar" class="form-label">Tipo de Evento</label>
+                                <select id="tpe_id_editar" name="tpe_id" class="form-select" required>
+                                    <% tiposEvento.forEach(tipo => { %>
+                                        <option value="<%= tipo.tpe_id %>"><%= tipo.tpe_detalle %></option>
+                                    <% }); %>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="eve_fecha_editar" class="form-label">Fecha</label>
+                                <input type="date" class="form-control" id="eve_fecha_editar" name="eve_fecha" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="eve_por_estudiantes_editar" class="form-label">¿Involucra Estudiantes?</label>
+                                <select id="eve_por_estudiantes_editar" name="eve_por_estudiantes" class="form-select" required>
+                                    <option value="true">Sí</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script para cargar datos en el modal de editar -->
+    <script>
+        const modalEditar = document.getElementById('modalEditarEvento');
+        modalEditar.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const id = button.getAttribute('data-id');
+            const detalle = button.getAttribute('data-detalle');
+            const tipo = button.getAttribute('data-tipo');
+            const fecha = button.getAttribute('data-fecha');
+            const estudiantes = button.getAttribute('data-estudiantes') === "true";
+            const url = button.getAttribute('data-url');
+
+            modalEditar.querySelector('#id_eve_editar').value = id;
+            modalEditar.querySelector('#eve_detalle_editar').value = detalle;
+            modalEditar.querySelector('#tpe_id_editar').value = tipo;
+            modalEditar.querySelector('#eve_fecha_editar').value = fecha.split('T')[0];
+            modalEditar.querySelector('#eve_por_estudiantes_editar').value = estudiantes.toString();
+            modalEditar.querySelector('#eve_url_editar').value = url || '';
+        });
+    </script>
+</body>
+</html>

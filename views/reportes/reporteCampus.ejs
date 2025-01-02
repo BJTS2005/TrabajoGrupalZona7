@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">
+            <%= title %>
+        </h1>
+
+        <!-- Detalles del Campus -->
+        <h3 class="mt-4">Resumen del Campus</h3>
+        <table class="table table-bordered">
+            <tr>
+                <th>ID del Campus</th>
+                <td>
+                    <%= campus.camp_id %>
+                </td>
+            </tr>
+            <tr>
+                <th>Nombre del Campus</th>
+                <td>
+                    <%= campus.camp_nom %>
+                </td>
+            </tr>
+            <tr>
+                <th>Área</th>
+                <td>
+                    <%= campus.camp_area %> m²
+                </td>
+            </tr>
+            <tr>
+                <th>Perímetro</th>
+                <td>
+                    <%= campus.camp_perimetro %> m
+                </td>
+            </tr>
+            <tr>
+                <th>Capacidad</th>
+                <td>
+                    <%= campus.camp_capacidad %>
+                </td>
+            </tr>
+            <tr>
+                <th>Cantidad de Población Actual</th>
+                <td>
+                    <%= campus.camp_cant_pobla %>
+                </td>
+            </tr>
+            <tr>
+                <th>Densidad de Población</th>
+                <td>
+                    <%= campus.camp_dens_pobla %>
+                </td>
+            </tr>
+            <tr>
+                <th>Calle Principal</th>
+                <td>
+                    <%= campus.camp_calle_principal %>
+                </td>
+            </tr>
+            <tr>
+                <th>Calle Secundaria</th>
+                <td>
+                    <%= campus.camp_calle_secundaria %>
+                </td>
+            </tr>
+        </table>
+
+        <!-- Información del Fondo -->
+        <% if (fondo) { %>
+            <h3 class="mt-4">Resúmen de los Fondos</h3>
+            <table class="table table-bordered">
+                <tr>
+                    <th>Presupuesto Total</th>
+                    <td>$ <%= fondo.fondo_total %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Presupuesto para Investigación</th>
+                    <td>$ <%= fondo.fondo_sostenibilidad %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Porcentaje de Fondos para Investigación</th>
+                    <td>
+                        <%= parseFloat((fondo.fondo_sostenibilidad * 100) / fondo.fondo_total).toFixed(2) %> %
+                    </td>
+                </tr>
+            </table>
+            <% } else { %>
+                <div class="alert alert-warning text-center mt-4">
+                    No hay fondo asociado a este campus.
+                </div>
+                <% } %>
+
+                    <!-- Reporte de Vehículos -->
+                    <h3 class="mt-4">Resumen por tipo de vehículos</h3>
+                    <table class="table table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Tipo de Vehículo</th>
+                                <th>Frecuencia</th>
+                                <th>Total de Vehículos</th>
+                                <th>Distancia Promedio Recorrida (km)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% resultados.forEach(dato=> { %>
+                                <tr>
+                                    <td>
+                                        <%= dato.tipo_vehiculo %>
+                                    </td>
+                                    <td>
+                                        <%= dato.frecuencia %>
+                                    </td>
+                                    <td>
+                                        <%= dato.total_vehiculos %>
+                                    </td>
+                                    <td>
+                                        <%= parseFloat(dato.distancia_promedio).toFixed(2) %> km
+                                    </td>
+                                </tr>
+                                <% }); %>
+                        </tbody>
+                    </table>
+
+                    <h3 class="mt-4">Resumen por Tipo de Emisión</h3>
+                    <p><strong>Población del Campus:</strong>
+                        <%= resumenEmisiones[0]?.poblacion_campus || "No disponible" %>
+                    </p>
+                    <ul>
+                        <% resumenEmisiones.forEach(emision=> { %>
+                            <li>
+                                <strong>
+                                    <%= emision.tipo_emision %>:
+                                </strong>
+                                <%= emision.total_vehiculos %> vehículos (<%=
+                                        parseFloat(emision.ratio_poblacion).toFixed(6) %> por
+                                        habitante)
+                            </li>
+                            <% }); %>
+                    </ul>
+                    <table class="table table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Tipo de Emisión</th>
+                                <th>Frecuencia</th>
+                                <th>Total de Vehículos</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% emisiones.forEach(dato=> { %>
+                                <tr>
+                                    <td>
+                                        <%= dato.tipo_emision %>
+                                    </td>
+                                    <td>
+                                        <%= dato.frecuencia %>
+                                    </td>
+                                    <td>
+                                        <%= dato.total_vehiculos %>
+                                    </td>
+
+                                </tr>
+                                <% }); %>
+                        </tbody>
+                    </table>
+
+                    <h3 class="mt-4">Resumen de Servicios de Transporte</h3>
+                    <p><strong>Total de Servicios de Transporte Disponibles:</strong>
+                        <%= totalShuttles %>
+                    </p>
+                    <table class="table table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Descripción</th>
+                                <th>Promedio de Pasajeros</th>
+                                <th>Total de Viajes por Día</th>
+                                <th>Tipo de Emisión</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% shuttles.forEach(shuttle=> { %>
+                                <tr>
+                                    <td>
+                                        <%= shuttle.sti_id %>
+                                    </td>
+                                    <td>
+                                        <%= shuttle.sti_descripcion %>
+                                    </td>
+                                    <td>
+                                        <%= shuttle.sti_prom_pasajeros %>
+                                    </td>
+                                    <td>
+                                        <%= shuttle.sti_tot_viajes_dia %>
+                                    </td>
+                                    <td>
+                                        <%= shuttle.tipo_emision || 'No especificado' %>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                        </tbody>
+                    </table>
+
+                    <h3 class="mt-4">Resumen de Infraestructuras De Transporte y Educación</h3>
+                    <table class="table table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Tipo de Infraestructura</th>
+                                <th>Total de Infraestructuras</th>
+                                <th>Área Total del Tipo (m²)</th>
+                                <th>Área Total del Campus (m²)</th>
+                                <th>Porcentaje del Campus (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% infraestructuras.forEach(infra=> { %>
+                                <tr>
+                                    <td>
+                                        <%= infra.tipo_infraestructura %>
+                                    </td>
+                                    <td>
+                                        <%= infra.total_infraestructuras %>
+                                    </td>
+                                    <td>
+                                        <%= parseFloat(infra.area_total_tipo).toFixed(2) %> m²
+                                    </td>
+                                    <td>
+                                        <%= parseFloat(infra.area_total_campus).toFixed(2) %> m²
+                                    </td>
+                                    <td>
+                                        <%= infra.porcentaje_campus %> %
+                                    </td>
+                                </tr>
+                                <% }); %>
+                        </tbody>
+                    </table>
+
+                    <h3 class="mt-4">Resumen de Cursos</h3>
+                    <p><strong>Total de Cursos:</strong>
+                        <%= total_cursos %>
+                    </p>
+                    <p><strong>Total de Cursos Sostenibles:</strong>
+                        <%= total_cursos_sostenibles %>
+                    </p>
+                    <p><strong>Porcentaje de Sostenibilidad:</strong>
+                        <%= porcentaje_sostenibilidad %> %
+                    </p>
+
+                    <h4 class="mt-3">Detalle de Cursos</h4>
+                    <table class="table table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID del Curso</th>
+                                <th>Descripción</th>
+                                <th>Sostenible</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% cursosDetalles.forEach(curso=> { %>
+                                <tr>
+                                    <td>
+                                        <%= curso.cur_id %>
+                                    </td>
+                                    <td>
+                                        <%= curso.cur_descripcion %>
+                                    </td>
+                                    <td>
+                                        <%= curso.cur_es_sostenible ? "Sí" : "No" %>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                        </tbody>
+                    </table>
+
+                    <h3 class="mt-4">Resumen de Actividades Universitarias</h3>
+                    <table class="table table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Tipo de Evento</th>
+                                <th>Eventos con Estudiantes</th>
+                                <th>Eventos sin Estudiantes</th>
+                                <th>Total de Eventos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% actividades.forEach(evento=> { %>
+                                <tr>
+                                    <td>
+                                        <%= evento.tipo_evento %>
+                                    </td>
+                                    <td>
+                                        <%= evento.eventos_con_estudiantes %>
+                                    </td>
+                                    <td>
+                                        <%= evento.eventos_sin_estudiantes %>
+                                    </td>
+                                    <td>
+                                        <%= evento.total_eventos %>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                        </tbody>
+                    </table>
+
+                    <h3 class="mt-4">Resumen de Sitios Web</h3>
+
+                    <h4>Sitios de Reportes</h4>
+                    <table class="table table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Enlace</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% sitiosReportes.forEach(sitio=> { %>
+                                <tr>
+                                    <td><a href="<%= sitio.enlace %>" target="_blank">
+                                            <%= sitio.enlace %>
+                                        </a></td>
+                                    <td>
+                                        <%= sitio.estado %>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                        </tbody>
+                    </table>
+
+                    <h4>Sitios Generales</h4>
+                    <table class="table table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Enlace</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% sitiosNoReportes.forEach(sitio=> { %>
+                                <tr>
+                                    <td><a href="<%= sitio.enlace %>" target="_blank">
+                                            <%= sitio.enlace %>
+                                        </a></td>
+                                    <td>
+                                        <%= sitio.estado %>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                        </tbody>
+                    </table>
+
+                    <h3 class="mt-4">Resumen de Graduados con Green Jobs</h3>
+                    <p><strong>Total de Graduados:</strong>
+                        <%= greenJobsGraduados[0]?.total_graduados || 0 %>
+                    </p>
+
+                    <table class="table table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Detalle del Trabajo</th>
+                                <th>Cantidad de Graduados</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% greenJobsGraduados.forEach(job=> { %>
+                                <tr>
+                                    <td>
+                                        <%= job.detalle_trabajo %>
+                                    </td>
+                                    <td>
+                                        <%= job.cantidad_graduados %>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                        </tbody>
+                    </table>
+
+
+                    <!-- Botón para regresar -->
+                    <div class="text-end mt-4">
+                        <a href="/reportes/campus" class="btn btn-secondary">Regresar</a>
+                    </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
