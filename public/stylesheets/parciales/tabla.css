@@ -1,0 +1,44 @@
+/* Variables utilizadas */
+:root {
+    --color-info-btn: #3b82f6;
+    --color-delete-btn: #ef4444;
+    --transition-default-btn: all 0.3s ease;
+    --bg-header: #101d3f;
+    --text-light: #f8fafc;
+}
+
+/* Estilos de tabla */
+.reutilizable-table {
+    margin-bottom: 0;
+}
+
+.reutilizable-table thead th {
+    background-color: var(--bg-header);
+    color: var(--text-light);
+    font-weight: 500;
+    padding: 1rem;
+    border: none;
+}
+
+.reutilizable-table tbody td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+/* Estilos de botones de acción */
+.reutilizable-btn-action {
+    padding: 0.5rem;
+    transition: var(--transition-default-btn);
+    background: none;
+    border: none;
+    color: #333;
+}
+
+.reutilizable-btn-edit:hover {
+    color: var(--color-info-btn);
+}
+
+.reutilizable-btn-delete:hover {
+    color: var(--color-delete-btn);
+}

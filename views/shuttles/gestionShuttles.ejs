@@ -7,110 +7,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <title>Gestión de Servicios de Transporte</title>
-    <!-- <style>
-        :root {
-
-            --color-primary-btn: #4ade80;
-            --color-info-btn: #3b82f6;
-            --color-delete-btn: #ef4444;
-
-            /* Variables de diseño */
-
-            --transition-default-btn: all 0.3s ease;
-
-            --primary-color: #4ade80;
-            --primary-hover: #22c55e;
-            --danger-color: #ef4444;
-            --danger-hover: #dc2626;
-            --info-color: #3b82f6;
-            --info-hover: #2563eb;
-            --bg-header: #101d3f;
-            --text-light: #f8fafc;
-        }
-
-        body {
-            background-color: #ffffff;
-            color: #334155;
-            font-family: system-ui, -apple-system, sans-serif;
-        }
-
-        .page-header {
-            margin-bottom: 2rem;
-        }
-
-        .page-title {
-            font-size: 1.75rem;
-            font-weight: 600;
-            color: #0f172a;
-            margin-bottom: 0.5rem;
-        }
-
-        .page-subtitle {
-            color: #64748b;
-            font-size: 0.875rem;
-        }
-
-        .add-service-btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 0.7rem 1.5rem;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-        }
-
-        .add-service-btn:hover {
-            background-color: var(--primary-hover);
-            color: white;
-        }
-
-        .table {
-            margin-bottom: 0;
-        }
-
-        .table thead th {
-            background-color: var(--bg-header);
-            color: var(--text-light);
-            font-weight: 500;
-            padding: 1rem;
-            border: none;
-        }
-
-        .table tbody td {
-            padding: 1rem;
-            vertical-align: middle;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .emission-type {
-            background-color: #dbeaff;
-            padding: 0.25rem 0.75rem;
-            border-radius: 1rem;
-            font-size: 0.875rem;
-            color: #25488a;
-            display: inline-block;
-        }
-
-        .btn-action {
-            padding: 0.5rem;
-            transition: var(--transition-default-btn);
-            background: none;
-            border: none;
-            color: #333;
-        }
-
-        .btn-view:hover {
-            color: var(--color-primary-btn);
-        }
-
-        .btn-edit:hover {
-            color: var(--color-info-btn);
-        }
-
-        .btn-delete:hover {
-            color: var(--color-delete-btn);
-        }
-    </style> -->
+    <link rel="stylesheet" href="/stylesheets/campus_style/servicios_trans/gestion-servicios-trans.css">
 </head>
 
 <body>
@@ -127,7 +24,7 @@
                         <h1 class="page-title">Gestión de Servicios de Transporte</h1>
                         <p class="page-subtitle">Administra los servicios de transporte del campus</p>
                     </div>
-                    <button class="add-service-btn" onclick="location.href='';">
+                    <button class="add-service-btn" data-bs-toggle="modal" data-bs-target="#registro-servicio-modal">
                         <i class="fas fa-plus me-2"></i>Registrar Nuevo Servicio
                     </button>
                 </div>
@@ -198,6 +95,166 @@
                 </form>
 
                 <%- include('../../views/parciales/tablaReutilizable.ejs', { columnas, datos: shuttles }) %>
+
+                <!-- Modal Registrar-->
+                <div class="modal fade" id="registro-servicio-modal" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content modal-rst-bg-dark">
+                            <div class="modal-header border-0 px-4 pt-4">
+                                <div>
+                                    <h5 class="modal-title text-success fs-6">Nuevo Servicio</h5>
+                                </div>
+                                <button type="button" class="btn-close btn-close-white opacity-75" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body px-4">
+                                <h4 class="text-white mb-4">Registrar Servicio de Transporte</h4>
+                                <form action="/shuttles/gestionar/<%= currentCampus %>" method="post" id="service-form">
+                                    <div class="mb-4">
+                                        <label for="sti_id" class="form-label modal-rst-label">
+                                            <i class="fa fa-hashtag icono-modal-rst me-2"></i>ID del Servicio
+                                        </label>
+                                        <input type="text" id="sti_id" name="sti_id" class="form-control modal-rst-input" placeholder="Ej: SRV-001" maxlength="5" required>
+                                    </div>
+                
+                                    <div class="mb-4">
+                                        <label for="camp_id" class="form-label modal-rst-label">
+                                            <i class="fa fa-university icono-modal-rst me-2"></i>Campus
+                                        </label>
+                                        <select id="camp_id" name="camp_id" class="form-select modal-rst-input" required>
+                                            <option value="">Seleccionar campus</option>
+                                            <% campuses.forEach(campus => { %>
+                                                <option value="<%= campus.camp_id %>" <%=(currentCampus===campus.camp_id) ? 'selected' : '' %>>
+                                                    <%= campus.camp_nom %>
+                                                </option>
+                                            <% }); %>
+                                        </select>
+                                    </div>
+                
+                                    <div class="mb-4">
+                                        <label for="tpe_id" class="form-label modal-rst-label">
+                                            <i class="fa fa-random icono-modal-rst me-2"></i>Tipo de Emisión
+                                        </label>
+                                        <select id="tpe_id" name="tpe_id" class="form-select modal-rst-input" required>
+                                            <option value="">Seleccionar tipo</option>
+                                            <% tiposEmision.forEach(tipo => { %>
+                                                <option value="<%= tipo.tpe_id %>"><%= tipo.tpe_detalle %></option>
+                                            <% }); %>
+                                        </select>
+                                    </div>
+                
+                                    <div class="mb-4">
+                                        <label for="sti_descripcion" class="form-label modal-rst-label">
+                                            <i class="fa fa-file-text icono-modal-rst me-2"></i>Descripción del servicio
+                                        </label>
+                                        <textarea id="sti_descripcion" name="sti_descripcion" class="form-control modal-rst-input" rows="3" placeholder="Describe el servicio de transporte" required></textarea>
+                                    </div>
+                
+                                    <div class="row">
+                                        <div class="col-6 mb-4">
+                                            <label for="sti_prom_pasajeros" class="form-label modal-rst-label">
+                                                <i class="fa fa-users icono-modal-rst me-2"></i>Aproximado de pasajeros
+                                            </label>
+                                            <input type="number" id="sti_prom_pasajeros" name="sti_prom_pasajeros" class="form-control modal-rst-input" placeholder="Ej: 50" required min="0">
+                                        </div>
+                                        <div class="col-6 mb-4">
+                                            <label for="sti_tot_viajes_dia" class="form-label modal-rst-label">
+                                                <i class="fa fa-bus icono-modal-rst me-2"></i>Viajes al día
+                                            </label>
+                                            <input type="number" id="sti_tot_viajes_dia" name="sti_tot_viajes_dia" class="form-control modal-rst-input" placeholder="Ej: 10" required min="0">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="modal-footer border-0 px-4 pb-4">
+                                        <button type="button" class="btn modal-rst-btn-cancel" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn modal-rst-btn-success px-4">Registrar Servicio</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+                <!-- Modal Editar-->
+
+
+
+
+
+
+
+
+
+                <div class="modal fade" id="modalEditarShuttle" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content modal-rst-bg-dark">
+                            <div class="modal-header border-0 px-4 pt-4">
+                                <div>
+                                    <h5 class="modal-title text-success fs-6">Editar Servicio</h5>
+                                </div>
+                                <button type="button" class="btn-close btn-close-white opacity-75" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body px-4">
+                                <h4 class="text-white mb-4">Editar Servicio de Transporte</h4>
+                                <form action="/shuttles/gestionar/<%= currentCampus %>/actualizar" method="post" id="edit-service-form">
+
+                                    <input type="hidden" id="sti_id_editar" name="sti_id">
+                
+                                    <div class="mb-4">
+                                        <label for="tpe_id_editar" class="form-label modal-rst-label">
+                                            <i class="fa fa-random icono-modal-rst me-2"></i>Tipo de Emisión
+                                        </label>
+                                        <select id="tpe_id_editar" name="tpe_id" class="form-select modal-rst-input" required>
+                                            <% tiposEmision.forEach(tipo => { %>
+                                                <option value="<%= tipo.tpe_id %>">
+                                                    <%= tipo.tpe_detalle %>
+                                                </option>
+                                            <% }); %>
+                                        </select>
+                                    </div>
+                
+                                    <div class="mb-4">
+                                        <label for="sti_descripcion_editar" class="form-label modal-rst-label">
+                                            <i class="fa fa-file-text icono-modal-rst me-2"></i>Descripción del servicio
+                                        </label>
+                                        <textarea id="sti_descripcion_editar" name="sti_descripcion" class="form-control modal-rst-input" rows="3" required></textarea>
+                                    </div>
+                
+                                    <div class="row">
+                                        <div class="col-6 mb-4">
+                                            <label for="sti_prom_pasajeros_editar" class="form-label modal-rst-label">
+                                                <i class="fa fa-users icono-modal-rst me-2"></i>Aproximado de pasajeros
+                                            </label>
+                                            <input type="number" id="sti_prom_pasajeros_editar" name="sti_prom_pasajeros" class="form-control modal-rst-input" required min="0">
+                                        </div>
+                                        <div class="col-6 mb-4">
+                                            <label for="sti_tot_viajes_dia_editar" class="form-label modal-rst-label">
+                                                <i class="fa fa-bus icono-modal-rst me-2"></i>Viajes al día
+                                            </label>
+                                            <input type="number" id="sti_tot_viajes_dia_editar" name="sti_tot_viajes_dia" class="form-control modal-rst-input" required min="0">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="modal-footer border-0 px-4 pb-4">
+                                        <button type="button" class="btn modal-rst-btn-cancel" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn modal-rst-btn-success px-4">Guardar Cambios</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+
+
+                
+                    
+
+
+
+
             </div>
 
 
@@ -295,6 +352,29 @@
                 </table>
             </div>
         </div> -->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <script>
+                const modalEditar = document.getElementById('modalEditarShuttle');
+        
+                modalEditar.addEventListener('show.bs.modal',  (event) => {
+                    const boton = event.relatedTarget;
+        
+                    const sti_id = boton.getAttribute('data-id');
+                    const tpe_id = boton.getAttribute('data-tpe_id');
+                    const sti_descripcion = boton.getAttribute('data-descripcion');
+                    const sti_prom_pasajeros = boton.getAttribute('data-pajeros');
+                    const sti_tot_viajes_dia = boton.getAttribute('data-viajes');
+        
+                    modalEditar.querySelector('#sti_id_editar').value = sti_id;
+                    modalEditar.querySelector('#tpe_id_editar').value = tpe_id;
+                    modalEditar.querySelector('#sti_descripcion_editar').value = sti_descripcion;
+                    modalEditar.querySelector('#sti_prom_pasajeros_editar').value = sti_prom_pasajeros;
+                    modalEditar.querySelector('#sti_tot_viajes_dia_editar').value = sti_tot_viajes_dia;
+        
+                });
+        
+        
+            </script>
 </body>
 
 </html>
