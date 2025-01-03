@@ -1,0 +1,141 @@
+/* Variables no utilizadas */
+:root {
+    --color-primary-btn: #4ade80;
+    --primary-color: #4ade80;
+    --primary-hover: #22c55e;
+    --danger-color: #ef4444;
+    --danger-hover: #dc2626;
+    --info-color: #3b82f6;
+    --info-hover: #2563eb;
+    --color-info-btn: #3b82f6;
+    --color-delete-btn: #ef4444;
+    --transition-default-btn: all 0.3s ease;
+    --bg-header: #101d3f;
+    --text-light: #f8fafc;
+
+}
+
+
+/* Estilos de tabla */
+.reutilizable-table {
+    margin-bottom: 0;
+}
+
+.reutilizable-table thead th {
+    background-color: var(--bg-header);
+    color: var(--text-light);
+    font-weight: 500;
+    padding: 1rem;
+    border: none;
+}
+
+.reutilizable-table tbody td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+/* Estilos de botones de acción */
+.reutilizable-btn-action {
+    padding: 0.5rem;
+    transition: var(--transition-default-btn);
+    background: none;
+    border: none;
+    color: #333;
+}
+
+.reutilizable-btn-edit:hover {
+    color: var(--color-info-btn);
+}
+
+.reutilizable-btn-delete:hover {
+    color: var(--color-delete-btn);
+}
+
+
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 0.5rem;
+}
+
+.page-subtitle {
+    color: #64748b;
+    font-size: 0.875rem;
+}
+
+.add-service-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.add-service-btn:hover {
+    background-color: var(--primary-hover);
+    color: white;
+}
+
+.emission-type {
+    background-color: #dbeaff;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    color: #25488a;
+    display: inline-block;
+}
+
+.btn-view:hover {
+    color: var(--color-primary-btn);
+}
+
+
+.modal-rst-bg-dark {
+    background-color: #111828 !important;
+}
+
+.modal-rst-input {
+    background-color: #202938 !important;
+    border: none !important;
+    color: #fff !important;
+    padding: 0.7rem 1rem !important;
+}
+
+.modal-rst-input::placeholder {
+    color: #6c757d !important;
+}
+
+.modal-rst-input:focus {
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.modal-rst-label {
+    color: #ffffff !important;
+    font-size: 0.9rem !important;
+    margin-bottom: 0.5rem !important;
+    font-weight: normal !important;
+}
+
+.modal-rst-btn-cancel {
+    color: #fff !important;
+    background-color: #202938 !important;
+}
+
+
+.modal-rst-btn-success {
+    background-color: #00ba88 !important;
+    border-color: #00ba88 !important;
+    color: #fff !important;
+}
+
+.icono-modal-rst {
+    color: #10B981;
+}
