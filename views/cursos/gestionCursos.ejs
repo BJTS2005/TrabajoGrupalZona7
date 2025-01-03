@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="container mt-5">
         <h1 class="text-center mb-4">Gestión de Cursos</h1>
@@ -17,6 +19,40 @@
                 Registrar Nuevo Curso
             </button>
         </div>
+
+        <!-- Formulario de Filtros -->
+        <form method="GET" action="/cursos/gestionar/<%= currentCampus %>" class="mb-4">
+            <div class="row g-2 align-items-end">
+                <!-- Filtro por Sostenibilidad -->
+                <div class="col">
+                    <label for="esSostenible" class="form-label">Sostenibilidad</label>
+                    <select id="esSostenible" name="esSostenible" class="form-select">
+                        <option value="" <%=esSostenible===undefined ? "selected" : "" %>>Todos</option>
+                        <option value="true" <%=esSostenible==="true" ? "selected" : "" %>>Sostenibles</option>
+                        <option value="false" <%=esSostenible==="false" ? "selected" : "" %>>No Sostenibles</option>
+                    </select>
+                </div>
+
+                <!-- Ordenar -->
+                <div class="col">
+                    <label for="orderDir" class="form-label">Ordenar por ID</label>
+                    <select id="orderDir" name="orderDir" class="form-select">
+                        <option value="ASC" <%=orderDir==="ASC" ? "selected" : "" %>>Ascendente</option>
+                        <option value="DESC" <%=orderDir==="DESC" ? "selected" : "" %>>Descendente</option>
+                    </select>
+                </div>
+
+                <!-- Botón de Filtrar -->
+                <div class="col">
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Resumen -->
+        <p><strong>Total de Cursos Registrados:</strong>
+            <%= totalCursos %>
+        </p>
 
         <!-- Tabla de Cursos -->
         <table class="table table-striped table-bordered">
@@ -29,34 +65,40 @@
                 </tr>
             </thead>
             <tbody>
-                <% cursos.forEach(curso => { %>
+                <% cursos.forEach(curso=> { %>
                     <tr>
-                        <td><%= curso.cur_id %></td>
-                        <td><%= curso.cur_descripcion %></td>
-                        <td><%= curso.cur_es_sostenible ? "Sí" : "No" %></td>
+                        <td>
+                            <%= curso.cur_id %>
+                        </td>
+                        <td>
+                            <%= curso.cur_descripcion %>
+                        </td>
+                        <td>
+                            <%= curso.cur_es_sostenible ? "Sí" : "No" %>
+                        </td>
                         <td>
                             <!-- Botón para abrir el modal de editar -->
-                            <button 
-                                class="btn btn-warning btn-sm" 
-                                data-bs-toggle="modal" 
-                                data-bs-target="#modalEditarCurso" 
-                                data-id="<%= curso.cur_id %>" 
-                                data-descripcion="<%= curso.cur_descripcion %>" 
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#modalEditarCurso" data-id="<%= curso.cur_id %>"
+                                data-descripcion="<%= curso.cur_descripcion %>"
                                 data-sostenible="<%= curso.cur_es_sostenible %>">
                                 Editar
                             </button>
                             <!-- Botón de eliminar -->
-                            <form action="/cursos/gestionar/<%= currentCampus %>/eliminar/<%= curso.cur_id %>" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar este curso?');">
+                            <form action="/cursos/gestionar/<%= currentCampus %>/eliminar/<%= curso.cur_id %>"
+                                method="POST" class="d-inline"
+                                onsubmit="return confirm('¿Estás seguro de eliminar este curso?');">
                                 <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                             </form>
                         </td>
                     </tr>
-                <% }); %>
+                    <% }); %>
             </tbody>
         </table>
 
         <!-- Modal para registrar nuevo curso -->
-        <div class="modal fade" id="modalRegistrarCurso" tabindex="-1" aria-labelledby="modalRegistrarCursoLabel" aria-hidden="true">
+        <div class="modal fade" id="modalRegistrarCurso" tabindex="-1" aria-labelledby="modalRegistrarCursoLabel"
+            aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -67,11 +109,13 @@
                         <div class="modal-body">
                             <div class="mb-3">
                                 <label for="cur_id" class="form-label">ID del Curso</label>
-                                <input type="text" class="form-control" id="cur_id" name="cur_id" maxlength="5" required>
+                                <input type="text" class="form-control" id="cur_id" name="cur_id" maxlength="5"
+                                    required>
                             </div>
                             <div class="mb-3">
                                 <label for="cur_descripcion" class="form-label">Descripción</label>
-                                <textarea class="form-control" id="cur_descripcion" name="cur_descripcion" rows="3" required></textarea>
+                                <textarea class="form-control" id="cur_descripcion" name="cur_descripcion" rows="3"
+                                    required></textarea>
                             </div>
                             <div class="mb-3">
                                 <label for="cur_es_sostenible" class="form-label">¿Es Sostenible?</label>
@@ -91,7 +135,8 @@
         </div>
 
         <!-- Modal para editar curso -->
-        <div class="modal fade" id="modalEditarCurso" tabindex="-1" aria-labelledby="modalEditarCursoLabel" aria-hidden="true">
+        <div class="modal fade" id="modalEditarCurso" tabindex="-1" aria-labelledby="modalEditarCursoLabel"
+            aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -103,11 +148,13 @@
                             <input type="hidden" id="cur_id_editar" name="cur_id">
                             <div class="mb-3">
                                 <label for="cur_descripcion_editar" class="form-label">Descripción</label>
-                                <textarea class="form-control" id="cur_descripcion_editar" name="cur_descripcion" rows="3" required></textarea>
+                                <textarea class="form-control" id="cur_descripcion_editar" name="cur_descripcion"
+                                    rows="3" required></textarea>
                             </div>
                             <div class="mb-3">
                                 <label for="cur_es_sostenible_editar" class="form-label">¿Es Sostenible?</label>
-                                <select id="cur_es_sostenible_editar" name="cur_es_sostenible" class="form-select" required>
+                                <select id="cur_es_sostenible_editar" name="cur_es_sostenible" class="form-select"
+                                    required>
                                     <option value="true">Sí</option>
                                     <option value="false">No</option>
                                 </select>
@@ -142,4 +189,5 @@
         });
     </script>
 </body>
+
 </html>

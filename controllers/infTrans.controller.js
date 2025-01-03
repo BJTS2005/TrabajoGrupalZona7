@@ -1,5 +1,6 @@
 import Campus from "../model/campus.model.js";
 import { InfraestructuraTransporte, TipoInfraestructura } from "../model/infraestructuraTransporte.model.js";
+import { Op } from "sequelize";
 
 export const infraestructurasController = {
     // Listar tipos de infraestructura
@@ -68,25 +69,56 @@ export const infraestructurasController = {
     listarInfraestructuras: async (req, res) => {
         try {
             const { camp_id } = req.params;
+            const { tipoInfraestructura, orderBy, orderDir, fechaInicio, fechaFin } = req.query;
 
+            // Condición inicial (por campus)
+            const condicion = camp_id ? { camp_id } : {};
+
+            // Filtro por Tipo de Infraestructura
+            if (tipoInfraestructura) {
+                condicion.tpi_id = tipoInfraestructura;
+            }
+
+            // Filtro por Rango de Fechas
+            if (fechaInicio && fechaFin) {
+                condicion.int_fecha_registro = {
+                    [Op.between]: [new Date(fechaInicio), new Date(fechaFin)],
+                };
+            }
+
+            // Configuración del Orden
+            const order = [];
+            if (orderBy) {
+                order.push([orderBy, orderDir || "ASC"]);
+            }
+
+            // Obtener infraestructuras con filtros aplicados
             const infraestructuras = await InfraestructuraTransporte.findAll({
-                where: { camp_id },
+                where: condicion,
                 include: [
                     { model: TipoInfraestructura, attributes: ["tpi_id", "tpi_detalle"] },
                     { model: Campus, attributes: ["camp_id", "camp_nom"] },
                 ],
+                order,
                 raw: true,
                 nest: true,
             });
 
+            // Consultar datos auxiliares
             const tiposInfraestructura = await TipoInfraestructura.findAll({ raw: true });
             const campuses = await Campus.findAll({ raw: true });
 
+            // Renderizar vista
             res.render("infraTrans/gestionInfraestructuras.ejs", {
                 infraestructuras,
                 tiposInfraestructura,
                 campuses,
                 currentCampus: camp_id || null,
+                tipoInfraestructura,
+                orderBy,
+                orderDir,
+                fechaInicio,
+                fechaFin,
             });
         } catch (error) {
             console.error("Error al listar las infraestructuras:", error);

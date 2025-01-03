@@ -21,6 +21,62 @@
             </button>
         </div>
 
+        <!-- Formulario de Filtros -->
+        <form method="GET" action="/infra-transporte/gestionar/<%= currentCampus %>" class="mb-4">
+            <div class="row g-2 align-items-end">
+                <!-- Filtro por Tipo de Infraestructura -->
+                <div class="col">
+                    <label for="filterTipoInfraestructura" class="form-label">Tipo de Infraestructura</label>
+                    <select id="filterTipoInfraestructura" name="tipoInfraestructura" class="form-select">
+                        <option value="">Todos</option>
+                        <% tiposInfraestructura.forEach(tipo=> { %>
+                            <option value="<%= tipo.tpi_id %>" <%=tipo.tpi_id===tipoInfraestructura ? "selected" : "" %>
+                                >
+                                <%= tipo.tpi_detalle %>
+                            </option>
+                            <% }); %>
+                    </select>
+                </div>
+
+                <!-- Filtro por Rango de Fechas -->
+                <div class="col">
+                    <label for="fechaInicio" class="form-label">Fecha Inicio</label>
+                    <input type="date" id="fechaInicio" name="fechaInicio" class="form-control"
+                        value="<%= fechaInicio %>">
+                </div>
+                <div class="col">
+                    <label for="fechaFin" class="form-label">Fecha Fin</label>
+                    <input type="date" id="fechaFin" name="fechaFin" class="form-control" value="<%= fechaFin %>">
+                </div>
+
+                <!-- Ordenar por -->
+                <div class="col">
+                    <label for="orderBy" class="form-label">Ordenar por</label>
+                    <select id="orderBy" name="orderBy" class="form-select">
+                        <option value="">Por Defecto</option>
+                        <option value="int_area" <%=orderBy==="int_area" ? "selected" : "" %>>Área</option>
+                        <option value="int_fecha_registro" <%=orderBy==="int_fecha_registro" ? "selected" : "" %>>
+                            Fecha de Registro
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Dirección del Orden -->
+                <div class="col">
+                    <label for="orderDir" class="form-label">Dirección</label>
+                    <select id="orderDir" name="orderDir" class="form-select">
+                        <option value="ASC" <%=orderDir==="ASC" ? "selected" : "" %>>Ascendente</option>
+                        <option value="DESC" <%=orderDir==="DESC" ? "selected" : "" %>>Descendente</option>
+                    </select>
+                </div>
+
+                <!-- Botón de Filtrar -->
+                <div class="col">
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                </div>
+            </div>
+        </form>
+
         <!-- Tabla de infraestructuras -->
         <table class="table table-striped table-bordered">
             <thead class="table-primary">
@@ -60,8 +116,7 @@
                             <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
                                 data-bs-target="#modalEditarInfraestructura" data-id="<%= infra.int_id %>"
                                 data-detalle="<%= infra.int_detalle %>" data-tipo="<%= infra.tpi_id %>"
-                                data-ubicacion="<%= infra.int_ubicacion %>" data-area="<%= infra.int_area %>"
-                                >
+                                data-ubicacion="<%= infra.int_ubicacion %>" data-area="<%= infra.int_area %>">
                                 Editar
                             </button>
                             <!-- Botón de eliminar -->
@@ -189,7 +244,7 @@
             const tipo = button.getAttribute('data-tipo');
             const ubicacion = button.getAttribute('data-ubicacion');
             const area = button.getAttribute('data-area');
-            
+
 
             // Cargar los valores en los campos del modal
             modalEditar.querySelector('#int_id_editar').value = id;
@@ -197,7 +252,7 @@
             modalEditar.querySelector('#tpi_id_editar').value = tipo;
             modalEditar.querySelector('#int_ubicacion_editar').value = ubicacion;
             modalEditar.querySelector('#int_area_editar').value = area;
-           
+
         });
     </script>
 </body>

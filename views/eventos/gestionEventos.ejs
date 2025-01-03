@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="container mt-5">
         <h1 class="text-center mb-4">Gestión de Eventos Sostenibles</h1>
@@ -18,6 +20,74 @@
             </button>
         </div>
 
+        <!-- Formulario de Filtros -->
+        <form method="GET" action="/eventos-sostenibles/gestionar/<%= currentCampus %>" class="mb-4">
+            <div class="row g-2 align-items-end">
+                <!-- Filtro por Tipo de Evento -->
+                <div class="col">
+                    <label for="filterTipoEvento" class="form-label">Tipo de Evento</label>
+                    <select id="filterTipoEvento" name="tipoEvento" class="form-select">
+                        <option value="">Todos</option>
+                        <% tiposEvento.forEach(tipo=> { %>
+                            <option value="<%= tipo.tpe_id %>" <%=tipo.tpe_id===tipoEvento ? "selected" : "" %>>
+                                <%= tipo.tpe_detalle %>
+                            </option>
+                            <% }); %>
+                    </select>
+                </div>
+
+                <!-- Filtro por Estudiantes -->
+                <div class="col">
+                    <label for="filterPorEstudiantes" class="form-label">Involucra estudiantes</label>
+                    <select id="filterPorEstudiantes" name="porEstudiantes" class="form-select">
+                        <option value="">Todos</option>
+                        <option value="true" <%=porEstudiantes==="true" ? "selected" : "" %>>Sí</option>
+                        <option value="false" <%=porEstudiantes==="false" ? "selected" : "" %>>No</option>
+                    </select>
+                </div>
+
+                <!-- Filtro por Rango de Fechas -->
+                <div class="col">
+                    <label for="fechaInicio" class="form-label">Fecha Inicio</label>
+                    <input type="date" id="fechaInicio" name="fechaInicio" class="form-control"
+                        value="<%= fechaInicio %>">
+                </div>
+                <div class="col">
+                    <label for="fechaFin" class="form-label">Fecha Fin</label>
+                    <input type="date" id="fechaFin" name="fechaFin" class="form-control" value="<%= fechaFin %>">
+                </div>
+
+                <div class="col">
+                    <label for="busqueda" class="form-label">Buscar por Detalle</label>
+                    <input type="text" id="busqueda" name="busqueda" class="form-control" placeholder="Buscar..." value="<%= busqueda %>">
+                </div>
+
+                <!-- Ordenar por -->
+                <div class="col">
+                    <label for="orderBy" class="form-label">Ordenar por</label>
+                    <select id="orderBy" name="orderBy" class="form-select">
+                        <option value="">Por Defecto</option>
+                        <option value="eve_fecha" <%=orderBy==="eve_fecha" ? "selected" : "" %>>Fecha</option>
+                        <option value="eve_detalle" <%=orderBy==="eve_detalle" ? "selected" : "" %>>Descripción</option>
+                    </select>
+                </div>
+
+                <!-- Dirección del Orden -->
+                <div class="col">
+                    <label for="orderDir" class="form-label">Dirección</label>
+                    <select id="orderDir" name="orderDir" class="form-select">
+                        <option value="ASC" <%=orderDir==="ASC" ? "selected" : "" %>>Ascendente</option>
+                        <option value="DESC" <%=orderDir==="DESC" ? "selected" : "" %>>Descendente</option>
+                    </select>
+                </div>
+
+                <!-- Botón de Filtrar -->
+                <div class="col">
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                </div>
+            </div>
+        </form>
+
         <!-- Tabla de eventos -->
         <table class="table table-striped table-bordered">
             <thead class="table-primary">
@@ -26,47 +96,58 @@
                     <th>Detalle</th>
                     <th>Tipo</th>
                     <th>Fecha</th>
-                    <th>Por Estudiantes</th>
+                    <th>Involucra Estudiantes</th>
                     <th>URL</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                <% eventos.forEach(evento => { %>
+                <% eventos.forEach(evento=> { %>
                     <tr>
-                        <td><%= evento.id_eve %></td>
-                        <td><%= evento.eve_detalle %></td>
-                        <td><%= evento.TipoEvento.tpe_detalle %></td>
-                        <td><%= new Date(evento.eve_fecha).toLocaleDateString() %></td>
-                        <td><%= evento.eve_por_estudiantes ? "Sí" : "No" %></td>
-                        <td> <%= evento.eve_url ? `${evento.eve_url}` :  `N/A`%></td>
-                        
+                        <td>
+                            <%= evento.id_eve %>
+                        </td>
+                        <td>
+                            <%= evento.eve_detalle %>
+                        </td>
+                        <td>
+                            <%= evento.TipoEvento.tpe_detalle %>
+                        </td>
+                        <td>
+                            <%= new Date(evento.eve_fecha).toLocaleDateString() %>
+                        </td>
+                        <td>
+                            <%= evento.eve_por_estudiantes ? "Sí" : "No" %>
+                        </td>
+                        <td>
+                            <%= evento.eve_url ? `${evento.eve_url}` : `N/A`%>
+                        </td>
+
                         <td>
                             <!-- Botón para abrir el modal de editar -->
-                            <button 
-                                class="btn btn-warning btn-sm" 
-                                data-bs-toggle="modal" 
-                                data-bs-target="#modalEditarEvento" 
-                                data-id="<%= evento.id_eve %>" 
-                                data-detalle="<%= evento.eve_detalle %>" 
-                                data-tipo="<%= evento.tpe_id %>" 
-                                data-fecha="<%= evento.eve_fecha %>" 
-                                data-estudiantes="<%= evento.eve_por_estudiantes %>"
-                                data-url="<%= evento.eve_url %>">
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#modalEditarEvento" data-id="<%= evento.id_eve %>"
+                                data-detalle="<%= evento.eve_detalle %>" data-tipo="<%= evento.tpe_id %>"
+                                data-fecha="<%= evento.eve_fecha %>"
+                                data-estudiantes="<%= evento.eve_por_estudiantes %>" data-url="<%= evento.eve_url %>">
                                 Editar
                             </button>
                             <!-- Botón de eliminar -->
-                            <form action="/eventos-sostenibles/gestionar/<%= currentCampus %>/eliminar/<%= evento.id_eve %>" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar este evento?');">
+                            <form
+                                action="/eventos-sostenibles/gestionar/<%= currentCampus %>/eliminar/<%= evento.id_eve %>"
+                                method="POST" class="d-inline"
+                                onsubmit="return confirm('¿Estás seguro de eliminar este evento?');">
                                 <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                             </form>
                         </td>
                     </tr>
-                <% }); %>
+                    <% }); %>
             </tbody>
         </table>
 
         <!-- Modal para registrar nuevo evento -->
-        <div class="modal fade" id="modalRegistrarEvento" tabindex="-1" aria-labelledby="modalRegistrarEventoLabel" aria-hidden="true">
+        <div class="modal fade" id="modalRegistrarEvento" tabindex="-1" aria-labelledby="modalRegistrarEventoLabel"
+            aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -77,22 +158,27 @@
                         <div class="modal-body">
                             <div class="mb-3">
                                 <label for="id_eve" class="form-label">ID del Evento</label>
-                                <input type="text" class="form-control" id="id_eve" name="id_eve" maxlength="5" required>
+                                <input type="text" class="form-control" id="id_eve" name="id_eve" maxlength="5"
+                                    required>
                             </div>
                             <div class="mb-3">
                                 <label for="eve_detalle" class="form-label">Detalle</label>
-                                <textarea class="form-control" id="eve_detalle" name="eve_detalle" rows="3" required></textarea>
+                                <textarea class="form-control" id="eve_detalle" name="eve_detalle" rows="3"
+                                    required></textarea>
                             </div>
                             <div class="mb-3">
                                 <label for="eve_url" class="form-label">URL del Evento</label>
-                                <input type="url" class="form-control" id="eve_url" name="eve_url" placeholder="https://example.com">
+                                <input type="url" class="form-control" id="eve_url" name="eve_url"
+                                    placeholder="https://example.com">
                             </div>
                             <div class="mb-3">
                                 <label for="tpe_id" class="form-label">Tipo de Evento</label>
                                 <select id="tpe_id" name="tpe_id" class="form-select" required>
-                                    <% tiposEvento.forEach(tipo => { %>
-                                        <option value="<%= tipo.tpe_id %>"><%= tipo.tpe_detalle %></option>
-                                    <% }); %>
+                                    <% tiposEvento.forEach(tipo=> { %>
+                                        <option value="<%= tipo.tpe_id %>">
+                                            <%= tipo.tpe_detalle %>
+                                        </option>
+                                        <% }); %>
                                 </select>
                             </div>
                             <div class="mb-3">
@@ -101,7 +187,8 @@
                             </div>
                             <div class="mb-3">
                                 <label for="eve_por_estudiantes" class="form-label">¿Involucra Estudiantes?</label>
-                                <select id="eve_por_estudiantes" name="eve_por_estudiantes" class="form-select" required>
+                                <select id="eve_por_estudiantes" name="eve_por_estudiantes" class="form-select"
+                                    required>
                                     <option value="true">Sí</option>
                                     <option value="false">No</option>
                                 </select>
@@ -117,7 +204,8 @@
         </div>
 
         <!-- Modal para editar evento -->
-        <div class="modal fade" id="modalEditarEvento" tabindex="-1" aria-labelledby="modalEditarEventoLabel" aria-hidden="true">
+        <div class="modal fade" id="modalEditarEvento" tabindex="-1" aria-labelledby="modalEditarEventoLabel"
+            aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -129,18 +217,22 @@
                             <input type="hidden" id="id_eve_editar" name="id_eve">
                             <div class="mb-3">
                                 <label for="eve_detalle_editar" class="form-label">Detalle</label>
-                                <textarea class="form-control" id="eve_detalle_editar" name="eve_detalle" rows="3" required></textarea>
+                                <textarea class="form-control" id="eve_detalle_editar" name="eve_detalle" rows="3"
+                                    required></textarea>
                             </div>
                             <div class="mb-3">
                                 <label for="eve_url_editar" class="form-label">URL del Evento</label>
-                                <input type="url" class="form-control" id="eve_url_editar" name="eve_url" placeholder="https://example.com">
+                                <input type="url" class="form-control" id="eve_url_editar" name="eve_url"
+                                    placeholder="https://example.com">
                             </div>
                             <div class="mb-3">
                                 <label for="tpe_id_editar" class="form-label">Tipo de Evento</label>
                                 <select id="tpe_id_editar" name="tpe_id" class="form-select" required>
-                                    <% tiposEvento.forEach(tipo => { %>
-                                        <option value="<%= tipo.tpe_id %>"><%= tipo.tpe_detalle %></option>
-                                    <% }); %>
+                                    <% tiposEvento.forEach(tipo=> { %>
+                                        <option value="<%= tipo.tpe_id %>">
+                                            <%= tipo.tpe_detalle %>
+                                        </option>
+                                        <% }); %>
                                 </select>
                             </div>
                             <div class="mb-3">
@@ -148,8 +240,10 @@
                                 <input type="date" class="form-control" id="eve_fecha_editar" name="eve_fecha" required>
                             </div>
                             <div class="mb-3">
-                                <label for="eve_por_estudiantes_editar" class="form-label">¿Involucra Estudiantes?</label>
-                                <select id="eve_por_estudiantes_editar" name="eve_por_estudiantes" class="form-select" required>
+                                <label for="eve_por_estudiantes_editar" class="form-label">¿Involucra
+                                    Estudiantes?</label>
+                                <select id="eve_por_estudiantes_editar" name="eve_por_estudiantes" class="form-select"
+                                    required>
                                     <option value="true">Sí</option>
                                     <option value="false">No</option>
                                 </select>
@@ -189,4 +283,5 @@
         });
     </script>
 </body>
+
 </html>

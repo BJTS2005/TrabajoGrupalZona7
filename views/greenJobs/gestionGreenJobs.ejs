@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,23 +8,70 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="container mt-5">
         <h1 class="text-center mb-4">Gestión de Graduados Green Jobs</h1>
 
-     
+
         <!-- Botón para abrir el modal de registrar -->
         <div class="text-end mb-3">
-            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalRegistrarGraduado">
+            <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                data-bs-target="#modalRegistrarGraduado">
                 Registrar Graduados en un Green Job
             </button>
         </div>
+        <!-- Formulario de Filtros -->
+        <form method="GET" action="/greenJobs/gestionar/<%= currentCampus %>" class="mb-4">
+            <div class="row g-2 align-items-end">
+                <!-- Filtro por Tipo de Green Job -->
+                <div class="col">
+                    <label for="filterJobId" class="form-label">Tipo de Trabajo</label>
+                    <select id="filterJobId" name="jobId" class="form-select">
+                        <option value="">Todos</option>
+                        <% greenJobs.forEach(job=> { %>
+                            <option value="<%= job.job_id %>" <%=job.job_id===jobId ? "selected" : "" %>>
+                                <%= job.job_detalle %>
+                            </option>
+                            <% }); %>
+                    </select>
+                </div>
+
+                <!-- Ordenar por -->
+                <div class="col">
+                    <label for="orderBy" class="form-label">Ordenar por</label>
+                    <select id="orderBy" name="orderBy" class="form-select">
+                        <option value="">Por Defecto</option>
+                        <option value="gra_cantidad" <%=orderBy==="gra_cantidad" ? "selected" : "" %>>Cantidad de
+                            Graduados</option>
+                    </select>
+                </div>
+
+                <!-- Dirección del Orden -->
+                <div class="col">
+                    <label for="orderDir" class="form-label">Dirección</label>
+                    <select id="orderDir" name="orderDir" class="form-select">
+                        <option value="ASC" <%=orderDir==="ASC" ? "selected" : "" %>>Ascendente</option>
+                        <option value="DESC" <%=orderDir==="DESC" ? "selected" : "" %>>Descendente</option>
+                    </select>
+                </div>
+
+                <!-- Botón de Filtrar -->
+                <div class="col">
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                </div>
+            </div>
+        </form>
+
+        <p><strong>Total de Graduados:</strong>
+            <%= totalGraduados %>
+        </p>
 
         <!-- Tabla de Graduados Green Jobs -->
         <table class="table table-striped table-bordered">
             <thead class="table-primary">
                 <tr>
-                    
+
                     <th>Green Job</th>
                     <th>Detalle del Trabajo</th>
                     <th>Cantidad de Graduados</th>
@@ -31,36 +79,42 @@
                 </tr>
             </thead>
             <tbody>
-                <% graduadosGreenJobs.forEach(graduado => { %>
+                <% graduadosGreenJobs.forEach(graduado=> { %>
                     <tr>
-                       
-                        <td><%= graduado.GreenJob.job_id %></td>
-                        <td><%= graduado.GreenJob.job_detalle %></td>
-                        <td><%= graduado.gra_cantidad %></td>
+
+                        <td>
+                            <%= graduado.GreenJob.job_id %>
+                        </td>
+                        <td>
+                            <%= graduado.GreenJob.job_detalle %>
+                        </td>
+                        <td>
+                            <%= graduado.gra_cantidad %>
+                        </td>
                         <td>
                             <!-- Botón para abrir el modal de editar -->
-                            <button 
-                                class="btn btn-warning btn-sm" 
-                                data-bs-toggle="modal" 
-                                data-bs-target="#modalEditarGraduado" 
-                                data-id="<%= graduado.gra_id %>" 
-                                data-job_id="<%= graduado.GreenJob.job_id %>" 
-                                data-detalle="<%= graduado.GreenJob.job_detalle %>" 
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#modalEditarGraduado" data-id="<%= graduado.gra_id %>"
+                                data-job_id="<%= graduado.GreenJob.job_id %>"
+                                data-detalle="<%= graduado.GreenJob.job_detalle %>"
                                 data-cantidad="<%= graduado.gra_cantidad %>">
                                 Editar
                             </button>
                             <!-- Botón de eliminar -->
-                            <form action="/greenJobs/gestionar/<%= currentCampus %>/eliminar/<%= graduado.gra_id %>" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar este registro?');">
+                            <form action="/greenJobs/gestionar/<%= currentCampus %>/eliminar/<%= graduado.gra_id %>"
+                                method="POST" class="d-inline"
+                                onsubmit="return confirm('¿Estás seguro de eliminar este registro?');">
                                 <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                             </form>
                         </td>
                     </tr>
-                <% }); %>
+                    <% }); %>
             </tbody>
         </table>
 
         <!-- Modal para registrar nuevos graduados -->
-        <div class="modal fade" id="modalRegistrarGraduado" tabindex="-1" aria-labelledby="modalRegistrarGraduadoLabel" aria-hidden="true">
+        <div class="modal fade" id="modalRegistrarGraduado" tabindex="-1" aria-labelledby="modalRegistrarGraduadoLabel"
+            aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -72,18 +126,18 @@
                             <div class="mb-3">
                                 <label for="job_id" class="form-label">Seleccionar Green Job</label>
                                 <select id="job_id" name="job_id" class="form-select" required>
-                                    <% greenJobs.forEach(job => { %>
-                                        <option 
-                                            value="<%= job.job_id %>" 
-                                            <%= graduadosGreenJobs.some(gj => gj.job_id === job.job_id) ? 'disabled' : '' %>>
+                                    <% greenJobs.forEach(job=> { %>
+                                        <option value="<%= job.job_id %>" <%=graduadosGreenJobs.some(gj=> gj.job_id ===
+                                            job.job_id) ? 'disabled' : '' %>>
                                             <%= job.job_detalle %>
                                         </option>
-                                    <% }); %>
+                                        <% }); %>
                                 </select>
                             </div>
                             <div class="mb-3">
                                 <label for="gra_cantidad" class="form-label">Cantidad de Graduados</label>
-                                <input type="number" class="form-control" id="gra_cantidad" name="gra_cantidad" required>
+                                <input type="number" class="form-control" id="gra_cantidad" name="gra_cantidad"
+                                    required>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -96,7 +150,8 @@
         </div>
 
         <!-- Modal para editar graduados -->
-        <div class="modal fade" id="modalEditarGraduado" tabindex="-1" aria-labelledby="modalEditarGraduadoLabel" aria-hidden="true">
+        <div class="modal fade" id="modalEditarGraduado" tabindex="-1" aria-labelledby="modalEditarGraduadoLabel"
+            aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -112,7 +167,8 @@
                             </div>
                             <div class="mb-3">
                                 <label for="gra_cantidad_editar" class="form-label">Cantidad de Graduados</label>
-                                <input type="number" class="form-control" id="gra_cantidad_editar" name="gra_cantidad" required>
+                                <input type="number" class="form-control" id="gra_cantidad_editar" name="gra_cantidad"
+                                    required>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -144,4 +200,5 @@
         });
     </script>
 </body>
+
 </html>
