@@ -94,7 +94,59 @@
                     </div>
                 </form>
 
-                <%- include('../../views/parciales/tablaReutilizable.ejs', { columnas, datos: shuttles }) %>
+
+
+                <!-- Tabla de Servicios -->
+                <div class="table-responsive">
+                    <table class="reutilizable-table rounded-3 border">
+                        <thead>
+                            <tr>
+                                <th class="text-center align-middle">ID</th>
+                                <th class="text-center align-middle">Tipo de Emision</th>
+                                <th class="text-center align-middle">Descripsion</th>
+                                <th class="text-center align-middle">Promedio Pasajerp</th>
+                                <th class="text-center align-middle">Viajes al día</th>
+                                <th class="text-center align-middle">Fecha de Registro</th>
+                                <th class="text-center align-middle">ACCIONES</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% shuttles.forEach(shuttle=> { %>
+                                <tr>
+
+                                    <td class="text-center"><%= shuttle.sti_id %></td>
+                                    <td class="text-center"><%= shuttle.TipoEmision.tpe_detalle %></td>
+                                    <td class="text-center"><%= shuttle.sti_descripcion %></td>
+                                    <td class="text-center"><%= shuttle.sti_prom_pasajeros %></td>
+                                    <td class="text-center"><%= shuttle.sti_tot_viajes_dia %></td>
+                                    <td class="text-center"><%= shuttle.sti_fecha_registro%></td>
+
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center">
+                                            <button class="reutilizable-btn-action reutilizable-btn-edit"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalEditarShuttle" data-id="<%= shuttle.sti_id%>"
+                                            data-tpe_id="<%= shuttle.tpe_id %>"
+                                            data-descripcion="<%= shuttle.sti_descripcion %>"
+                                            data-pajeros="<%= shuttle.sti_prom_pasajeros %>"
+                                            data-viajes="<%= shuttle.sti_tot_viajes_dia %>">
+                                                <i class="fas fa-edit mr-1"></i>Editar
+                                            </button>
+                                            <form
+                                                action="/shuttles/gestionar/<%= currentCampus %>/eliminar/<%= shuttle.sti_id %>"
+                                                method="POST"
+                                                onsubmit="return confirm('¿Estás seguro de eliminar este campus?');">
+                                                <button class="reutilizable-btn-action reutilizable-btn-delete">
+                                                    <i class="fas fa-trash-alt mr-1"></i>Eliminar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                        </tbody>
+                    </table>
+                </div>
 
                 <!-- Modal Registrar-->
                 <div class="modal fade" id="registro-servicio-modal" tabindex="-1">
@@ -104,7 +156,8 @@
                                 <div>
                                     <h5 class="modal-title text-success fs-6">Nuevo Servicio</h5>
                                 </div>
-                                <button type="button" class="btn-close btn-close-white opacity-75" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close btn-close-white opacity-75"
+                                    data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body px-4">
                                 <h4 class="text-white mb-4">Registrar Servicio de Transporte</h4>
@@ -113,60 +166,74 @@
                                         <label for="sti_id" class="form-label modal-rst-label">
                                             <i class="fa fa-hashtag icono-modal-rst me-2"></i>ID del Servicio
                                         </label>
-                                        <input type="text" id="sti_id" name="sti_id" class="form-control modal-rst-input" placeholder="Ej: SRV-001" maxlength="5" required>
+                                        <input type="text" id="sti_id" name="sti_id"
+                                            class="form-control modal-rst-input" placeholder="Ej: SRV-001" maxlength="5"
+                                            required>
                                     </div>
-                
+
                                     <div class="mb-4">
                                         <label for="camp_id" class="form-label modal-rst-label">
                                             <i class="fa fa-university icono-modal-rst me-2"></i>Campus
                                         </label>
-                                        <select id="camp_id" name="camp_id" class="form-select modal-rst-input" required>
+                                        <select id="camp_id" name="camp_id" class="form-select modal-rst-input"
+                                            required>
                                             <option value="">Seleccionar campus</option>
-                                            <% campuses.forEach(campus => { %>
-                                                <option value="<%= campus.camp_id %>" <%=(currentCampus===campus.camp_id) ? 'selected' : '' %>>
+                                            <% campuses.forEach(campus=> { %>
+                                                <option value="<%= campus.camp_id %>"
+                                                    <%=(currentCampus===campus.camp_id) ? 'selected' : '' %>>
                                                     <%= campus.camp_nom %>
                                                 </option>
-                                            <% }); %>
+                                                <% }); %>
                                         </select>
                                     </div>
-                
+
                                     <div class="mb-4">
                                         <label for="tpe_id" class="form-label modal-rst-label">
                                             <i class="fa fa-random icono-modal-rst me-2"></i>Tipo de Emisión
                                         </label>
                                         <select id="tpe_id" name="tpe_id" class="form-select modal-rst-input" required>
                                             <option value="">Seleccionar tipo</option>
-                                            <% tiposEmision.forEach(tipo => { %>
-                                                <option value="<%= tipo.tpe_id %>"><%= tipo.tpe_detalle %></option>
-                                            <% }); %>
+                                            <% tiposEmision.forEach(tipo=> { %>
+                                                <option value="<%= tipo.tpe_id %>">
+                                                    <%= tipo.tpe_detalle %>
+                                                </option>
+                                                <% }); %>
                                         </select>
                                     </div>
-                
+
                                     <div class="mb-4">
                                         <label for="sti_descripcion" class="form-label modal-rst-label">
                                             <i class="fa fa-file-text icono-modal-rst me-2"></i>Descripción del servicio
                                         </label>
-                                        <textarea id="sti_descripcion" name="sti_descripcion" class="form-control modal-rst-input" rows="3" placeholder="Describe el servicio de transporte" required></textarea>
+                                        <textarea id="sti_descripcion" name="sti_descripcion"
+                                            class="form-control modal-rst-input" rows="3"
+                                            placeholder="Describe el servicio de transporte" required></textarea>
                                     </div>
-                
+
                                     <div class="row">
                                         <div class="col-6 mb-4">
                                             <label for="sti_prom_pasajeros" class="form-label modal-rst-label">
                                                 <i class="fa fa-users icono-modal-rst me-2"></i>Aproximado de pasajeros
                                             </label>
-                                            <input type="number" id="sti_prom_pasajeros" name="sti_prom_pasajeros" class="form-control modal-rst-input" placeholder="Ej: 50" required min="0">
+                                            <input type="number" id="sti_prom_pasajeros" name="sti_prom_pasajeros"
+                                                class="form-control modal-rst-input" placeholder="Ej: 50" required
+                                                min="0">
                                         </div>
                                         <div class="col-6 mb-4">
                                             <label for="sti_tot_viajes_dia" class="form-label modal-rst-label">
                                                 <i class="fa fa-bus icono-modal-rst me-2"></i>Viajes al día
                                             </label>
-                                            <input type="number" id="sti_tot_viajes_dia" name="sti_tot_viajes_dia" class="form-control modal-rst-input" placeholder="Ej: 10" required min="0">
+                                            <input type="number" id="sti_tot_viajes_dia" name="sti_tot_viajes_dia"
+                                                class="form-control modal-rst-input" placeholder="Ej: 10" required
+                                                min="0">
                                         </div>
                                     </div>
-                                    
+
                                     <div class="modal-footer border-0 px-4 pb-4">
-                                        <button type="button" class="btn modal-rst-btn-cancel" data-bs-dismiss="modal">Cancelar</button>
-                                        <button type="submit" class="btn modal-rst-btn-success px-4">Registrar Servicio</button>
+                                        <button type="button" class="btn modal-rst-btn-cancel"
+                                            data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn modal-rst-btn-success px-4">Registrar
+                                            Servicio</button>
                                     </div>
                                 </form>
                             </div>
@@ -187,6 +254,10 @@
 
 
 
+
+
+
+
                 <div class="modal fade" id="modalEditarShuttle" tabindex="-1">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content modal-rst-bg-dark">
@@ -194,63 +265,73 @@
                                 <div>
                                     <h5 class="modal-title text-success fs-6">Editar Servicio</h5>
                                 </div>
-                                <button type="button" class="btn-close btn-close-white opacity-75" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close btn-close-white opacity-75"
+                                    data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body px-4">
                                 <h4 class="text-white mb-4">Editar Servicio de Transporte</h4>
-                                <form action="/shuttles/gestionar/<%= currentCampus %>/actualizar" method="post" id="edit-service-form">
-
+                                <form action="/shuttles/gestionar/<%= currentCampus %>/actualizar" method="post"
+                                    id="edit-service-form">
+                                    <!-- Campo oculto para el ID -->
                                     <input type="hidden" id="sti_id_editar" name="sti_id">
-                
+
                                     <div class="mb-4">
                                         <label for="tpe_id_editar" class="form-label modal-rst-label">
                                             <i class="fa fa-random icono-modal-rst me-2"></i>Tipo de Emisión
                                         </label>
-                                        <select id="tpe_id_editar" name="tpe_id" class="form-select modal-rst-input" required>
-                                            <% tiposEmision.forEach(tipo => { %>
+                                        <select id="tpe_id_editar" name="tpe_id" class="form-select modal-rst-input"
+                                            required>
+                                            <% tiposEmision.forEach(tipo=> { %>
                                                 <option value="<%= tipo.tpe_id %>">
                                                     <%= tipo.tpe_detalle %>
                                                 </option>
-                                            <% }); %>
+                                                <% }); %>
                                         </select>
                                     </div>
-                
+
                                     <div class="mb-4">
                                         <label for="sti_descripcion_editar" class="form-label modal-rst-label">
                                             <i class="fa fa-file-text icono-modal-rst me-2"></i>Descripción del servicio
                                         </label>
-                                        <textarea id="sti_descripcion_editar" name="sti_descripcion" class="form-control modal-rst-input" rows="3" required></textarea>
+                                        <textarea id="sti_descripcion_editar" name="sti_descripcion"
+                                            class="form-control modal-rst-input" rows="3" required></textarea>
                                     </div>
-                
+
                                     <div class="row">
                                         <div class="col-6 mb-4">
                                             <label for="sti_prom_pasajeros_editar" class="form-label modal-rst-label">
                                                 <i class="fa fa-users icono-modal-rst me-2"></i>Aproximado de pasajeros
                                             </label>
-                                            <input type="number" id="sti_prom_pasajeros_editar" name="sti_prom_pasajeros" class="form-control modal-rst-input" required min="0">
+                                            <input type="number" id="sti_prom_pasajeros_editar"
+                                                name="sti_prom_pasajeros" class="form-control modal-rst-input" required
+                                                min="0">
                                         </div>
                                         <div class="col-6 mb-4">
                                             <label for="sti_tot_viajes_dia_editar" class="form-label modal-rst-label">
                                                 <i class="fa fa-bus icono-modal-rst me-2"></i>Viajes al día
                                             </label>
-                                            <input type="number" id="sti_tot_viajes_dia_editar" name="sti_tot_viajes_dia" class="form-control modal-rst-input" required min="0">
+                                            <input type="number" id="sti_tot_viajes_dia_editar"
+                                                name="sti_tot_viajes_dia" class="form-control modal-rst-input" required
+                                                min="0">
                                         </div>
                                     </div>
-                                    
+
                                     <div class="modal-footer border-0 px-4 pb-4">
-                                        <button type="button" class="btn modal-rst-btn-cancel" data-bs-dismiss="modal">Cancelar</button>
-                                        <button type="submit" class="btn modal-rst-btn-success px-4">Guardar Cambios</button>
+                                        <button type="button" class="btn modal-rst-btn-cancel"
+                                            data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn modal-rst-btn-success px-4">Guardar
+                                            Cambios</button>
                                     </div>
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
-                
 
 
-                
-                    
+
+
+
 
 
 
@@ -355,25 +436,25 @@
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
             <script>
                 const modalEditar = document.getElementById('modalEditarShuttle');
-        
-                modalEditar.addEventListener('show.bs.modal',  (event) => {
+
+                modalEditar.addEventListener('show.bs.modal', (event) => {
                     const boton = event.relatedTarget;
-        
+
                     const sti_id = boton.getAttribute('data-id');
                     const tpe_id = boton.getAttribute('data-tpe_id');
                     const sti_descripcion = boton.getAttribute('data-descripcion');
                     const sti_prom_pasajeros = boton.getAttribute('data-pajeros');
                     const sti_tot_viajes_dia = boton.getAttribute('data-viajes');
-        
+
                     modalEditar.querySelector('#sti_id_editar').value = sti_id;
                     modalEditar.querySelector('#tpe_id_editar').value = tpe_id;
                     modalEditar.querySelector('#sti_descripcion_editar').value = sti_descripcion;
                     modalEditar.querySelector('#sti_prom_pasajeros_editar').value = sti_prom_pasajeros;
                     modalEditar.querySelector('#sti_tot_viajes_dia_editar').value = sti_tot_viajes_dia;
-        
+
                 });
-        
-        
+
+
             </script>
 </body>
 
