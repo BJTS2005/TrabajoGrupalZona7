@@ -1,18 +1,49 @@
+import { Op } from "sequelize";
 import Campus from "../model/campus.model.js";
 import SitioWeb from "../model/sitiosWeb.model.js";
+
 
 export const sitiosWebController = {
     // *** Listar Sitios Web por Campus ***
     listarSitiosWeb: async (req, res) => {
         try {
             const { camp_id } = req.params;
+            const { estado, esReporte, busqueda, orderBy, orderDir } = req.query;
 
-            // Obtener los sitios web del campus especificado
+            // Condición inicial (filtro por campus)
+            const condicion = camp_id ? { camp_id } : {};
+
+            // Filtro por Estado
+            if (estado !== undefined && estado !== "") {
+                condicion.sit_activo = estado === "true";
+            }
+
+            // Filtro por Si es Reporte
+            if (esReporte !== undefined && esReporte !== "") {
+                condicion.sit_es_reporte = esReporte === "true";
+            }
+
+            // Filtro por Búsqueda en URL o Descripción
+            if (busqueda) {
+                condicion[Op.or] = [
+                    { sit_url: { [Op.iLike]: `%${busqueda}%` } },
+                    { sit_descripcion: { [Op.iLike]: `%${busqueda}%` } },
+                ];
+            }
+
+            // Configuración del Orden
+            const order = [];
+            if (orderBy) {
+                order.push([orderBy, orderDir || "ASC"]);
+            }
+
+            // Consultar sitios web con filtros aplicados
             const sitiosWeb = await SitioWeb.findAll({
-                where: { camp_id },
+                where: condicion,
                 include: [
                     { model: Campus, attributes: ["camp_id", "camp_nom"] },
                 ],
+                order,
                 raw: true,
                 nest: true,
             });
@@ -20,6 +51,11 @@ export const sitiosWebController = {
             res.render("sitiosWeb/gestionSitiosWeb.ejs", {
                 sitiosWeb,
                 currentCampus: camp_id,
+                estado,
+                esReporte,
+                busqueda,
+                orderBy,
+                orderDir,
             });
         } catch (error) {
             console.error("Error al listar los sitios web:", error);

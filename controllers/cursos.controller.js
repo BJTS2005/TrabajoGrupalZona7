@@ -6,16 +6,38 @@ export const cursosController = {
     listarCursosPorCampus: async (req, res) => {
         try {
             const { camp_id } = req.params;
-
-            // Obtener cursos del campus
+            const { esSostenible, orderDir } = req.query;
+    
+            // Condición para filtrar cursos
+            const condicion = { camp_id };
+    
+            // Filtro por sostenibilidad
+            if (esSostenible !== undefined && esSostenible !== "") {
+                condicion.cur_es_sostenible = esSostenible === "true";
+            }
+    
+            // Ordenación
+            const order = [["cur_id", orderDir || "ASC"]]; // Por defecto, orden ascendente
+    
+            // Obtener cursos del campus con filtros aplicados
             const cursos = await Curso.findAll({
-                where: { camp_id },
+                where: condicion,
                 include: [{ model: Campus, attributes: ["camp_id", "camp_nom"] }],
+                order,
                 raw: true,
                 nest: true,
             });
-
-            res.render("cursos/gestionCursos.ejs", { cursos, currentCampus: camp_id });
+    
+            // Contar el total de cursos con los filtros aplicados
+            const totalCursos = await Curso.count({ where: condicion });
+    
+            res.render("cursos/gestionCursos.ejs", {
+                cursos,
+                currentCampus: camp_id,
+                totalCursos,
+                esSostenible,
+                orderDir,
+            });
         } catch (error) {
             console.error("Error al listar los cursos:", error);
             res.status(500).send("Error al cargar los cursos.");

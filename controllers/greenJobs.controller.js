@@ -2,10 +2,10 @@ import { GreenJob, GraduadoGreenJob } from "../model/greenJobs.model.js";
 import Campus from "../model/campus.model.js";
 
 export const greenJobsController = {
-    
 
-     // *** Listar Todos los Green Jobs Globalmente ***
-     listarGreenJobs: async (req, res) => {
+
+    // *** Listar Todos los Green Jobs Globalmente ***
+    listarGreenJobs: async (req, res) => {
         try {
             const greenJobs = await GreenJob.findAll({ raw: true });
             res.render("greenJobs/listarGreenJobs.ejs", { greenJobs });
@@ -81,25 +81,51 @@ export const greenJobsController = {
     listarGreenJobsPorCampus: async (req, res) => {
         try {
             const { camp_id } = req.params;
+            const { orderBy, orderDir, jobId } = req.query;
 
-            // Obtener registros de Graduados-Green Jobs para el campus
+            // Condición inicial (filtro por campus)
+            const condicion = camp_id ? { camp_id } : {};
+
+            // Filtro por Tipo de Green Job
+            if (jobId) {
+                condicion.job_id = jobId;
+            }
+
+            // Configuración del Orden
+            const order = [];
+            if (orderBy) {
+                order.push([orderBy, orderDir || "ASC"]);
+            }
+
+            // Consultar registros de Graduados-Green Jobs
             const graduadosGreenJobs = await GraduadoGreenJob.findAll({
-                where: { camp_id },
+                where: condicion,
                 include: [
                     { model: GreenJob, attributes: ["job_id", "job_detalle"], as: "GreenJob" },
                     { model: Campus, attributes: ["camp_id", "camp_nom"] },
                 ],
+                order,
                 raw: true,
                 nest: true,
             });
 
-            // Obtener todos los Green Jobs disponibles para el formulario
-            const greenJobs = await GreenJob.findAll({ raw: true });
+            // Consultar todos los Green Jobs disponibles
+            const greenJobs = await GreenJob.findAll({
+                attributes: ["job_id", "job_detalle"],
+                raw: true,
+            });
+
+            // Calcular resumen
+            const totalGraduados = graduadosGreenJobs.reduce((acc, item) => acc + (item.gra_cantidad || 0), 0);
 
             res.render("greenJobs/gestionGreenJobs.ejs", {
                 graduadosGreenJobs,
                 greenJobs,
                 currentCampus: camp_id,
+                jobId,
+                orderBy,
+                orderDir,
+                totalGraduados,
             });
         } catch (error) {
             console.error("Error al listar los Green Jobs:", error);
@@ -112,28 +138,28 @@ export const greenJobsController = {
         try {
             const { camp_id } = req.params;
             const { job_id, gra_cantidad } = req.body;
-    
+
             // Verificar si ya existe el registro
             const existente = await GraduadoGreenJob.findOne({
                 where: { camp_id, job_id },
             });
-    
+
             if (existente) {
                 return res.status(400).send("Este Green Job ya está registrado para este campus.");
             }
-    
+
             // Crear el registro si no existe
             await GraduadoGreenJob.create({
                 camp_id,
                 job_id,
                 gra_cantidad,
             });
-    
+
             res.redirect(`/greenJobs/gestionar/${camp_id}`);
         } catch (error) {
             console.error("Error al registrar los graduados en el Green Job:", error);
             res.status(500).send("Error al registrar los graduados.");
-        } 
+        }
     },
 
     // *** Actualizar Cantidad de Graduados en un Green Job ***
@@ -176,5 +202,5 @@ export const greenJobsController = {
         }
     },
 
-   
+
 };
