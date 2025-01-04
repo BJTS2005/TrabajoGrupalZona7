@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <title>Gestión de Servicios de Transporte</title>
     <link rel="stylesheet" href="/stylesheets/campus_style/servicios_trans/gestion-servicios-trans.css">
 </head>
@@ -25,66 +28,113 @@
                 </div>
 
                 <!-- Formulario de Filtros -->
-                <form method="GET" action="/shuttles/gestionar/<%= currentCampus %>" class="mb-4">
-                    <div class="row g-2 align-items-end">
-                        <!-- Filtro por Tipo de Emisión -->
-                        <div class="col">
-                            <label for="filterTipoEmision" class="form-label">Tipo de Emisión</label>
-                            <select id="filterTipoEmision" name="tipoEmision" class="form-select">
-                                <option value="">Todos</option>
-                                <% tiposEmision.forEach(emision=> { %>
-                                    <option value="<%= emision.tpe_id %>" <%=emision.tpe_id===tipoEmision ? "selected"
-                                        : "" %>>
-                                        <%= emision.tpe_detalle %>
-                                    </option>
-                                    <% }); %>
-                            </select>
+                <form method="GET" action="/shuttles/gestionar/<%= currentCampus %>" class="filtro-gst-container py-3 px-3 mb-3">
+                    <div class="row g-3">
+                        <!-- Tipo de Emisión -->
+                        <div class="col-md">
+                            <div class="filtro-gst-field">
+                                <label class="filtro-gst-label">
+                                    <i class="bi bi-fuel-pump me-1"></i>
+                                    Tipo de Emisión
+                                </label>
+                                <div class="filtro-gst-select-wrapper">
+                                    <select name="tipoEmision" class="form-select filtro-gst-select">
+                                        <option value="">Todos</option>
+                                        <% tiposEmision.forEach(emision => { %>
+                                            <option value="<%= emision.tpe_id %>" 
+                                                <%= emision.tpe_id === tipoEmision ? "selected" : "" %>>
+                                                <%= emision.tpe_detalle %>
+                                            </option>
+                                        <% }); %>
+                                    </select>
+                                    <i class="bi bi-chevron-down filtro-gst-select-icon"></i>
+                                </div>
+                            </div>
                         </div>
-
-                        <!-- Filtro por Rango de Fechas -->
-                        <div class="col">
-                            <label for="fechaInicio" class="form-label">Fecha Inicio</label>
-                            <input type="date" id="fechaInicio" name="fechaInicio" class="form-control"
-                                value="<%= fechaInicio %>">
+                
+                        <!-- Fecha Inicio -->
+                        <div class="col-md">
+                            <div class="filtro-gst-field">
+                                <label class="filtro-gst-label">
+                                    <i class="bi bi-calendar-event me-1"></i>
+                                    Fecha Inicio
+                                </label>
+                                <div class="filtro-gst-input-wrapper">
+                                    <input type="date" name="fechaInicio" 
+                                        class="form-control filtro-gst-input" 
+                                        value="<%= fechaInicio %>">
+                                    <i class="bi bi-calendar3 filtro-gst-input-icon"></i>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col">
-                            <label for="fechaFin" class="form-label">Fecha Fin</label>
-                            <input type="date" id="fechaFin" name="fechaFin" class="form-control"
-                                value="<%= fechaFin %>">
+                
+                        <!-- Fecha Fin -->
+                        <div class="col-md">
+                            <div class="filtro-gst-field">
+                                <label class="filtro-gst-label">
+                                    <i class="bi bi-calendar-event me-1"></i>
+                                    Fecha Fin
+                                </label>
+                                <div class="filtro-gst-input-wrapper">
+                                    <input type="date" name="fechaFin" 
+                                        class="form-control filtro-gst-input" 
+                                        value="<%= fechaFin %>">
+                                    <i class="bi bi-calendar3 filtro-gst-input-icon"></i>
+                                </div>
+                            </div>
                         </div>
-
+                
                         <!-- Ordenar por -->
-                        <div class="col">
-                            <label for="orderBy" class="form-label">Ordenar por</label>
-                            <select id="orderBy" name="orderBy" class="form-select">
-                                <option value="">Por Defecto</option>
-                                <option value="sti_prom_pasajeros" <%=orderBy==="sti_prom_pasajeros" ? "selected" : ""
-                                    %>>
-                                    Promedio de Pasajeros
-                                </option>
-                                <option value="sti_tot_viajes_dia" <%=orderBy==="sti_tot_viajes_dia" ? "selected" : ""
-                                    %>>
-                                    Viajes al Día
-                                </option>
-                                <option value="sti_fecha_registro" <%=orderBy==="sti_fecha_registro" ? "selected" : ""
-                                    %>>
-                                    Fecha de Registro
-                                </option>
-                            </select>
+                        <div class="col-md">
+                            <div class="filtro-gst-field">
+                                <label class="filtro-gst-label">
+                                    <i class="bi bi-sort-down me-1"></i>
+                                    Ordenar por
+                                </label>
+                                <div class="filtro-gst-select-wrapper">
+                                    <select name="orderBy" class="form-select filtro-gst-select">
+                                        <option value="">Por Defecto</option>
+                                        <option value="sti_prom_pasajeros" 
+                                            <%= orderBy === "sti_prom_pasajeros" ? "selected" : "" %>>
+                                            Promedio de Pasajeros
+                                        </option>
+                                        <option value="sti_tot_viajes_dia" 
+                                            <%= orderBy === "sti_tot_viajes_dia" ? "selected" : "" %>>
+                                            Viajes al Día
+                                        </option>
+                                        <option value="sti_fecha_registro" 
+                                            <%= orderBy === "sti_fecha_registro" ? "selected" : "" %>>
+                                            Fecha de Registro
+                                        </option>
+                                    </select>
+                                    <i class="bi bi-chevron-down filtro-gst-select-icon"></i>
+                                </div>
+                            </div>
                         </div>
-
-                        <!-- Dirección del Orden -->
-                        <div class="col">
-                            <label for="orderDir" class="form-label">Dirección</label>
-                            <select id="orderDir" name="orderDir" class="form-select">
-                                <option value="ASC" <%=orderDir==="ASC" ? "selected" : "" %>>Ascendente</option>
-                                <option value="DESC" <%=orderDir==="DESC" ? "selected" : "" %>>Descendente</option>
-                            </select>
+                
+                        <!-- Dirección -->
+                        <div class="col-md">
+                            <div class="filtro-gst-field">
+                                <label class="filtro-gst-label">
+                                    <i class="bi bi-arrow-down-up me-1"></i>
+                                    Dirección
+                                </label>
+                                <div class="filtro-gst-select-wrapper">
+                                    <select name="orderDir" class="form-select filtro-gst-select">
+                                        <option value="ASC" <%= orderDir === "ASC" ? "selected" : "" %>>Ascendente</option>
+                                        <option value="DESC" <%= orderDir === "DESC" ? "selected" : "" %>>Descendente</option>
+                                    </select>
+                                    <i class="bi bi-chevron-down filtro-gst-select-icon"></i>
+                                </div>
+                            </div>
                         </div>
-
-                        <!-- Botón de Filtrar -->
-                        <div class="col">
-                            <button type="submit" class="btn btn-primary">Filtrar</button>
+                
+                        <!-- Botón Filtrar -->
+                        <div class="col-md d-flex align-items-end">
+                            <button type="submit" class="filtro-gst-btn">
+                                <i class="bi bi-funnel me-1"></i>
+                                Filtrar
+                            </button>
                         </div>
                     </div>
                 </form>
