@@ -4,16 +4,522 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Gestión de Vehiculos</title>
+    <link rel="stylesheet" href="/stylesheets/campus_style/servicios_trans/gestion-servicios-trans.css">
+</head>
+
+<body>
+    <%- include ../../views/layout/cabecera.ejs %>
+        <div class="container mt-5">
+            <div class="page-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="page-title">Gestión de Vehiculos</h1>
+                    <p class="page-subtitle">Administra los vehiculos del campus</p>
+                </div>
+                <button class="add-service-btn" data-bs-toggle="modal" data-bs-target="#registro-vehiculo-modal">
+                    <i class="fas fa-plus me-2"></i>Registrar Nuevo Servicio
+                </button>
+            </div>
+
+            <!-- Formulario de Filtros -->
+            <form method="GET" action="/vehiculos/gestionar/<%= currentCampus %>"
+                class="filtro-gst-container py-3 px-3 mb-3">
+                <div class="row g-3">
+                    <!-- Tipo de Vehiculo -->
+                    <div class="col-md">
+                        <div class="filtro-gst-field">
+                            <label class="filtro-gst-label">
+                                <i class="bi bi-fuel-pump me-1"></i>
+                                Tipo de vehiculo
+                            </label>
+                            <div class="filtro-gst-select-wrapper">
+                                <select name="tipoVehiculo" class="form-select filtro-gst-select">
+                                    <option value="">Todos</option>
+                                    <% tiposVehiculo.forEach(tipo=> { %>
+                                        <option value="<%= tipo.tpv_id %>" <%=tipo.tpv_id===tipoVehiculo ? "selected"
+                                            : "" %>>
+                                            <%= tipo.tpv_detalle %>
+                                        </option>
+                                        <% }); %>
+                                </select>
+                                <i class="bi bi-chevron-down filtro-gst-select-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tipo de Emisión -->
+                    <div class="col-md">
+                        <div class="filtro-gst-field">
+                            <label class="filtro-gst-label">
+                                <i class="bi bi-fuel-pump me-1"></i>
+                                Tipo de Emisión
+                            </label>
+                            <div class="filtro-gst-select-wrapper">
+                                <select name="tipoEmision" class="form-select filtro-gst-select">
+                                    <option value="">Todos</option>
+                                    <% tiposEmision.forEach(emision=> { %>
+                                        <option value="<%= emision.tpe_id %>" <%=emision.tpe_id===tipoEmision
+                                            ? "selected" : "" %>>
+                                            <%= emision.tpe_detalle %>
+                                        </option>
+                                        <% }); %>
+                                </select>
+                                <i class="bi bi-chevron-down filtro-gst-select-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tipo de Frecuencia -->
+                    <div class="col-md">
+                        <div class="filtro-gst-field">
+                            <label class="filtro-gst-label">
+                                <i class="bi bi-fuel-pump me-1"></i>
+                                Tipo de Frecuencia
+                            </label>
+                            <div class="filtro-gst-select-wrapper">
+                                <select name="tipoFrecuencia" class="form-select filtro-gst-select">
+                                    <option value="">Todos</option>
+                                    <% frecuencias.forEach(frecuencia=> { %>
+                                        <option value="<%= frecuencia.fre_id %>" <%=frecuencia.fre_id===frecuencia
+                                            ? "selected" : "" %>>
+                                            <%= frecuencia.fre_detalle %>
+                                        </option>
+                                        <% }); %>
+                                </select>
+                                <i class="bi bi-chevron-down filtro-gst-select-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ordenar por -->
+                    <div class="col-md">
+                        <div class="filtro-gst-field">
+                            <label class="filtro-gst-label">
+                                <i class="bi bi-sort-down me-1"></i>
+                                Ordenar por
+                            </label>
+                            <div class="filtro-gst-select-wrapper">
+                                <select name="orderBy" class="form-select filtro-gst-select">
+                                    <option value="">Por Defecto</option>
+                                    <option value="veh_id" <%=orderBy==="veh_id" ? "selected" : "" %>>
+                                        ID
+                                    </option>
+                                    <option value="veh_cantidad" <%=orderBy==="veh_cantidad" ? "selected" : "" %>>
+                                        Cantidad
+                                    </option>
+                                    <option value="veh_distancia_aprox_recorrida"
+                                        <%=orderBy==="veh_distancia_aprox_recorrida" ? "selected" : "" %>>
+                                        Distancia
+                                    </option>
+                                </select>
+                                <i class="bi bi-chevron-down filtro-gst-select-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dirección -->
+                    <div class="col-md">
+                        <div class="filtro-gst-field">
+                            <label class="filtro-gst-label">
+                                <i class="bi bi-arrow-down-up me-1"></i>
+                                Dirección
+                            </label>
+                            <div class="filtro-gst-select-wrapper">
+                                <select name="orderDir" class="form-select filtro-gst-select">
+                                    <option value="ASC" <%=orderDir==="ASC" ? "selected" : "" %>>Ascendente</option>
+                                    <option value="DESC" <%=orderDir==="DESC" ? "selected" : "" %>>Descendente</option>
+                                </select>
+                                <i class="bi bi-chevron-down filtro-gst-select-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botón Filtrar -->
+                    <div class="col-md d-flex align-items-end">
+                        <button type="submit" class="filtro-gst-btn">
+                            <i class="bi bi-funnel me-1"></i>
+                            Filtrar
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Tabla de Servicios -->
+            <div class="table-responsive">
+                <table class="reutilizable-table rounded-3 border">
+                    <thead>
+                        <tr>
+                            <th class="text-center align-middle">ID</th>
+                            <th class="text-center align-middle">Tipo</th>
+                            <th class="text-center align-middle">Frecuencia</th>
+                            <th class="text-center align-middle">Tipo de Emisión</th>
+                            <th class="text-center align-middle">Cantidad</th>
+                            <th class="text-center align-middle">Ruedas</th>
+                            <th class="text-center align-middle">Fecha de Registro</th>
+                            <th class="text-center align-middle">Distancia Recorrida</th>
+                            <th class="text-center align-middle">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% vehiculos.forEach(vehiculo=> { %>
+                            <tr>
+
+                                <td class="text-center">
+                                    <%= vehiculo.veh_id %>
+                                </td>
+                                <td class="text-center">
+                                    <%= vehiculo.TipoVehiculo.tpv_detalle %>
+                                </td>
+                                <td class="text-center">
+                                    <%= vehiculo.Frecuencia.fre_detalle %>
+                                </td>
+                                <td class="text-center">
+                                    <%= vehiculo.TipoEmision.tpe_detalle %>
+                                </td>
+                                <td class="text-center">
+                                    <%= vehiculo.veh_cantidad %>
+                                </td>
+                                <td class="text-center">
+                                    <%= vehiculo.veh_cantidad_ruedas %>
+                                </td>
+                                <td class="text-center">
+                                    <%= vehiculo.veh_fecha_registro %>
+                                </td>
+                                <td class="text-center">
+                                    <%= vehiculo.veh_distancia_aprox_recorrida %> km
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center">
+                                        <button class="reutilizable-btn-action reutilizable-btn-edit"
+                                            data-bs-toggle="modal" data-bs-target="#modalEditarVehiculo"
+                                            data-id="<%= vehiculo.veh_id %>" data-tpv_id="<%= vehiculo.tpv_id %>"
+                                            data-fre_id="<%= vehiculo.fre_id %>" data-tpe_id="<%= vehiculo.tpe_id %>"
+                                            data-cantidad="<%= vehiculo.veh_cantidad %>"
+                                            data-ruedas="<%= vehiculo.veh_cantidad_ruedas %>"
+                                            data-distancia="<%= vehiculo.veh_distancia_aprox_recorrida %>">
+                                            <i class="fas fa-edit mr-1"></i>Editar
+                                        </button>
+                                        <form
+                                            action="/vehiculos/gestionar/<%= currentCampus %>/eliminar/<%= vehiculo.veh_id %>"
+                                            method="POST"
+                                            onsubmit="return confirm('¿Estás seguro de eliminar este vehiculo?');">
+                                            <button class="reutilizable-btn-action reutilizable-btn-delete">
+                                                <i class="fas fa-trash-alt mr-1"></i>Eliminar
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% }); %>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Modal Registrar-->
+            <div class="modal fade" id="registro-vehiculo-modal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content modal-rst-bg-dark">
+                        <div class="modal-header border-0 px-4 pt-4">
+                            <div>
+                                <h5 class="modal-title text-success fs-6">Nuevo Vehiculo</h5>
+                            </div>
+                            <button type="button" class="btn-close btn-close-white opacity-75" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body px-4">
+                            <h4 class="text-white mb-4">Registrar Vehiculo</h4>
+                            <form action="/vehiculos/gestionar/<%= currentCampus %>" method="post" id="service-form">
+                                <div class="mb-4">
+                                    <label for="veh_id" class="form-label modal-rst-label">
+                                        <i class="fa fa-hashtag icono-modal-rst me-2"></i>ID del Vehiculo
+                                    </label>
+                                    <input type="text" id="veh_id" name="veh_id" class="form-control modal-rst-input"
+                                        placeholder="Ej: SRV-001" maxlength="5" required>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="camp_id" class="form-label modal-rst-label">
+                                        <i class="fa fa-university icono-modal-rst me-2"></i>Campus
+                                    </label>
+                                    <select id="camp_id" name="camp_id" class="form-select modal-rst-input" required>
+                                        <option value="">Seleccionar campus</option>
+                                        <% campuses.forEach(campus=> { %>
+                                            <option value="<%= campus.camp_id %>" <%=(currentCampus===campus.camp_id)
+                                                ? 'selected' : '' %>>
+                                                <%= campus.camp_nom %>
+                                            </option>
+                                            <% }); %>
+                                    </select>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="tpv_id" class="form-label modal-rst-label">
+                                        <i class="fa fa-car icono-modal-rst me-2"></i>Tipo de Vehiculox
+                                    </label>
+                                    <select id="tpv_id" name="tpv_id" class="form-select modal-rst-input" required>
+                                        <option value="">Seleccionar tipo</option>
+                                        <% tiposVehiculo.forEach(tipo=> { %>
+                                            <option value="<%= tipo.tpv_id %>">
+                                                <%= tipo.tpv_detalle %>
+                                            </option>
+                                            <% }); %>
+                                    </select>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="fre_id" class="form-label modal-rst-label">
+                                        <i class="fa fa-clock icono-modal-rst me-2"></i>Frecuencia
+                                    </label>
+                                    <select id="fre_id" name="fre_id" class="form-select modal-rst-input" required>
+                                        <option value="">Seleccionar tipo</option>
+                                        <% frecuencias.forEach(frecuencia=> { %>
+                                            <option value="<%= frecuencia.fre_id %>" <%=frecuencia.fre_id===frecuencia
+                                                ? "selected" : "" %>>
+                                                <%= frecuencia.fre_detalle %>
+                                            </option>
+                                            <% }); %>
+                                    </select>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="tpe_id" class="form-label modal-rst-label">
+                                        <i class="fa fa-smog icono-modal-rst me-2"></i>Tipo de Emisión
+                                    </label>
+                                    <select id="tpe_id" name="tpe_id" class="form-select modal-rst-input" required>
+                                        <option value="">Seleccionar tipo</option>
+                                        <% tiposEmision.forEach(tipo=> { %>
+                                            <option value="<%= tipo.tpe_id %>">
+                                                <%= tipo.tpe_detalle %>
+                                            </option>
+                                            <% }); %>
+                                    </select>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="veh_cantidad" class="form-label modal-rst-label">
+                                        <i class="fa fa-layer-group icono-modal-rst me-2"></i>Cantidad
+                                    </label>
+                                    <input type="number" id="veh_cantidad" name="veh_cantidad"
+                                        class="form-control modal-rst-input" placeholder="Ej: SRV-001" maxlength="5"
+                                        required>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-6 mb-4">
+                                        <label for="veh_cantidad_ruedas" class="form-label modal-rst-label">
+                                            <i class="fa fa-dharmachakra icono-modal-rst me-2"></i>Cantidad de Ruedas
+                                        </label>
+                                        <input type="number" id="veh_cantidad_ruedas" name="veh_cantidad_ruedas"
+                                            class="form-control modal-rst-input" placeholder="Ej: 50" required min="0">
+                                    </div>
+                                    <div class="col-6 mb-4">
+                                        <label for="veh_distancia_aprox_recorrida" class="form-label modal-rst-label">
+                                            <i class="fa fa-road icono-modal-rst me-2"></i>Distancia Recorrida (km)
+                                        </label>
+                                        <input type="number" id="veh_distancia_aprox_recorrida"
+                                            name="veh_distancia_aprox_recorrida" class="form-control modal-rst-input"
+                                            placeholder="Ej: 10" required min="0">
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer border-0 px-4 pb-4">
+                                    <button type="button" class="btn modal-rst-btn-cancel"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn modal-rst-btn-success px-4">Registrar
+                                        Servicio</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Editar-->
+
+
+
+            <div class="modal fade" id="modalEditarVehiculo" tabindex="-1" aria-labelledby="modalEditarVehiculoLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content modal-rst-bg-dark">
+                        <div class="modal-header border-0 px-4 pt-4">
+                            <div>
+                                <h5 class="modal-title text-success fs-6">Editar Vehículo</h5>
+                            </div>
+                            <button type="button" class="btn-close btn-close-white opacity-75" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body px-4">
+                            <h4 class="text-white mb-4">Modificar Vehículo</h4>
+                            <form action="/vehiculos/gestionar/<%= currentCampus %>/actualizar" method="POST">
+                                <input type="hidden" id="veh_id_editar" name="veh_id">
+                                <input type="hidden" name="camp_id" value="<%= currentCampus %>">
+
+                                <div class="mb-4">
+                                    <label for="tpv_id_editar" class="form-label modal-rst-label">
+                                        <i class="fa fa-car icono-modal-rst me-2"></i>Tipo de Vehículo
+                                    </label>
+                                    <select id="tpv_id_editar" name="tpv_id" class="form-select modal-rst-input"
+                                        required>
+                                        <% tiposVehiculo.forEach(tipo=> { %>
+                                            <option value="<%= tipo.tpv_id %>">
+                                                <%= tipo.tpv_detalle %>
+                                            </option>
+                                            <% }); %>
+                                    </select>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="fre_id_editar" class="form-label modal-rst-label">
+                                        <i class="fa fa-clock icono-modal-rst me-2"></i>Frecuencia
+                                    </label>
+                                    <select id="fre_id_editar" name="fre_id" class="form-select modal-rst-input"
+                                        required>
+                                        <% frecuencias.forEach(frecuencia=> { %>
+                                            <option value="<%= frecuencia.fre_id %>">
+                                                <%= frecuencia.fre_detalle %>
+                                            </option>
+                                            <% }); %>
+                                    </select>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="tpe_id_editar" class="form-label modal-rst-label">
+                                        <i class="fa fa-smog icono-modal-rst me-2"></i>Tipo de Emisión
+                                    </label>
+                                    <select id="tpe_id_editar" name="tpe_id" class="form-select modal-rst-input"
+                                        required>
+                                        <% tiposEmision.forEach(tipo=> { %>
+                                            <option value="<%= tipo.tpe_id %>">
+                                                <%= tipo.tpe_detalle %>
+                                            </option>
+                                            <% }); %>
+                                    </select>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="veh_cantidad_editar" class="form-label modal-rst-label">
+                                        <i class="fa fa-layer-group icono-modal-rst me-2"></i>Cantidad
+                                    </label>
+                                    <input type="number" class="form-control modal-rst-input" id="veh_cantidad_editar"
+                                        name="veh_cantidad" required>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-6 mb-4">
+                                        <label for="veh_cantidad_ruedas_editar" class="form-label modal-rst-label">
+                                            <i class="fa fa-dharmachakra icono-modal-rst me-2"></i>Cantidad de Ruedas
+                                        </label>
+                                        <input type="number" class="form-control modal-rst-input"
+                                            id="veh_cantidad_ruedas_editar" name="veh_cantidad_ruedas" required min="0">
+                                    </div>
+                                    <div class="col-6 mb-4">
+                                        <label for="veh_distancia_aprox_recorrida_editar"
+                                            class="form-label modal-rst-label">
+                                            <i class="fa fa-road icono-modal-rst me-2"></i>Distancia Recorrida (km)
+                                        </label>
+                                        <input type="number" class="form-control modal-rst-input"
+                                            id="veh_distancia_aprox_recorrida_editar"
+                                            name="veh_distancia_aprox_recorrida" step="0.1" required min="0">
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer border-0 px-4 pb-4">
+                                    <button type="button" class="btn modal-rst-btn-cancel"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn modal-rst-btn-success px-4">Guardar
+                                        Cambios</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            const modalEditar = document.getElementById('modalEditarVehiculo');
+            modalEditar.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget; // Botón que activó el modal
+
+                // Obtener datos del botón
+                const veh_id = button.getAttribute('data-id');
+                const tpv_id = button.getAttribute('data-tpv_id');
+                const fre_id = button.getAttribute('data-fre_id');
+                const tpe_id = button.getAttribute('data-tpe_id');
+                const cantidad = button.getAttribute('data-cantidad');
+                const ruedas = button.getAttribute('data-ruedas');
+                const distancia = button.getAttribute('data-distancia');
+
+                // Asignar los valores a los campos del modal
+                modalEditar.querySelector('#veh_id_editar').value = veh_id;
+                modalEditar.querySelector('#tpv_id_editar').value = tpv_id;
+                modalEditar.querySelector('#fre_id_editar').value = fre_id;
+                modalEditar.querySelector('#tpe_id_editar').value = tpe_id;
+                modalEditar.querySelector('#veh_cantidad_editar').value = cantidad;
+                modalEditar.querySelector('#veh_cantidad_ruedas_editar').value = ruedas;
+                modalEditar.querySelector('#veh_distancia_aprox_recorrida_editar').value = distancia;
+            });
+
+        </script>
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Vehículos</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
+    <%- include ../../views/layout/cabecera.ejs %>
     <div class="container mt-5">
         <h1 class="text-center mb-4">Gestión de Vehículos</h1>
 
-        <!-- Botón para abrir el modal de registrar -->
         <div class="text-end mb-3">
             <button type="button" class="btn btn-success" data-bs-toggle="modal"
                 data-bs-target="#modalRegistrarVehiculo">
@@ -24,7 +530,6 @@
         <div class="mb-4">
             <form method="GET" action="/vehiculos/gestionar/<%= currentCampus %>">
                 <div class="row g-2 align-items-end">
-                    <!-- Filtro por Tipo de Vehículo -->
                     <div class="col">
                         <label for="filterTipoVehiculo" class="form-label">Tipo de Vehículo</label>
                         <select id="filterTipoVehiculo" name="tipoVehiculo" class="form-select">
@@ -37,7 +542,6 @@
                         </select>
                     </div>
 
-                    <!-- Filtro por Tipo de Emisión -->
                     <div class="col">
                         <label for="filterTipoEmision" class="form-label">Tipo de Emisión</label>
                         <select id="filterTipoEmision" name="tipoEmision" class="form-select">
@@ -51,7 +555,6 @@
                         </select>
                     </div>
 
-                    <!-- Filtro por Frecuencia -->
                     <div class="col">
                         <label for="filterFrecuencia" class="form-label">Frecuencia</label>
                         <select id="filterFrecuencia" name="frecuencia" class="form-select">
@@ -65,7 +568,6 @@
                         </select>
                     </div>
 
-                    <!-- Orden -->
                     <div class="col">
                         <label for="orderBy" class="form-label">Ordenar por</label>
                         <select id="orderBy" name="orderBy" class="form-select">
@@ -78,7 +580,6 @@
                         </select>
                     </div>
 
-                    <!-- Dirección del Orden -->
                     <div class="col">
                         <label for="orderDir" class="form-label">Dirección</label>
                         <select id="orderDir" name="orderDir" class="form-select">
@@ -87,7 +588,6 @@
                         </select>
                     </div>
 
-                    <!-- Botón de Filtrar -->
                     <div class="col">
                         <button type="submit" class="btn btn-primary">Filtrar</button>
                     </div>
@@ -96,7 +596,6 @@
         </div>
 
 
-        <!-- Tabla de vehículos -->
         <div class="table-responsive">
             <table class="table table-striped table-bordered">
                 <thead class="table-primary">
@@ -140,7 +639,6 @@
                                 <%= vehiculo.veh_distancia_aprox_recorrida %> km
                             </td>
                             <td>
-                                <!-- Botón para abrir el modal de editar -->
                                 <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
                                     data-bs-target="#modalEditarVehiculo" data-id="<%= vehiculo.veh_id %>"
                                     data-tpv_id="<%= vehiculo.tpv_id %>" data-fre_id="<%= vehiculo.fre_id %>"
@@ -149,7 +647,6 @@
                                     data-distancia="<%= vehiculo.veh_distancia_aprox_recorrida %>">
                                     Editar
                                 </button>
-                                <!-- Botón de eliminar -->
                                 <form action="/vehiculos/gestionar/<%= currentCampus %>/eliminar/<%= vehiculo.veh_id %>"
                                     method="POST" class="d-inline"
                                     onsubmit="return confirm('¿Estás seguro de eliminar este vehículo?');">
@@ -162,7 +659,6 @@
             </table>
         </div>
 
-        <!-- Modal para registrar nuevo vehículo -->
         <div class="modal fade" id="modalRegistrarVehiculo" tabindex="-1" aria-labelledby="modalRegistrarVehiculoLabel"
             aria-hidden="true">
             <div class="modal-dialog">
@@ -245,7 +741,6 @@
             </div>
         </div>
 
-        <!-- Modal para editar vehículo -->
         <div class="modal fade" id="modalEditarVehiculo" tabindex="-1" aria-labelledby="modalEditarVehiculoLabel"
             aria-hidden="true">
             <div class="modal-dialog">
@@ -256,11 +751,9 @@
                     </div>
                     <form action="/vehiculos/gestionar/<%= currentCampus %>/actualizar" method="POST">
                         <div class="modal-body">
-                            <!-- Campo oculto para el ID del vehículo -->
                             <input type="hidden" id="veh_id_editar" name="veh_id">
                             <input type="hidden" name="camp_id" value="<%= currentCampus %>">
 
-                            <!-- Tipo de Vehículo -->
                             <div class="mb-3">
                                 <label for="tpv_id_editar" class="form-label">Tipo de Vehículo</label>
                                 <select id="tpv_id_editar" name="tpv_id" class="form-select" required>
@@ -272,7 +765,6 @@
                                 </select>
                             </div>
 
-                            <!-- Frecuencia -->
                             <div class="mb-3">
                                 <label for="fre_id_editar" class="form-label">Frecuencia</label>
                                 <select id="fre_id_editar" name="fre_id" class="form-select" required>
@@ -284,7 +776,6 @@
                                 </select>
                             </div>
 
-                            <!-- Tipo de Emisión -->
                             <div class="mb-3">
                                 <label for="tpe_id_editar" class="form-label">Tipo de Emisión</label>
                                 <select id="tpe_id_editar" name="tpe_id" class="form-select" required>
@@ -296,21 +787,18 @@
                                 </select>
                             </div>
 
-                            <!-- Cantidad de Vehículos -->
                             <div class="mb-3">
                                 <label for="veh_cantidad_editar" class="form-label">Cantidad</label>
                                 <input type="number" class="form-control" id="veh_cantidad_editar" name="veh_cantidad"
                                     required>
                             </div>
 
-                            <!-- Cantidad de Ruedas -->
                             <div class="mb-3">
                                 <label for="veh_cantidad_ruedas_editar" class="form-label">Cantidad de Ruedas</label>
                                 <input type="number" class="form-control" id="veh_cantidad_ruedas_editar"
                                     name="veh_cantidad_ruedas" required>
                             </div>
 
-                            <!-- Distancia Aproximada Recorrida -->
                             <div class="mb-3">
                                 <label for="veh_distancia_aprox_recorrida_editar" class="form-label">Distancia Recorrida
                                     (km)</label>
@@ -328,10 +816,8 @@
         </div>
 
 
-        <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-        <!-- Script para cargar datos dinámicamente en el modal de editar -->
         <script>
             const modalEditar = document.getElementById('modalEditarVehiculo');
             modalEditar.addEventListener('show.bs.modal', function (event) {
@@ -361,4 +847,4 @@
         </script>
 </body>
 
-</html>
+</html> -->
