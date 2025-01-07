@@ -1,10 +1,216 @@
 <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Campus</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/stylesheets/campus_style/nuevoCampus.css">
+</head>
+
+<body>
+    <%- include ../../views/layout/cabecera.ejs %>
+
+    <div class="page-header">
+        <div class="container">
+            <h2 class="mb-0"><i class="fas fa-edit text-success me-2"></i>Editar Campus</h2>
+        </div>
+    </div>
+
+    <div class="container">
+        <form action="../actualizar/" method="post">
+            <!-- Información Básica -->
+            <div class="form-section">
+                <div class="section-header">
+                    <i class="fas fa-info-circle"></i>
+                    <h5 class="mb-0">Información Básica</h5>
+                </div>
+                <div class="section-content">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="field-group">
+                                <label class="form-label required-field">ID del Campus</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-hashtag"></i>
+                                    </span>
+                                    <input type="text" class="form-control" id="camp_id" name="camp_id" value="<%= campus.camp_id %>" readonly>
+                                </div>
+                                <div class="form-text">Identificador único del campus</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="field-group">
+                                <label class="form-label required-field">Nombre del Campus</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-university"></i>
+                                    </span>
+                                    <input type="text" class="form-control" id="camp_nom" name="camp_nom" value="<%= campus.camp_nom %>" maxlength="25" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="field-group">
+                                <label class="form-label required-field">Área del Campus</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-vector-square"></i>
+                                    </span>
+                                    <input type="number" step="0.01" class="form-control" id="camp_area" name="camp_area" value="<%= campus.camp_area %>" required>
+                                    <span class="input-group-text">m²</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="field-group">
+                                <label class="form-label required-field">Perímetro del Campus</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-draw-polygon"></i>
+                                    </span>
+                                    <input type="number" step="0.01" class="form-control" id="camp_perimetro" name="camp_perimetro" value="<%= campus.camp_perimetro %>" required>
+                                    <span class="input-group-text">m</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="field-group">
+                                <label class="form-label required-field">Capacidad Total</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-users"></i>
+                                    </span>
+                                    <input type="number" class="form-control" id="camp_capacidad" name="camp_capacidad" value="<%= campus.camp_capacidad %>">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="field-group">
+                                <label class="form-label required-field">Población Actual</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-user-friends"></i>
+                                    </span>
+                                    <input type="number" class="form-control" id="camp_cant_pobla" name="camp_cant_pobla" value="<%= campus.camp_cant_pobla %>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ubicación -->
+            <div class="form-section">
+                <div class="section-header">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h5 class="mb-0">Ubicación</h5>
+                </div>
+                <div class="section-content">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="field-group">
+                                <label class="form-label required-field">Calle Principal</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-road"></i>
+                                    </span>
+                                    <input type="text" class="form-control" id="camp_calle_principal" name="camp_calle_principal" value="<%= campus.camp_calle_principal %>" maxlength="50">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="field-group">
+                                <label class="form-label required-field">Calle Secundaria</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-road"></i>
+                                    </span>
+                                    <input type="text" class="form-control" id="camp_calle_secundaria" name="camp_calle_secundaria" value="<%= campus.camp_calle_secundaria %>" maxlength="50">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Presupuesto -->
+            <div class="form-section">
+                <div class="section-header">
+                    <i class="fas fa-dollar-sign"></i>
+                    <h5 class="mb-0">Presupuesto</h5>
+                </div>
+                <div class="section-content">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="field-group">
+                                <label class="form-label required-field">Presupuesto Total</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" step="0.01" class="form-control" id="fondo_total" name="fondo_total" value="<%= fondo.fondo_total %>" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="field-group">
+                                <label class="form-label required-field">Presupuesto Sostenibilidad</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" step="0.01" class="form-control" id="fondo_sostenibilidad" name="fondo_sostenibilidad" value="<%= fondo.fondo_sostenibilidad %>" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-3 mb-5">
+                <button type="button" class="btn btn-secondary" onclick="location.href='/campus';">
+                    <i class="fas fa-times me-2"></i>Cancelar
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Campus</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -44,7 +250,6 @@
                 <input type="text" class="form-control" id="camp_calle_secundaria" name="camp_calle_secundaria" value="<%= campus.camp_calle_secundaria %>" maxlength="50">
             </div>
 
-            <!-- Campos para editar los fondos -->
             <div class="mb-3">
                 <label for="fondo_total" class="form-label">Presupuesto Total</label>
                 <input type="number" step="0.01" class="form-control" id="fondo_total" name="fondo_total" value="<%= fondo.fondo_total %>" required>
@@ -62,7 +267,6 @@
         </form>
     </div>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>
+</html> -->
