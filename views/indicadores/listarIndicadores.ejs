@@ -23,9 +23,15 @@
                     <p class="page-subtitle">Administra los indicadores de la categoria: <%= categoria.cat_nombre %>
                     </p>
                 </div>
-                <button class="add-service-btn" data-bs-toggle="modal" data-bs-target="#modalRegistrarIndicador">
-                    <i class="fas fa-plus me-2"></i>Registrar Nuevo Indicador
-                </button>
+
+                <section class="d-flex gap-3">
+                    <button class="add-service-btn" data-bs-toggle="modal" data-bs-target="#modalRegistrarIndicador">
+                        <i class="fas fa-plus me-2"></i>Registrar Nuevo Indicador
+                    </button>
+                    <button class="add-service-btn" onclick="location.href='/categorias';">
+                        <i class="fa-solid fa-users me-2"></i>Volver a Gestion de Categorias
+                    </button>
+                </section>
             </div>
 
 
