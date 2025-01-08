@@ -1,32 +1,133 @@
 <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Categoría</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/stylesheets/campus_style/nuevoCampus.css">
+</head>
+
+<body>
+    <%- include ../../views/layout/cabecera.ejs %>
+
+    <div class="page-header">
+        <div class="container">
+            <h2 class="mb-0"><i class="fas fa-edit text-success me-2"></i>Editar Categoría</h2>
+        </div>
+    </div>
+
+    <div class="container">
+        <form action="/categorias/actualizar" method="post">
+            <!-- Información de la Categoría -->
+            <div class="form-section">
+                <div class="section-header">
+                    <i class="fas fa-tag"></i>
+                    <h5 class="mb-0">Información de la Categoría</h5>
+                </div>
+                <div class="section-content">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="field-group">
+                                <label class="form-label required-field">Código de la Categoría</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-hashtag"></i>
+                                    </span>
+                                    <input type="text" class="form-control" id="cat_cod" name="cat_cod" value="<%= categoria.cat_cod %>" readonly>
+                                </div>
+                                <div class="form-text">Identificador único de la categoría</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="field-group">
+                                <label class="form-label required-field">Nombre de la Categoría</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-font"></i>
+                                    </span>
+                                    <input type="text" class="form-control" id="cat_nombre" name="cat_nombre" value="<%= categoria.cat_nombre %>" maxlength="20" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="field-group">
+                                <label class="form-label required-field">Porcentaje</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-percent"></i>
+                                    </span>
+                                    <input type="number" step="0.01" class="form-control" id="cat_porc" name="cat_porc" value="<%= categoria.cat_porc %>" required>
+                                    <span class="input-group-text">%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-3 mb-5">
+                <button type="button" class="btn btn-secondary" onclick="location.href='/categorias';">
+                    <i class="fas fa-times me-2"></i>Cancelar
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Categoría</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container mt-5">
         <h1 class="text-center mb-4">Editar Categoría</h1>
         <form method="POST" action="/categorias/actualizar">
-            <!-- Código de la Categoría (Solo lectura) -->
             <div class="mb-3">
                 <label for="cat_cod" class="form-label">Código de la Categoría</label>
                 <input type="text" class="form-control" id="cat_cod" name="cat_cod" value="<%= categoria.cat_cod %>" readonly>
             </div>
-            <!-- Nombre de la Categoría -->
             <div class="mb-3">
                 <label for="cat_nombre" class="form-label">Nombre de la Categoría</label>
                 <input type="text" class="form-control" id="cat_nombre" name="cat_nombre" value="<%= categoria.cat_nombre %>" maxlength="20" required>
             </div>
-            <!-- Porcentaje -->
             <div class="mb-3">
                 <label for="cat_porc" class="form-label">Porcentaje (%)</label>
                 <input type="number" step="0.01" class="form-control" id="cat_porc" name="cat_porc" value="<%= categoria.cat_porc %>" required>
             </div>
-            <!-- Botones -->
             <div class="text-center">
                 <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                 <a href="/categorias" class="btn btn-secondary">Cancelar</a>
@@ -34,7 +135,6 @@
         </form>
     </div>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>
+</html> -->

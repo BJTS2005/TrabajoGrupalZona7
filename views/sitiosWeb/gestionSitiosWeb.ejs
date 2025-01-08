@@ -4,8 +4,376 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Gestión de Vehiculos</title>
+    <link rel="stylesheet" href="/stylesheets/campus_style/servicios_trans/gestion-servicios-trans.css">
+</head>
+
+<body>
+    <%- include ../../views/layout/cabecera.ejs %>
+        <div class="container mt-5">
+            <div class="page-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="page-title">Gestión de Greeen Jobs</h1>
+                    <p class="page-subtitle">Administra los Green Jobs del campus</p>
+                </div>
+                <button class="add-service-btn" data-bs-toggle="modal" data-bs-target="#modalRegistrarSitioWeb">
+                    <i class="fas fa-plus me-2"></i>Registrar Nuevo Green Job
+                </button>
+            </div>
+
+            <!-- Formulario de Filtros -->
+            <form method="GET" action="/sitiosWeb/gestionar/<%= currentCampus %>"
+                class="filtro-gst-container py-3 px-3 mb-3">
+                <div class="row g-3">
+                    <!-- Estado -->
+                    <div class="col-md">
+                        <div class="filtro-gst-field">
+                            <label class="filtro-gst-label">
+                                <i class="bi bi-toggle-on me-1"></i>
+                                Estado
+                            </label>
+                            <div class="filtro-gst-select-wrapper">
+                                <select name="estado" class="form-select filtro-gst-select">
+                                    <option value="">Todos</option>
+                                    <option value="true" <%=estado==="true" ? "selected" : "" %>>Activo</option>
+                                    <option value="false" <%=estado==="false" ? "selected" : "" %>>Inactivo</option>
+                                </select>
+                                <i class="bi bi-chevron-down filtro-gst-select-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ¿Es Reporte? -->
+                    <div class="col-md">
+                        <div class="filtro-gst-field">
+                            <label class="filtro-gst-label">
+                                <i class="bi bi-file-text me-1"></i>
+                                ¿Es Reporte?
+                            </label>
+                            <div class="filtro-gst-select-wrapper">
+                                <select name="esReporte" class="form-select filtro-gst-select">
+                                    <option value="">Todos</option>
+                                    <option value="true" <%=esReporte==="true" ? "selected" : "" %>>Sí</option>
+                                    <option value="false" <%=esReporte==="false" ? "selected" : "" %>>No</option>
+                                </select>
+                                <i class="bi bi-chevron-down filtro-gst-select-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Buscar -->
+                    <div class="col-md">
+                        <div class="filtro-gst-field">
+                            <label class="filtro-gst-label">
+                                <i class="bi bi-search me-1"></i>
+                                Buscar
+                            </label>
+                            <input type="text" name="busqueda" class="form-control filtro-gst-select"
+                                placeholder="URL o descripción" value="<%= busqueda %>">
+                        </div>
+                    </div>
+
+                    <!-- Ordenar por -->
+                    <div class="col-md">
+                        <div class="filtro-gst-field">
+                            <label class="filtro-gst-label">
+                                <i class="bi bi-sort-down me-1"></i>
+                                Ordenar por
+                            </label>
+                            <div class="filtro-gst-select-wrapper">
+                                <select name="orderBy" class="form-select filtro-gst-select">
+                                    <option value="">Por Defecto</option>
+                                    <option value="sit_url" <%=orderBy==="sit_url" ? "selected" : "" %>>URL</option>
+                                    <option value="sit_activo" <%=orderBy==="sit_activo" ? "selected" : "" %>>Estado
+                                    </option>
+                                </select>
+                                <i class="bi bi-chevron-down filtro-gst-select-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dirección -->
+                    <div class="col-md">
+                        <div class="filtro-gst-field">
+                            <label class="filtro-gst-label">
+                                <i class="bi bi-arrow-down-up me-1"></i>
+                                Dirección
+                            </label>
+                            <div class="filtro-gst-select-wrapper">
+                                <select name="orderDir" class="form-select filtro-gst-select">
+                                    <option value="ASC" <%=orderDir==="ASC" ? "selected" : "" %>>Ascendente</option>
+                                    <option value="DESC" <%=orderDir==="DESC" ? "selected" : "" %>>Descendente</option>
+                                </select>
+                                <i class="bi bi-chevron-down filtro-gst-select-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botón Filtrar -->
+                    <div class="col-md d-flex align-items-end">
+                        <button type="submit" class="filtro-gst-btn">
+                            <i class="bi bi-funnel me-1"></i>
+                            Filtrar
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <!-- Tabla de Servicios -->
+            <div class="table-responsive">
+                <table class="reutilizable-table rounded-3 border w-100">
+                    <thead>
+                        <tr>
+                            <th class="text-center align-middle">ID</th>
+                            <th class="text-center align-middle">Descripción</th>
+                            <th class="text-center align-middle">URL</th>
+                            <th class="text-center align-middle">Activo</th>
+                            <th class="text-center align-middle">Es Reporte</th>
+                            <th class="text-center align-middle">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% sitiosWeb.forEach(sitio=> { %>
+                            <tr>
+                                <td class="text-center">
+                                    <%= sitio.id_sit %>
+                                </td>
+                                <td class="text-center">
+                                    <%= sitio.sit_descripcion || "Sin descripción" %>
+                                </td>
+                                <td class="text-center">
+                                    <a href="<%= sitio.sit_url %>" target="_blank">
+                                        <%= sitio.sit_url %>
+                                    </a>
+                                </td>
+                                <td class="text-center">
+                                    <%= sitio.sit_activo ? "Sí" : "No" %>
+                                </td>
+                                <td class="text-center">
+                                    <%= sitio.sit_es_reporte ? "Sí" : "No" %>
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center">
+                                        <button class="reutilizable-btn-action reutilizable-btn-edit"
+                                            data-bs-toggle="modal" data-bs-target="#modalEditarSitioWeb"
+                                            data-id="<%= sitio.id_sit %>"
+                                            data-descripcion="<%= sitio.sit_descripcion %>"
+                                            data-url="<%= sitio.sit_url %>" data-activo="<%= sitio.sit_activo %>"
+                                            data-reporte="<%= sitio.sit_es_reporte %>">
+                                            <i class="fas fa-edit mr-1"></i>Editar
+                                        </button>
+                                        <form
+                                            action="/sitiosWeb/gestionar/<%= currentCampus %>/eliminar/<%= sitio.id_sit %>"
+                                            method="POST"
+                                            onsubmit="return confirm('¿Estás seguro de eliminar este sitio web?');">
+                                            <button class="reutilizable-btn-action reutilizable-btn-delete">
+                                                <i class="fas fa-trash-alt mr-1"></i>Eliminar
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% }); %>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Modal Registrar-->
+            <div class="modal fade" id="modalRegistrarSitioWeb" tabindex="-1"
+                aria-labelledby="modalRegistrarSitioWebLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content modal-rst-bg-dark">
+                        <div class="modal-header border-0 px-4 pt-4">
+                            <div>
+                                <h5 class="modal-title text-success fs-6">Nuevo Sitio Web</h5>
+                            </div>
+                            <button type="button" class="btn-close btn-close-white opacity-75" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body px-4">
+                            <h4 class="text-white mb-4">Registrar Sitio Web</h4>
+                            <form action="/sitiosWeb/gestionar/<%= currentCampus %>" method="POST">
+                                <div class="mb-4">
+                                    <label for="id_sit" class="form-label modal-rst-label">
+                                        <i class="fa fa-hashtag icono-modal-rst me-2"></i>ID del Sitio
+                                    </label>
+                                    <input type="text" class="form-control modal-rst-input" id="id_sit" name="id_sit"
+                                        maxlength="5" placeholder="Ej: SIT01" required>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="sit_descripcion" class="form-label modal-rst-label">
+                                        <i class="fa fa-info-circle icono-modal-rst me-2"></i>Descripción
+                                    </label>
+                                    <textarea class="form-control modal-rst-input" id="sit_descripcion"
+                                        name="sit_descripcion" rows="3"
+                                        placeholder="Descripción del sitio web"></textarea>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="sit_url" class="form-label modal-rst-label">
+                                        <i class="fa fa-link icono-modal-rst me-2"></i>URL
+                                    </label>
+                                    <input type="url" class="form-control modal-rst-input" id="sit_url" name="sit_url"
+                                        maxlength="100" placeholder="https://ejemplo.com" required>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="sit_activo" class="form-label modal-rst-label">
+                                        <i class="fa fa-toggle-on icono-modal-rst me-2"></i>¿Está Activo?
+                                    </label>
+                                    <select id="sit_activo" name="sit_activo" class="form-select modal-rst-input"
+                                        required>
+                                        <option value="true">Sí</option>
+                                        <option value="false">No</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="sit_es_reporte" class="form-label modal-rst-label">
+                                        <i class="fa fa-file-alt icono-modal-rst me-2"></i>¿Es Reporte?
+                                    </label>
+                                    <select id="sit_es_reporte" name="sit_es_reporte"
+                                        class="form-select modal-rst-input" required>
+                                        <option value="true">Sí</option>
+                                        <option value="false">No</option>
+                                    </select>
+                                </div>
+
+                                <div class="modal-footer border-0 px-4 pb-4">
+                                    <button type="button" class="btn modal-rst-btn-cancel"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn modal-rst-btn-success px-4">Registrar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Editar-->
+
+
+
+            <div class="modal fade" id="modalEditarSitioWeb" tabindex="-1" aria-labelledby="modalEditarSitioWebLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content modal-rst-bg-dark">
+                        <div class="modal-header border-0 px-4 pt-4">
+                            <div>
+                                <h5 class="modal-title text-success fs-6">Editar Sitio Web</h5>
+                            </div>
+                            <button type="button" class="btn-close btn-close-white opacity-75" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body px-4">
+                            <h4 class="text-white mb-4">Modificar Sitio Web</h4>
+                            <form action="/sitiosWeb/gestionar/<%= currentCampus %>/actualizar" method="POST">
+                                <input type="hidden" id="id_sit_editar" name="id_sit">
+
+                                <div class="mb-4">
+                                    <label for="sit_descripcion_editar" class="form-label modal-rst-label">
+                                        <i class="fa fa-info-circle icono-modal-rst me-2"></i>Descripción
+                                    </label>
+                                    <textarea class="form-control modal-rst-input" id="sit_descripcion_editar"
+                                        name="sit_descripcion" rows="3"
+                                        placeholder="Descripción del sitio web"></textarea>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="sit_url_editar" class="form-label modal-rst-label">
+                                        <i class="fa fa-link icono-modal-rst me-2"></i>URL
+                                    </label>
+                                    <input type="url" class="form-control modal-rst-input" id="sit_url_editar"
+                                        name="sit_url" maxlength="100" placeholder="https://ejemplo.com" required>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="sit_activo_editar" class="form-label modal-rst-label">
+                                        <i class="fa fa-toggle-on icono-modal-rst me-2"></i>¿Está Activo?
+                                    </label>
+                                    <select id="sit_activo_editar" name="sit_activo" class="form-select modal-rst-input"
+                                        required>
+                                        <option value="true">Sí</option>
+                                        <option value="false">No</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="sit_es_reporte_editar" class="form-label modal-rst-label">
+                                        <i class="fa fa-file-alt icono-modal-rst me-2"></i>¿Es Reporte?
+                                    </label>
+                                    <select id="sit_es_reporte_editar" name="sit_es_reporte"
+                                        class="form-select modal-rst-input" required>
+                                        <option value="true">Sí</option>
+                                        <option value="false">No</option>
+                                    </select>
+                                </div>
+
+                                <div class="modal-footer border-0 px-4 pb-4">
+                                    <button type="button" class="btn modal-rst-btn-cancel"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn modal-rst-btn-success px-4">Guardar
+                                        Cambios</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            const modalEditar = document.getElementById('modalEditarSitioWeb');
+            modalEditar.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget; // Botón que abrió el modal
+                const id = button.getAttribute('data-id');
+                const descripcion = button.getAttribute('data-descripcion');
+                const url = button.getAttribute('data-url');
+                const activo = button.getAttribute('data-activo');
+                const reporte = button.getAttribute('data-reporte');
+    
+                // Cargar los valores en los campos del modal
+                modalEditar.querySelector('#id_sit_editar').value = id;
+                modalEditar.querySelector('#sit_descripcion_editar').value = descripcion;
+                modalEditar.querySelector('#sit_url_editar').value = url;
+                modalEditar.querySelector('#sit_activo_editar').value = activo;
+                modalEditar.querySelector('#sit_es_reporte_editar').value = reporte;
+            });
+        </script>
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Sitios Web</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
@@ -13,7 +381,6 @@
     <div class="container mt-5">
         <h1 class="text-center mb-4">Gestión de Sitios Web</h1>
 
-        <!-- Botón para abrir el modal de registrar -->
         <div class="text-end mb-3">
             <button type="button" class="btn btn-success" data-bs-toggle="modal"
                 data-bs-target="#modalRegistrarSitioWeb">
@@ -21,10 +388,8 @@
             </button>
         </div>
 
-        <!-- Formulario de Filtros -->
         <form method="GET" action="/sitiosWeb/gestionar/<%= currentCampus %>" class="mb-4">
             <div class="row g-2 align-items-end">
-                <!-- Filtro por Estado -->
                 <div class="col">
                     <label for="filterEstado" class="form-label">Estado</label>
                     <select id="filterEstado" name="estado" class="form-select">
@@ -34,7 +399,6 @@
                     </select>
                 </div>
 
-                <!-- Filtro por Si es Reporte -->
                 <div class="col">
                     <label for="filterEsReporte" class="form-label">¿Es Reporte?</label>
                     <select id="filterEsReporte" name="esReporte" class="form-select">
@@ -44,14 +408,12 @@
                     </select>
                 </div>
 
-                <!-- Filtro por Búsqueda -->
                 <div class="col">
                     <label for="busqueda" class="form-label">Buscar</label>
                     <input type="text" id="busqueda" name="busqueda" class="form-control"
                         placeholder="URL o descripción" value="<%= busqueda %>">
                 </div>
 
-                <!-- Ordenar por -->
                 <div class="col">
                     <label for="orderBy" class="form-label">Ordenar por</label>
                     <select id="orderBy" name="orderBy" class="form-select">
@@ -61,7 +423,6 @@
                     </select>
                 </div>
 
-                <!-- Dirección del Orden -->
                 <div class="col">
                     <label for="orderDir" class="form-label">Dirección</label>
                     <select id="orderDir" name="orderDir" class="form-select">
@@ -70,14 +431,12 @@
                     </select>
                 </div>
 
-                <!-- Botón de Filtrar -->
                 <div class="col">
                     <button type="submit" class="btn btn-primary">Filtrar</button>
                 </div>
             </div>
         </form>
 
-        <!-- Tabla de sitios web -->
         <table class="table table-striped table-bordered">
             <thead class="table-primary">
                 <tr>
@@ -108,14 +467,12 @@
                             <%= sitio.sit_es_reporte ? "Sí" : "No" %>
                         </td>
                         <td>
-                            <!-- Botón para abrir el modal de editar -->
                             <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
                                 data-bs-target="#modalEditarSitioWeb" data-id="<%= sitio.id_sit %>"
                                 data-descripcion="<%= sitio.sit_descripcion %>" data-url="<%= sitio.sit_url %>"
                                 data-activo="<%= sitio.sit_activo %>" data-reporte="<%= sitio.sit_es_reporte %>">
                                 Editar
                             </button>
-                            <!-- Botón de eliminar -->
                             <form action="/sitiosWeb/gestionar/<%= currentCampus %>/eliminar/<%= sitio.id_sit %>"
                                 method="POST" class="d-inline"
                                 onsubmit="return confirm('¿Estás seguro de eliminar este sitio web?');">
@@ -127,7 +484,6 @@
             </tbody>
         </table>
 
-        <!-- Modal para registrar nuevo sitio web -->
         <div class="modal fade" id="modalRegistrarSitioWeb" tabindex="-1" aria-labelledby="modalRegistrarSitioWebLabel"
             aria-hidden="true">
             <div class="modal-dialog">
@@ -177,7 +533,6 @@
             </div>
         </div>
 
-        <!-- Modal para editar sitio web -->
         <div class="modal fade" id="modalEditarSitioWeb" tabindex="-1" aria-labelledby="modalEditarSitioWebLabel"
             aria-hidden="true">
             <div class="modal-dialog">
@@ -224,10 +579,8 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Script para cargar datos en el modal de editar -->
     <script>
         const modalEditar = document.getElementById('modalEditarSitioWeb');
         modalEditar.addEventListener('show.bs.modal', function (event) {
@@ -248,4 +601,4 @@
     </script>
 </body>
 
-</html>
+</html> -->
