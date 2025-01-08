@@ -4,6 +4,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Gestios de Tipos de Vehiculos</title>
+    <link rel="stylesheet" href="/stylesheets/campus_style/servicios_trans/gestion-servicios-trans.css">
+</head>
+
+<body>
+    <%- include ../../views/layout/cabecera.ejs %>
+        <div class="container mt-5">
+            <div class="page-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="page-title">Reporte de Indicadores por categorias</h1>
+                </div>
+            </div>
+
+
+            <!-- Tabla de Servicios -->
+            <div class="table-responsive">
+                <table class="reutilizable-table rounded-3 border w-100">
+                    <thead>
+                        <tr>
+                            <th class="text-center align-middle">Nombre de la categoria</th>
+                            <th class="text-center align-middle">Total Indicadores</th>
+                            <th class="text-center align-middle">Puntaje Maximo</th>
+                            <th class="text-center align-middle">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% categorias.forEach(categoria=> { %>
+                            <tr>
+
+                                <td class="text-center">
+                                    <%= categoria.nombre %>
+                                </td>
+                                <td class="text-center">
+                                    <%= categoria.totalIndicadores %>
+                                </td>
+                                <td class="text-center">
+                                    <%= categoria.puntajeMaximo %>
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center">
+                                        <button class="reutilizable-btn-action reutilizable-btn-edit" onclick="location.href='/reportes/indicadores/<%= categoria.codigo %>'">
+                                            <i class="fas fa-file-alt mr-1"></i>Generar Reporte
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
@@ -48,4 +130,4 @@
     </div>
 </body>
 
-</html>
+</html> -->

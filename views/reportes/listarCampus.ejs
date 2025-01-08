@@ -1,5 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Gestios de Tipos de Vehiculos</title>
+    <link rel="stylesheet" href="/stylesheets/campus_style/servicios_trans/gestion-servicios-trans.css">
+</head>
+
+<body>
+    <%- include ../../views/layout/cabecera.ejs %>
+        <div class="container mt-5">
+            <div class="page-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="page-title">Campus Registrados</h1>
+                </div>
+                <button class="add-service-btn" onclick="location.href='/reportes/total'">
+                    <i class="fas fa-plus me-2"></i>Generar Reporte Total
+                </button>
+            </div>
+
+
+            <!-- Tabla de Servicios -->
+            <div class="table-responsive">
+                <table class="reutilizable-table rounded-3 border w-100">
+                    <thead>
+                        <tr>
+                            <th class="text-center align-middle">ID</th>
+                            <th class="text-center align-middle">Nombre</th>
+                            <th class="text-center align-middle">Área (m²)</th>
+                            <th class="text-center align-middle">Capacidad</th>
+                            <th class="text-center align-middle">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% datos.forEach(campus => { %>
+                            <tr>
+                                <td class="text-center">
+                                    <%= campus.camp_id %>
+                                </td>
+                                <td class="text-center">
+                                    <%= campus.camp_nom %>
+                                </td>
+                                <td class="text-center">
+                                    <%= campus.camp_area %>
+                                </td>
+                                <td class="text-center">
+                                    <%= campus.camp_capacidad %>
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center">
+                                        <a href="/reportes/campus/<%= campus.camp_id %>" 
+                                           class="reutilizable-btn-action reutilizable-btn-primary">
+                                            <i class="fas fa-file-alt mr-1"></i>Generar Reporte
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+             </div>
+        </div>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,12 +102,10 @@
     <div class="container mt-5">
         <h1 class="text-center mb-4"><%= title %></h1>
 
-        <!-- Botón para generar un reporte total -->
         <div class="mb-3 text-end">
             <a href="/reportes/total" class="btn btn-success">Generar Reporte Total</a>
         </div>
 
-        <!-- Tabla de Campus -->
         <table class="table table-bordered table-hover">
             <thead class="table-dark">
                 <tr>
@@ -34,7 +124,6 @@
                         <td><%= campus.camp_area %></td>
                         <td><%= campus.camp_capacidad %></td>
                         <td>
-                            <!-- Botón para generar reporte específico -->
                             <a href="/reportes/campus/<%= campus.camp_id %>" class="btn btn-primary btn-sm">Generar Reporte</a>
                         </td>
                     </tr>
@@ -45,4 +134,4 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>
+</html> -->
