@@ -40,7 +40,7 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(path.resolve(), 'public')));
 
 
-app.use('/login', authRouter);
+app.use('/inicio', authRouter);
 
 app.use('/', indexRouter);
 //app.use('/magnitudes', magnitudesRouter);
