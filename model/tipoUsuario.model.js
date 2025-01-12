@@ -1,7 +1,6 @@
 import { DataTypes } from "sequelize";
-import sequelize from "../config/conexion";
-import PermisoUsuario from "./PermisoUsuario";
-import Usuario from "./usuario.model.js";
+import sequelize from "../config/conexion.js";
+import PermisoUsuario from "./permisosUsuarios.model.js";
 
 const TipoUsuario = sequelize.define('TipoUsuario', {
     tipus_id: {
@@ -28,10 +27,7 @@ const TipoUsuario = sequelize.define('TipoUsuario', {
     freezeTableName: true
 });
 
-TipoUsuario.belongsTo(PermisoUsuario, { foreignKey: 'perus_id', as: 'permiso' });
-PermisoUsuario.hasMany(TipoUsuario, { foreignKey: 'perus_id', as: 'tipos' });
-
-Usuario.belongsTo(TipoUsuario, { foreignKey: 'tipus_id', as: 'tipo' });
-TipoUsuario.hasMany(Usuario, { foreignKey: 'tipus_id', as: 'usuarios' });
+PermisoUsuario.hasMany(TipoUsuario, { foreignKey: 'perus_id', as: 'TipoUsuarios' });
+TipoUsuario.belongsTo(PermisoUsuario, { foreignKey: 'perus_id' });
 
 export default TipoUsuario;

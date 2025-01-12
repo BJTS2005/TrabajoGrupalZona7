@@ -21,6 +21,7 @@ import categoriasRouter from './routes/categorias.router.js';
 import miembrosRouter from './routes/miembros.route.js';
 import indicadoresRouter from './routes/indicadores.route.js';
 import reportesRouter from './routes/reporte.route.js';
+import authRouter from './routes/auth.route.js';
 
 console.log("hola");
 
@@ -37,6 +38,9 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extends: false}));
 app.use(bodyParser.json());
 app.use(express.static(path.join(path.resolve(), 'public')));
+
+
+app.use('/login', authRouter);
 
 app.use('/', indexRouter);
 //app.use('/magnitudes', magnitudesRouter);

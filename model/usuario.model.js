@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import sequelize from "../config/conexion";
+import sequelize from "../config/conexion.js";
 import TipoUsuario from "./tipoUsuario.model.js"; 
 
 const Usuario = sequelize.define('Usuario', {
@@ -58,7 +58,7 @@ const Usuario = sequelize.define('Usuario', {
     freezeTableName: true
 });
 
-Usuario.belongsTo(TipoUsuario, { foreignKey: 'tipus_id', as: 'tipo' });
-TipoUsuario.hasMany(Usuario, { foreignKey: 'tipus_id', as: 'usuarios' });
+TipoUsuario.hasMany(Usuario, { foreignKey: 'tipus_id', as: 'Usuarios' });
+Usuario.belongsTo(TipoUsuario, { foreignKey: 'tipus_id' });
 
 export default Usuario;
