@@ -49,6 +49,9 @@ const Usuario = sequelize.define('Usuario', {
     updated_at: {
         type: DataTypes.DATE,
         allowNull: true
+    },user_cedula: {
+        type: DataTypes.STRING(10),
+        allowNull: false
     }
 }, {
     tableName: 'usuarios',
