@@ -22,6 +22,7 @@ import miembrosRouter from './routes/miembros.route.js';
 import indicadoresRouter from './routes/indicadores.route.js';
 import reportesRouter from './routes/reporte.route.js';
 import authRouter from './routes/auth.route.js';
+import { validateToken } from './middlewares/validarToken.middleware.js';
 
 console.log("hola");
 
@@ -41,6 +42,8 @@ app.use(express.static(path.join(path.resolve(), 'public')));
 
 
 app.use('/inicio', authRouter);
+
+app.use(validateToken);
 
 app.use('/', indexRouter);
 //app.use('/magnitudes', magnitudesRouter);

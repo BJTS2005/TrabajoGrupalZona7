@@ -17,7 +17,7 @@ export const login = async (req, res) => {
 
         const token = await createToken({id: userFound.user_id});
         res.cookie("token", token);
-        res.json({message: "Logeado", userFound});
+        res.redirect('/');
     } catch (error) {
         res.status(500).json({
             message: error.message || "Some error occurred while retrieving users."
@@ -28,5 +28,5 @@ export const login = async (req, res) => {
 
 export const logout = (req, res) => {
     res.cookie('token',"", {expires: new Date(0)});
-    return res.sendStatus(200);
+    return res.redirect('/inicio/login');
 }
