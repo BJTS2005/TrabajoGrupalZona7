@@ -28,6 +28,11 @@ console.log("hola");
 
 const app = express();
 
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store');
+  next();
+});
+
 // view engine setup
 app.set('views', path.join(path.resolve(), 'views')); // path.resolve() para __dirname en ES Modules
 app.set('view engine', 'ejs');
