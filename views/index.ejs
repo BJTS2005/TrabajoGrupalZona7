@@ -13,7 +13,7 @@
     <div class="container mt-5">
         <div class="text-center mb-5">
             <h1 class="display-4 mb-3" style="color: #0f172a;">Sistema de Gestión Green Metric</h1>
-            <p class="lead text-muted">Gestiona y monitorea los indicadores de sostenibilidad de tu campus</p>
+            <p class="lead text-muted">Gestiona y monitorea los indicadores de sostenibilidad de tu campus <%= user.tipo %></p>
         </div>
 
         <div
@@ -25,6 +25,7 @@
         </div>
 
         <div class="row mt-4">
+        <% if(user.tipo === 1) { %>
             <!-- Gestionar Campus -->
             <div class="col-md-6">
                 <a href="/campus" class="text-decoration-none">
@@ -87,7 +88,7 @@
                     </div>
                 </a>
             </div>
-
+            <% } %>
             <!-- Informes -->
             <div class="col-md-6 mx-auto">
                 <a class="text-decoration-none">

@@ -1,3 +1,4 @@
+import { name } from "ejs";
 import { createToken } from "../libs/jwt.js";
 import Usuario from "../model/usuario.model.js";
 
@@ -15,9 +16,13 @@ export const login = async (req, res) => {
        if (!userFound) return res.render('login', { error: "Usuario no encontrado" });
        if (userFound.user_password !== user_password) return res.render('login', { error: "Contraseña inválida" });
 
-       const token = await createToken({id: userFound.user_id});
+       const token = await createToken({id: userFound.user_id, 
+        name: userFound.user_nombre,
+        tipo: userFound.tipus_id});
+       console.log(token);
        res.cookie("token", token);
        res.redirect('/');
+
    } catch (error) {
        res.render('login', { error: "Error en el servidor" });
    }
