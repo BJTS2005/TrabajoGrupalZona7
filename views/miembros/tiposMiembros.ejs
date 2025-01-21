@@ -48,19 +48,19 @@
                         <% tiposMiembro.forEach(tipo=> { %>
                             <tr>
                                 <td class="text-center">
-                                    <%= tipo.tipmi_id %>
+                                    <%= tipo.tipus_id %>
                                 </td>
                                 <td class="text-center">
-                                    <%= tipo.tipmi_detalle %>
+                                    <%= tipo.tipus_detalles %>
                                 </td>
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center">
                                         <button class="reutilizable-btn-action reutilizable-btn-edit"
                                             data-bs-toggle="modal" data-bs-target="#modalEditarTipo"
-                                            data-id="<%= tipo.tipmi_id %>" data-detalle="<%= tipo.tipmi_detalle %>">
+                                            data-id="<%= tipo.tipus_id %>" data-detalle="<%= tipo.tipus_detalles %>">
                                             <i class="fas fa-edit mr-1"></i>Editar
                                         </button>
-                                        <form action="/miembros/tipos/eliminar/<%= tipo.tipmi_id %>" method="POST"
+                                        <form action="/miembros/tipos/eliminar/<%= tipo.tipus_id %>" method="POST"
                                             onsubmit="return confirm('¿Estás seguro de eliminar este tipo de miembro?');">
                                             <button class="reutilizable-btn-action reutilizable-btn-delete">
                                                 <i class="fas fa-trash-alt mr-1"></i>Eliminar
@@ -94,7 +94,7 @@
                                         <i class="fa fa-hashtag icono-modal-rst me-2"></i>ID
                                     </label>
                                     <input type="text" class="form-control modal-rst-input" id="tipmi_id"
-                                        name="tipmi_id" maxlength="4" placeholder="Ej: TM01" required>
+                                        name="tipus_id" maxlength="4" placeholder="Ej: TM01" required>
                                 </div>
 
                                 <div class="mb-4">
@@ -102,7 +102,7 @@
                                         <i class="fa fa-info-circle icono-modal-rst me-2"></i>Detalle
                                     </label>
                                     <input type="text" class="form-control modal-rst-input" id="tipmi_detalle"
-                                        name="tipmi_detalle" maxlength="20" placeholder="Ej: Estudiante" required>
+                                        name="tipus_detalles" maxlength="20" placeholder="Ej: Estudiante" required>
                                 </div>
 
                                 <div class="modal-footer border-0 px-4 pb-4">
@@ -134,14 +134,14 @@
                         <div class="modal-body px-4">
                             <h4 class="text-white mb-4">Modificar Tipo de Miembro</h4>
                             <form action="/miembros/tipos/actualizar" method="POST">
-                                <input type="hidden" id="tipmi_id_editar" name="tipmi_id">
+                                <input type="hidden" id="tipmi_id_editar" name="tipus_id">
 
                                 <div class="mb-4">
-                                    <label for="tipmi_detalle_editar" class="form-label modal-rst-label">
+                                    <label for="tipmi_detalle_editar" class="form-label modal-rst-label" >
                                         <i class="fa fa-info-circle icono-modal-rst me-2"></i>Detalle
                                     </label>
                                     <input type="text" class="form-control modal-rst-input" id="tipmi_detalle_editar"
-                                        name="tipmi_detalle" maxlength="20" placeholder="Ej: Estudiante" required>
+                                        name="tipus_detalles" maxlength="20" placeholder="Ej: Estudiante" required>
                                 </div>
 
                                 <div class="modal-footer border-0 px-4 pb-4">
