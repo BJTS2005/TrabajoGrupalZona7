@@ -28,7 +28,11 @@
                 <!-- Campus Card 1 -->
                 <% datos.forEach(campus=> { %>
                     <div class="col-md-6">
-                        <div class="card campus-card">
+                        <div class="card campus-card" onclick="location.href='/campus/<%= campus.camp_id %>'" style="cursor: pointer;">
+                                <img src="public/images/<%= campus.camp_id %>.png" 
+                                     class="card-img-top w-100 object-fit-cover" 
+                                     style="height: 200px;" 
+                                     alt="campus <%= campus.camp_nom %>">
                             <div class="card-body">
                                 <div class="d-flex align-items-center mb-3">
                                     <div class="campus-icon">
@@ -50,10 +54,10 @@
                                 <div class="d-flex justify-content-end">
                                     <button class="btn-action btn-view"
                                         onclick="location.href='/campus/<%= campus.camp_id %>';">
-                                        <i class="fas fa-eye mr-1"></i>Ver
+                                        <i class="fas fa-eye mr-1"></i>Gestionar
                                     </button>
                                     <button class="btn-action btn-edit"
-                                        onclick="location.href='/campus/editar/<%= campus.camp_id %>';">
+                                        onclick="event.stopPropagation(); location.href='/campus/editar/<%= campus.camp_id %>';">
                                         <i class="fas fa-edit mr-1"></i>Editar
                                     </button>
                                     <form action="/campus/eliminar/<%= campus.camp_id %>" method="POST"

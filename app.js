@@ -23,6 +23,7 @@ import indicadoresRouter from './routes/indicadores.route.js';
 import reportesRouter from './routes/reporte.route.js';
 import authRouter from './routes/auth.route.js';
 import { validateToken } from './middlewares/validarToken.middleware.js';
+import imagenesRouter from './routes/imagenes.route.js';
 
 console.log("hola");
 
@@ -44,13 +45,14 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extends: false}));
 app.use(bodyParser.json());
 app.use(express.static(path.join(path.resolve(), 'public')));
-
+app.use('/public/images', express.static('uploads'));
 
 app.use('/inicio', authRouter);
 
 app.use(validateToken);
 
 app.use('/', indexRouter);
+app.use('/campus/imagenes', imagenesRouter);
 //app.use('/magnitudes', magnitudesRouter);
 //app.use('/unidades', unidadesRouter);
 //app.use('/indicadores', indicadoresRouter);
