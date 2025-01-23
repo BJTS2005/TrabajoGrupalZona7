@@ -1,15 +1,17 @@
 import { MiembroUnidad, TipoMiembro } from "../model/miembros.model.js";
+import  Usuario  from "../model/usuario.model.js";
+import  TipoUsuario  from "../model/tipoUsuario.model.js";
 
 export const miembrosController = {
     // Listar todos los miembros y tipos de miembro
     listar: async (req, res) => {
         try {
             // Obtener todos los miembros con sus tipos asociados
-            const miembros = await MiembroUnidad.findAll({
+            const miembros = await Usuario.findAll({
                 include: [
                     {
-                        model: TipoMiembro,
-                        attributes: ['tipmi_id', 'tipmi_detalle'], // Incluir solo los campos necesarios
+                        model: TipoUsuario,
+                        attributes: ['tipus_id', 'tipus_detalles'], // Incluir solo los campos necesarios
                     },
                 ],
                 raw: true,
@@ -17,8 +19,8 @@ export const miembrosController = {
             });
 
             // Obtener los tipos de miembro para el formulario de registro y edición
-            const tiposMiembro = await TipoMiembro.findAll({
-                attributes: ['tipmi_id', 'tipmi_detalle'],
+            const tiposMiembro = await TipoUsuario.findAll({
+                attributes: ['tipus_id', 'tipus_detalles'],
                 raw: true,
             });
 
@@ -33,49 +35,93 @@ export const miembrosController = {
     // Registrar un nuevo miembro
     registrarMiembro: async (req, res) => {
         try {
-            const { mie_ci, tipmi_id, mie_nombres, mie_apellidos, mie_telefono, mie_mail } = req.body;
-
-            // Crear el nuevo miembro
-            await MiembroUnidad.create({
-                mie_ci,
-                tipmi_id,
-                mie_nombres,
-                mie_apellidos,
-                mie_telefono,
-                mie_mail,
+            const { 
+                user_cedula,
+                tipus_id, 
+                user_nombre, 
+                user_apellido, 
+                user_telefono, 
+                user_email,
+                user_password
+            } = req.body;
+    
+            // Crear el nuevo usuario
+            await Usuario.create({
+                user_cedula,
+                tipus_id,
+                user_nombre,
+                user_apellido,
+                user_telefono,
+                user_email,
+                user_password,
+                user_estado: true, // Asumiendo que un nuevo usuario se crea activo
+                created_at: new Date(),
+                updated_at: new Date()
             });
-
+    
             res.redirect("/miembros");
         } catch (error) {
-            console.error("Error al registrar el miembro:", error);
-            res.status(500).send("Error al registrar el miembro.");
+            console.error("Error al registrar el usuario:", error);
+            
+            // Mejorar el manejo de errores para dar feedback más específico
+            if (error.name === 'SequelizeUniqueConstraintError') {
+                // Si el error es por correo duplicado
+                res.status(400).send("El usuario con esa cedula ya está registrado.");
+            } else {
+                res.status(500).send("Error al registrar el usuario.");
+            }
         }
     },
 
     // Actualizar un miembro existente
     actualizarMiembro: async (req, res) => {
         try {
-            const { mie_ci, tipmi_id, mie_nombres, mie_apellidos, mie_telefono, mie_mail } = req.body;
-
-            // Buscar el miembro por su CI
-            const miembro = await MiembroUnidad.findByPk(mie_ci);
-            if (!miembro) {
-                return res.status(404).send("Miembro no encontrado.");
-            }
-
-            // Actualizar los datos del miembro
-            await miembro.update({
-                tipmi_id,
-                mie_nombres,
-                mie_apellidos,
-                mie_telefono,
-                mie_mail,
+            const { 
+                user_id,
+                tipus_id, 
+                user_nombre, 
+                user_apellido, 
+                user_telefono, 
+                user_email 
+            } = req.body;
+    
+            // Buscar el usuario
+            const usuario = await Usuario.findOne({
+                where: {
+                    user_id,
+                    user_estado: true
+                }
             });
-
+    
+            if (!usuario) {
+                return res.status(404).send("Usuario no encontrado o inactivo.");
+            }
+    
+            // Verificar que el tipo de usuario existe
+            const tipoUsuario = await TipoUsuario.findByPk(tipus_id);
+            if (!tipoUsuario) {
+                return res.status(400).send("El tipo de usuario especificado no existe.");
+            }
+    
+            // Actualizar los datos del usuario
+            await usuario.update({
+                tipus_id,
+                user_nombre,
+                user_apellido,
+                user_telefono,
+                user_email,
+                updated_at: new Date()
+            });
+    
             res.redirect("/miembros");
         } catch (error) {
-            console.error("Error al actualizar el miembro:", error);
-            res.status(500).send("Error al actualizar el miembro.");
+            console.error("Error al actualizar el usuario:", error);
+            
+            if (error.name === 'SequelizeValidationError') {
+                return res.status(400).send("Por favor, verifica que todos los campos sean correctos.");
+            }
+    
+            res.status(500).send("Error al actualizar el usuario.");
         }
     },
 
@@ -83,9 +129,8 @@ export const miembrosController = {
     eliminarMiembro: async (req, res) => {
         try {
             const { mie_ci } = req.params;
-
-            // Buscar el miembro por su CI
-            const miembro = await MiembroUnidad.findByPk(mie_ci);
+            console.log(mie_ci + "aqui tooooooooooooooooooooooooooooooooooooooy");
+            const miembro = await Usuario.findByPk(mie_ci);
             if (!miembro) {
                 return res.status(404).send("Miembro no encontrado.");
             }
@@ -103,7 +148,7 @@ export const miembrosController = {
     // Listar todos los tipos de miembro
     listarTipos: async (req, res) => {
         try {
-            const tiposMiembro = await TipoMiembro.findAll({
+            const tiposMiembro = await TipoUsuario.findAll({
                 raw: true,
             });
 
@@ -117,12 +162,12 @@ export const miembrosController = {
     // Registrar un nuevo tipo de miembro
     registrarTipo: async (req, res) => {
         try {
-            const { tipmi_id, tipmi_detalle } = req.body;
+            const { tipus_id, tipus_detalles } = req.body;
 
             // Crear el nuevo tipo de miembro
-            await TipoMiembro.create({
-                tipmi_id,
-                tipmi_detalle,
+            await TipoUsuario.create({
+                tipus_id,
+                tipus_detalles,
             });
 
             res.redirect("/miembros/tipos");
@@ -135,17 +180,17 @@ export const miembrosController = {
     // Actualizar un tipo de miembro existente
     actualizarTipo: async (req, res) => {
         try {
-            const { tipmi_id, tipmi_detalle } = req.body;
+            const { tipus_id, tipus_detalles } = req.body;
 
             // Buscar el tipo de miembro por su ID
-            const tipoMiembro = await TipoMiembro.findByPk(tipmi_id);
+            const tipoMiembro = await TipoUsuario.findByPk(tipus_id);
             if (!tipoMiembro) {
                 return res.status(404).send("Tipo de miembro no encontrado.");
             }
 
             // Actualizar los datos del tipo de miembro
             await tipoMiembro.update({
-                tipmi_detalle,
+                tipus_detalles,
             });
 
             res.redirect("/miembros/tipos");
@@ -161,7 +206,7 @@ export const miembrosController = {
             const { tipmi_id } = req.params;
 
             // Buscar el tipo de miembro por su ID
-            const tipoMiembro = await TipoMiembro.findByPk(tipmi_id);
+            const tipoMiembro = await TipoUsuario.findByPk(tipmi_id);
             if (!tipoMiembro) {
                 return res.status(404).send("Tipo de miembro no encontrado.");
             }

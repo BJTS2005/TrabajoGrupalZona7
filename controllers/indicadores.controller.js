@@ -2,6 +2,7 @@ import Categoria from "../model/categorias.model.js";
 import { MiembroUnidad } from "../model/miembros.model.js";
 import Indicador from "../model/indicadores.model.js";
 import RangoIndicador from "../model/rangos.model.js";
+import Usuario from "../model/usuario.model.js";
 
 
 
@@ -15,7 +16,7 @@ export const indicadoresController = {
                 where: { cat_cod },
                 include: [
                     { model: Categoria, attributes: ['cat_nombre', 'cat_porc'] },
-                    { model: MiembroUnidad, attributes: ['mie_nombres', 'mie_apellidos'] },
+                    { model: Usuario, attributes: ['user_nombre', 'user_apellido'] },
                     { 
                         model: RangoIndicador, 
                         attributes: ['valor_ran', 'descripcion_ran'], 
@@ -34,8 +35,8 @@ export const indicadoresController = {
             const categoria = await Categoria.findByPk(cat_cod, { raw: true });
 
             // Obtener los miembros para el formulario
-            const miembros = await MiembroUnidad.findAll({
-                attributes: ['mie_ci', 'mie_nombres', 'mie_apellidos'],
+            const miembros = await Usuario.findAll({
+                attributes: ['user_cedula', 'user_nombre', 'user_apellido'],
                 raw: true,
             });
 

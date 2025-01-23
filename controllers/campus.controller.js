@@ -1,6 +1,7 @@
 import Campus from "../model/campus.model.js";
 import FondoInvestigacion from "../model/fondosInvestigacion.model.js";
 
+
 export const campusController = {
 
     listar: async (req, res) => {
@@ -59,7 +60,7 @@ export const campusController = {
                 fondo_total: parseFloat(fondo_total),
                 fondo_sostenibilidad: parseFloat(fondo_sostenibilidad),
             });
-            
+
 
             res.redirect('/campus');
         } catch (error) {
@@ -183,6 +184,34 @@ export const campusController = {
         } catch (error) {
             console.error("Error al registrar el fondo:", error);
             res.status(500).send("Hubo un error al registrar el fondo.");
+        }
+    },
+
+    guardarImagen: async (req, res) => {
+        try {
+            if (!req.file) {
+                return res.status(400).json({ error: 'No se envió ninguna imagen' });
+            }
+
+            const file = req.file;
+
+            const ext = path.extname(file.originalname);
+            const newFileName = `${file.filename}${ext}`;
+            const newPath = path.join('uploads', newFileName);
+
+            fs.renameSync(file.path, newPath);
+
+            // Respuesta de éxito
+            res.status(200).json({
+                message: 'Imagen subida exitosamente',
+                file: {
+                    name: newFileName,
+                    url: `/public/images/${newFileName}`,
+                },
+            });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Ocurrió un error al subir la imagen' });
         }
     },
 };

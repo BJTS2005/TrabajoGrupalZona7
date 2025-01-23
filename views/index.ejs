@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="stylesheets/inicio.css">
-    <title>Document</title>
+    <title>Inicio-Green Metrics</title>
 </head>
 
 <body>
@@ -13,7 +13,7 @@
     <div class="container mt-5">
         <div class="text-center mb-5">
             <h1 class="display-4 mb-3" style="color: #0f172a;">Sistema de Gestión Green Metric</h1>
-            <p class="lead text-muted">Gestiona y monitorea los indicadores de sostenibilidad de tu campus</p>
+            <p class="lead text-muted">Gestiona y monitorea los indicadores de sostenibilidad de tu campus <%= user.tipo %></p>
         </div>
 
         <div
@@ -25,6 +25,7 @@
         </div>
 
         <div class="row mt-4">
+        <% if(user.tipo === 1) { %>
             <!-- Gestionar Campus -->
             <div class="col-md-6">
                 <a href="/campus" class="text-decoration-none">
@@ -59,7 +60,7 @@
 
             <!-- Gestionar Usuarios -->
             <div class="col-md-6">
-                <a href="/usuarios" class="text-decoration-none">
+                <a href="/miembros" class="text-decoration-none">
                     <div class="card mb-4 hover-card">
                         <div class="card-body text-center p-4">
                             <div class="icon-circle mb-3">
@@ -87,7 +88,7 @@
                     </div>
                 </a>
             </div>
-
+            <% } %>
             <!-- Informes -->
             <div class="col-md-6 mx-auto">
                 <a class="text-decoration-none">

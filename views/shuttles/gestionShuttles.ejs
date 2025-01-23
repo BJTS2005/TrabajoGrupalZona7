@@ -9,6 +9,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="/utils/crearExcel.js"></script>
     <title>Gestión de Servicios de Transporte</title>
     <link rel="stylesheet" href="/stylesheets/campus_style/servicios_trans/gestion-servicios-trans.css">
 </head>
@@ -16,367 +18,375 @@
 <body>
     <%- include ../../views/layout/cabecera.ejs %>
 
-            <div class="container mt-5">
-                <div class="page-header d-flex justify-content-between align-items-center">
-                    <div>
-                        <h1 class="page-title">Gestión de Servicios de Transporte</h1>
-                        <p class="page-subtitle">Administra los servicios de transporte del campus</p>
-                    </div>
-                    <button class="add-service-btn" data-bs-toggle="modal" data-bs-target="#registro-servicio-modal">
-                        <i class="fas fa-plus me-2"></i>Registrar Nuevo Servicio
-                    </button>
+        <div class="container mt-5">
+            <div class="page-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="page-title">Gestión de Servicios de Transporte</h1>
+                    <p class="page-subtitle">Administra los servicios de transporte del campus</p>
                 </div>
+                <button class="add-service-btn" data-bs-toggle="modal" data-bs-target="#registro-servicio-modal">
+                    <i class="fas fa-plus me-2"></i>Registrar Nuevo Servicio
+                </button>
+                <button class="add-service-btn"
+                    onclick="exportTableToExcel('tbl-shuttles-gestion', 'GestionShuttles.xlsx', 'Campus ' + '<%= currentCampus %>')">
+                    <i class="fas fa-plus me-2"></i>Exportar Excel
+                </button>
+            </div>
 
-                <!-- Formulario de Filtros -->
-                <form method="GET" action="/shuttles/gestionar/<%= currentCampus %>" class="filtro-gst-container py-3 px-3 mb-3">
-                    <div class="row g-3">
-                        <!-- Tipo de Emisión -->
-                        <div class="col-md">
-                            <div class="filtro-gst-field">
-                                <label class="filtro-gst-label">
-                                    <i class="bi bi-fuel-pump me-1"></i>
-                                    Tipo de Emisión
-                                </label>
-                                <div class="filtro-gst-select-wrapper">
-                                    <select name="tipoEmision" class="form-select filtro-gst-select">
-                                        <option value="">Todos</option>
-                                        <% tiposEmision.forEach(emision => { %>
-                                            <option value="<%= emision.tpe_id %>" 
-                                                <%= emision.tpe_id === tipoEmision ? "selected" : "" %>>
-                                                <%= emision.tpe_detalle %>
-                                            </option>
+            <!-- Formulario de Filtros -->
+            <form method="GET" action="/shuttles/gestionar/<%= currentCampus %>"
+                class="filtro-gst-container py-3 px-3 mb-3">
+                <div class="row g-3">
+                    <!-- Tipo de Emisión -->
+                    <div class="col-md">
+                        <div class="filtro-gst-field">
+                            <label class="filtro-gst-label">
+                                <i class="bi bi-fuel-pump me-1"></i>
+                                Tipo de Emisión
+                            </label>
+                            <div class="filtro-gst-select-wrapper">
+                                <select name="tipoEmision" class="form-select filtro-gst-select">
+                                    <option value="">Todos</option>
+                                    <% tiposEmision.forEach(emision=> { %>
+                                        <option value="<%= emision.tpe_id %>" <%=emision.tpe_id===tipoEmision
+                                            ? "selected" : "" %>>
+                                            <%= emision.tpe_detalle %>
+                                        </option>
                                         <% }); %>
-                                    </select>
-                                    <i class="bi bi-chevron-down filtro-gst-select-icon"></i>
-                                </div>
+                                </select>
+                                <i class="bi bi-chevron-down filtro-gst-select-icon"></i>
                             </div>
-                        </div>
-                
-                        <!-- Fecha Inicio -->
-                        <div class="col-md">
-                            <div class="filtro-gst-field">
-                                <label class="filtro-gst-label">
-                                    <i class="bi bi-calendar-event me-1"></i>
-                                    Fecha Inicio
-                                </label>
-                                <div class="filtro-gst-input-wrapper">
-                                    <input type="date" name="fechaInicio" 
-                                        class="form-control filtro-gst-input" 
-                                        value="<%= fechaInicio %>">
-                                    <i class="bi bi-calendar3 filtro-gst-input-icon"></i>
-                                </div>
-                            </div>
-                        </div>
-                
-                        <!-- Fecha Fin -->
-                        <div class="col-md">
-                            <div class="filtro-gst-field">
-                                <label class="filtro-gst-label">
-                                    <i class="bi bi-calendar-event me-1"></i>
-                                    Fecha Fin
-                                </label>
-                                <div class="filtro-gst-input-wrapper">
-                                    <input type="date" name="fechaFin" 
-                                        class="form-control filtro-gst-input" 
-                                        value="<%= fechaFin %>">
-                                    <i class="bi bi-calendar3 filtro-gst-input-icon"></i>
-                                </div>
-                            </div>
-                        </div>
-                
-                        <!-- Ordenar por -->
-                        <div class="col-md">
-                            <div class="filtro-gst-field">
-                                <label class="filtro-gst-label">
-                                    <i class="bi bi-sort-down me-1"></i>
-                                    Ordenar por
-                                </label>
-                                <div class="filtro-gst-select-wrapper">
-                                    <select name="orderBy" class="form-select filtro-gst-select">
-                                        <option value="">Por Defecto</option>
-                                        <option value="sti_prom_pasajeros" 
-                                            <%= orderBy === "sti_prom_pasajeros" ? "selected" : "" %>>
-                                            Promedio de Pasajeros
-                                        </option>
-                                        <option value="sti_tot_viajes_dia" 
-                                            <%= orderBy === "sti_tot_viajes_dia" ? "selected" : "" %>>
-                                            Viajes al Día
-                                        </option>
-                                        <option value="sti_fecha_registro" 
-                                            <%= orderBy === "sti_fecha_registro" ? "selected" : "" %>>
-                                            Fecha de Registro
-                                        </option>
-                                    </select>
-                                    <i class="bi bi-chevron-down filtro-gst-select-icon"></i>
-                                </div>
-                            </div>
-                        </div>
-                
-                        <!-- Dirección -->
-                        <div class="col-md">
-                            <div class="filtro-gst-field">
-                                <label class="filtro-gst-label">
-                                    <i class="bi bi-arrow-down-up me-1"></i>
-                                    Dirección
-                                </label>
-                                <div class="filtro-gst-select-wrapper">
-                                    <select name="orderDir" class="form-select filtro-gst-select">
-                                        <option value="ASC" <%= orderDir === "ASC" ? "selected" : "" %>>Ascendente</option>
-                                        <option value="DESC" <%= orderDir === "DESC" ? "selected" : "" %>>Descendente</option>
-                                    </select>
-                                    <i class="bi bi-chevron-down filtro-gst-select-icon"></i>
-                                </div>
-                            </div>
-                        </div>
-                
-                        <!-- Botón Filtrar -->
-                        <div class="col-md d-flex align-items-end">
-                            <button type="submit" class="filtro-gst-btn">
-                                <i class="bi bi-funnel me-1"></i>
-                                Filtrar
-                            </button>
                         </div>
                     </div>
-                </form>
 
-                <!-- Tabla de Servicios -->
-                <div class="table-responsive">
-                    <table class="reutilizable-table rounded-3 border w-100">
-                        <thead>
+                    <!-- Fecha Inicio -->
+                    <div class="col-md">
+                        <div class="filtro-gst-field">
+                            <label class="filtro-gst-label">
+                                <i class="bi bi-calendar-event me-1"></i>
+                                Fecha Inicio
+                            </label>
+                            <div class="filtro-gst-input-wrapper">
+                                <input type="date" name="fechaInicio" class="form-control filtro-gst-input"
+                                    value="<%= fechaInicio %>">
+                                <i class="bi bi-calendar3 filtro-gst-input-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fecha Fin -->
+                    <div class="col-md">
+                        <div class="filtro-gst-field">
+                            <label class="filtro-gst-label">
+                                <i class="bi bi-calendar-event me-1"></i>
+                                Fecha Fin
+                            </label>
+                            <div class="filtro-gst-input-wrapper">
+                                <input type="date" name="fechaFin" class="form-control filtro-gst-input"
+                                    value="<%= fechaFin %>">
+                                <i class="bi bi-calendar3 filtro-gst-input-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ordenar por -->
+                    <div class="col-md">
+                        <div class="filtro-gst-field">
+                            <label class="filtro-gst-label">
+                                <i class="bi bi-sort-down me-1"></i>
+                                Ordenar por
+                            </label>
+                            <div class="filtro-gst-select-wrapper">
+                                <select name="orderBy" class="form-select filtro-gst-select">
+                                    <option value="">Por Defecto</option>
+                                    <option value="sti_prom_pasajeros" <%=orderBy==="sti_prom_pasajeros" ? "selected"
+                                        : "" %>>
+                                        Promedio de Pasajeros
+                                    </option>
+                                    <option value="sti_tot_viajes_dia" <%=orderBy==="sti_tot_viajes_dia" ? "selected"
+                                        : "" %>>
+                                        Viajes al Día
+                                    </option>
+                                    <option value="sti_fecha_registro" <%=orderBy==="sti_fecha_registro" ? "selected"
+                                        : "" %>>
+                                        Fecha de Registro
+                                    </option>
+                                </select>
+                                <i class="bi bi-chevron-down filtro-gst-select-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dirección -->
+                    <div class="col-md">
+                        <div class="filtro-gst-field">
+                            <label class="filtro-gst-label">
+                                <i class="bi bi-arrow-down-up me-1"></i>
+                                Dirección
+                            </label>
+                            <div class="filtro-gst-select-wrapper">
+                                <select name="orderDir" class="form-select filtro-gst-select">
+                                    <option value="ASC" <%=orderDir==="ASC" ? "selected" : "" %>>Ascendente</option>
+                                    <option value="DESC" <%=orderDir==="DESC" ? "selected" : "" %>>Descendente</option>
+                                </select>
+                                <i class="bi bi-chevron-down filtro-gst-select-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botón Filtrar -->
+                    <div class="col-md d-flex align-items-end">
+                        <button type="submit" class="filtro-gst-btn">
+                            <i class="bi bi-funnel me-1"></i>
+                            Filtrar
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Tabla de Servicios -->
+            <div class="table-responsive">
+                <table class="reutilizable-table rounded-3 border w-100" id="tbl-shuttles-gestion">
+                    <thead>
+                        <tr>
+                            <th class="text-center align-middle">ID</th>
+                            <th class="text-center align-middle">Tipo de Emision</th>
+                            <th class="text-center align-middle">Descripsion</th>
+                            <th class="text-center align-middle">Promedio Pasajerp</th>
+                            <th class="text-center align-middle">Viajes al día</th>
+                            <th class="text-center align-middle">Fecha de Registro</th>
+                            <th class="text-center align-middle">ACCIONES</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% shuttles.forEach(shuttle=> { %>
                             <tr>
-                                <th class="text-center align-middle">ID</th>
-                                <th class="text-center align-middle">Tipo de Emision</th>
-                                <th class="text-center align-middle">Descripsion</th>
-                                <th class="text-center align-middle">Promedio Pasajerp</th>
-                                <th class="text-center align-middle">Viajes al día</th>
-                                <th class="text-center align-middle">Fecha de Registro</th>
-                                <th class="text-center align-middle">ACCIONES</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% shuttles.forEach(shuttle=> { %>
-                                <tr>
 
-                                    <td class="text-center"><%= shuttle.sti_id %></td>
-                                    <td class="text-center"><%= shuttle.TipoEmision.tpe_detalle %></td>
-                                    <td class="text-center"><%= shuttle.sti_descripcion %></td>
-                                    <td class="text-center"><%= shuttle.sti_prom_pasajeros %></td>
-                                    <td class="text-center"><%= shuttle.sti_tot_viajes_dia %></td>
-                                    <td class="text-center"><%= shuttle.sti_fecha_registro%></td>
+                                <td class="text-center">
+                                    <%= shuttle.sti_id %>
+                                </td>
+                                <td class="text-center">
+                                    <%= shuttle.TipoEmision.tpe_detalle %>
+                                </td>
+                                <td class="text-center">
+                                    <%= shuttle.sti_descripcion %>
+                                </td>
+                                <td class="text-center">
+                                    <%= shuttle.sti_prom_pasajeros %>
+                                </td>
+                                <td class="text-center">
+                                    <%= shuttle.sti_tot_viajes_dia %>
+                                </td>
+                                <td class="text-center">
+                                    <%= shuttle.sti_fecha_registro%>
+                                </td>
 
-                                    <td class="text-center">
-                                        <div class="d-flex justify-content-center">
-                                            <button class="reutilizable-btn-action reutilizable-btn-edit"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#modalEditarShuttle" data-id="<%= shuttle.sti_id%>"
-                                            data-tpe_id="<%= shuttle.tpe_id %>"
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center">
+                                        <button class="reutilizable-btn-action reutilizable-btn-edit"
+                                            data-bs-toggle="modal" data-bs-target="#modalEditarShuttle"
+                                            data-id="<%= shuttle.sti_id%>" data-tpe_id="<%= shuttle.tpe_id %>"
                                             data-descripcion="<%= shuttle.sti_descripcion %>"
                                             data-pajeros="<%= shuttle.sti_prom_pasajeros %>"
                                             data-viajes="<%= shuttle.sti_tot_viajes_dia %>">
-                                                <i class="fas fa-edit mr-1"></i>Editar
+                                            <i class="fas fa-edit mr-1"></i>Editar
+                                        </button>
+                                        <form
+                                            action="/shuttles/gestionar/<%= currentCampus %>/eliminar/<%= shuttle.sti_id %>"
+                                            method="POST"
+                                            onsubmit="return confirm('¿Estás seguro de eliminar este campus?');">
+                                            <button class="reutilizable-btn-action reutilizable-btn-delete">
+                                                <i class="fas fa-trash-alt mr-1"></i>Eliminar
                                             </button>
-                                            <form
-                                                action="/shuttles/gestionar/<%= currentCampus %>/eliminar/<%= shuttle.sti_id %>"
-                                                method="POST"
-                                                onsubmit="return confirm('¿Estás seguro de eliminar este campus?');">
-                                                <button class="reutilizable-btn-action reutilizable-btn-delete">
-                                                    <i class="fas fa-trash-alt mr-1"></i>Eliminar
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <% }); %>
-                        </tbody>
-                    </table>
-                </div>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% }); %>
+                    </tbody>
+                </table>
+            </div>
 
-                <!-- Modal Registrar-->
-                <div class="modal fade" id="registro-servicio-modal" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content modal-rst-bg-dark">
-                            <div class="modal-header border-0 px-4 pt-4">
-                                <div>
-                                    <h5 class="modal-title text-success fs-6">Nuevo Servicio</h5>
-                                </div>
-                                <button type="button" class="btn-close btn-close-white opacity-75"
-                                    data-bs-dismiss="modal" aria-label="Close"></button>
+            <!-- Modal Registrar-->
+            <div class="modal fade" id="registro-servicio-modal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content modal-rst-bg-dark">
+                        <div class="modal-header border-0 px-4 pt-4">
+                            <div>
+                                <h5 class="modal-title text-success fs-6">Nuevo Servicio</h5>
                             </div>
-                            <div class="modal-body px-4">
-                                <h4 class="text-white mb-4">Registrar Servicio de Transporte</h4>
-                                <form action="/shuttles/gestionar/<%= currentCampus %>" method="post" id="service-form">
-                                    <div class="mb-4">
-                                        <label for="sti_id" class="form-label modal-rst-label">
-                                            <i class="fa fa-hashtag icono-modal-rst me-2"></i>ID del Servicio
-                                        </label>
-                                        <input type="text" id="sti_id" name="sti_id"
-                                            class="form-control modal-rst-input" placeholder="Ej: SRV-001" maxlength="5"
-                                            required>
-                                    </div>
-
-                                    <div class="mb-4">
-                                        <label for="camp_id" class="form-label modal-rst-label">
-                                            <i class="fa fa-university icono-modal-rst me-2"></i>Campus
-                                        </label>
-                                        <select id="camp_id" name="camp_id" class="form-select modal-rst-input"
-                                            required>
-                                            <option value="">Seleccionar campus</option>
-                                            <% campuses.forEach(campus=> { %>
-                                                <option value="<%= campus.camp_id %>"
-                                                    <%=(currentCampus===campus.camp_id) ? 'selected' : '' %>>
-                                                    <%= campus.camp_nom %>
-                                                </option>
-                                                <% }); %>
-                                        </select>
-                                    </div>
-
-                                    <div class="mb-4">
-                                        <label for="tpe_id" class="form-label modal-rst-label">
-                                            <i class="fa fa-random icono-modal-rst me-2"></i>Tipo de Emisión
-                                        </label>
-                                        <select id="tpe_id" name="tpe_id" class="form-select modal-rst-input" required>
-                                            <option value="">Seleccionar tipo</option>
-                                            <% tiposEmision.forEach(tipo=> { %>
-                                                <option value="<%= tipo.tpe_id %>">
-                                                    <%= tipo.tpe_detalle %>
-                                                </option>
-                                                <% }); %>
-                                        </select>
-                                    </div>
-
-                                    <div class="mb-4">
-                                        <label for="sti_descripcion" class="form-label modal-rst-label">
-                                            <i class="fa fa-file-text icono-modal-rst me-2"></i>Descripción del servicio
-                                        </label>
-                                        <textarea id="sti_descripcion" name="sti_descripcion"
-                                            class="form-control modal-rst-input" rows="3"
-                                            placeholder="Describe el servicio de transporte" required></textarea>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-6 mb-4">
-                                            <label for="sti_prom_pasajeros" class="form-label modal-rst-label">
-                                                <i class="fa fa-users icono-modal-rst me-2"></i>Aproximado de pasajeros
-                                            </label>
-                                            <input type="number" id="sti_prom_pasajeros" name="sti_prom_pasajeros"
-                                                class="form-control modal-rst-input" placeholder="Ej: 50" required
-                                                min="0">
-                                        </div>
-                                        <div class="col-6 mb-4">
-                                            <label for="sti_tot_viajes_dia" class="form-label modal-rst-label">
-                                                <i class="fa fa-bus icono-modal-rst me-2"></i>Viajes al día
-                                            </label>
-                                            <input type="number" id="sti_tot_viajes_dia" name="sti_tot_viajes_dia"
-                                                class="form-control modal-rst-input" placeholder="Ej: 10" required
-                                                min="0">
-                                        </div>
-                                    </div>
-
-                                    <div class="modal-footer border-0 px-4 pb-4">
-                                        <button type="button" class="btn modal-rst-btn-cancel"
-                                            data-bs-dismiss="modal">Cancelar</button>
-                                        <button type="submit" class="btn modal-rst-btn-success px-4">Registrar
-                                            Servicio</button>
-                                    </div>
-                                </form>
-                            </div>
+                            <button type="button" class="btn-close btn-close-white opacity-75" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Modal Editar-->
-
-                <div class="modal fade" id="modalEditarShuttle" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content modal-rst-bg-dark">
-                            <div class="modal-header border-0 px-4 pt-4">
-                                <div>
-                                    <h5 class="modal-title text-success fs-6">Editar Servicio</h5>
+                        <div class="modal-body px-4">
+                            <h4 class="text-white mb-4">Registrar Servicio de Transporte</h4>
+                            <form action="/shuttles/gestionar/<%= currentCampus %>" method="post" id="service-form">
+                                <div class="mb-4">
+                                    <label for="sti_id" class="form-label modal-rst-label">
+                                        <i class="fa fa-hashtag icono-modal-rst me-2"></i>ID del Servicio
+                                    </label>
+                                    <input type="text" id="sti_id" name="sti_id" class="form-control modal-rst-input"
+                                        placeholder="Ej: SRV-001" maxlength="5" required>
                                 </div>
-                                <button type="button" class="btn-close btn-close-white opacity-75"
-                                    data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body px-4">
-                                <h4 class="text-white mb-4">Editar Servicio de Transporte</h4>
-                                <form action="/shuttles/gestionar/<%= currentCampus %>/actualizar" method="post"
-                                    id="edit-service-form">
-                                    <!-- Campo oculto para el ID -->
-                                    <input type="hidden" id="sti_id_editar" name="sti_id">
 
-                                    <div class="mb-4">
-                                        <label for="tpe_id_editar" class="form-label modal-rst-label">
-                                            <i class="fa fa-random icono-modal-rst me-2"></i>Tipo de Emisión
+                                <div class="mb-4">
+                                    <label for="camp_id" class="form-label modal-rst-label">
+                                        <i class="fa fa-university icono-modal-rst me-2"></i>Campus
+                                    </label>
+                                    <select id="camp_id" name="camp_id" class="form-select modal-rst-input" required>
+                                        <option value="">Seleccionar campus</option>
+                                        <% campuses.forEach(campus=> { %>
+                                            <option value="<%= campus.camp_id %>" <%=(currentCampus===campus.camp_id)
+                                                ? 'selected' : '' %>>
+                                                <%= campus.camp_nom %>
+                                            </option>
+                                            <% }); %>
+                                    </select>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="tpe_id" class="form-label modal-rst-label">
+                                        <i class="fa fa-random icono-modal-rst me-2"></i>Tipo de Emisión
+                                    </label>
+                                    <select id="tpe_id" name="tpe_id" class="form-select modal-rst-input" required>
+                                        <option value="">Seleccionar tipo</option>
+                                        <% tiposEmision.forEach(tipo=> { %>
+                                            <option value="<%= tipo.tpe_id %>">
+                                                <%= tipo.tpe_detalle %>
+                                            </option>
+                                            <% }); %>
+                                    </select>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="sti_descripcion" class="form-label modal-rst-label">
+                                        <i class="fa fa-file-text icono-modal-rst me-2"></i>Descripción del servicio
+                                    </label>
+                                    <textarea id="sti_descripcion" name="sti_descripcion"
+                                        class="form-control modal-rst-input" rows="3"
+                                        placeholder="Describe el servicio de transporte" required></textarea>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-6 mb-4">
+                                        <label for="sti_prom_pasajeros" class="form-label modal-rst-label">
+                                            <i class="fa fa-users icono-modal-rst me-2"></i>Aproximado de pasajeros
                                         </label>
-                                        <select id="tpe_id_editar" name="tpe_id" class="form-select modal-rst-input"
-                                            required>
-                                            <% tiposEmision.forEach(tipo=> { %>
-                                                <option value="<%= tipo.tpe_id %>">
-                                                    <%= tipo.tpe_detalle %>
-                                                </option>
-                                                <% }); %>
-                                        </select>
+                                        <input type="number" id="sti_prom_pasajeros" name="sti_prom_pasajeros"
+                                            class="form-control modal-rst-input" placeholder="Ej: 50" required min="0">
                                     </div>
-
-                                    <div class="mb-4">
-                                        <label for="sti_descripcion_editar" class="form-label modal-rst-label">
-                                            <i class="fa fa-file-text icono-modal-rst me-2"></i>Descripción del servicio
+                                    <div class="col-6 mb-4">
+                                        <label for="sti_tot_viajes_dia" class="form-label modal-rst-label">
+                                            <i class="fa fa-bus icono-modal-rst me-2"></i>Viajes al día
                                         </label>
-                                        <textarea id="sti_descripcion_editar" name="sti_descripcion"
-                                            class="form-control modal-rst-input" rows="3" required></textarea>
+                                        <input type="number" id="sti_tot_viajes_dia" name="sti_tot_viajes_dia"
+                                            class="form-control modal-rst-input" placeholder="Ej: 10" required min="0">
                                     </div>
+                                </div>
 
-                                    <div class="row">
-                                        <div class="col-6 mb-4">
-                                            <label for="sti_prom_pasajeros_editar" class="form-label modal-rst-label">
-                                                <i class="fa fa-users icono-modal-rst me-2"></i>Aproximado de pasajeros
-                                            </label>
-                                            <input type="number" id="sti_prom_pasajeros_editar"
-                                                name="sti_prom_pasajeros" class="form-control modal-rst-input" required
-                                                min="0">
-                                        </div>
-                                        <div class="col-6 mb-4">
-                                            <label for="sti_tot_viajes_dia_editar" class="form-label modal-rst-label">
-                                                <i class="fa fa-bus icono-modal-rst me-2"></i>Viajes al día
-                                            </label>
-                                            <input type="number" id="sti_tot_viajes_dia_editar"
-                                                name="sti_tot_viajes_dia" class="form-control modal-rst-input" required
-                                                min="0">
-                                        </div>
-                                    </div>
-
-                                    <div class="modal-footer border-0 px-4 pb-4">
-                                        <button type="button" class="btn modal-rst-btn-cancel"
-                                            data-bs-dismiss="modal">Cancelar</button>
-                                        <button type="submit" class="btn modal-rst-btn-success px-4">Guardar
-                                            Cambios</button>
-                                    </div>
-                                </form>
-                            </div>
+                                <div class="modal-footer border-0 px-4 pb-4">
+                                    <button type="button" class="btn modal-rst-btn-cancel"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn modal-rst-btn-success px-4">Registrar
+                                        Servicio</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-            <script>
-                const modalEditar = document.getElementById('modalEditarShuttle');
 
-                modalEditar.addEventListener('show.bs.modal', (event) => {
-                    const boton = event.relatedTarget;
+            <!-- Modal Editar-->
 
-                    const sti_id = boton.getAttribute('data-id');
-                    const tpe_id = boton.getAttribute('data-tpe_id');
-                    const sti_descripcion = boton.getAttribute('data-descripcion');
-                    const sti_prom_pasajeros = boton.getAttribute('data-pajeros');
-                    const sti_tot_viajes_dia = boton.getAttribute('data-viajes');
+            <div class="modal fade" id="modalEditarShuttle" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content modal-rst-bg-dark">
+                        <div class="modal-header border-0 px-4 pt-4">
+                            <div>
+                                <h5 class="modal-title text-success fs-6">Editar Servicio</h5>
+                            </div>
+                            <button type="button" class="btn-close btn-close-white opacity-75" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body px-4">
+                            <h4 class="text-white mb-4">Editar Servicio de Transporte</h4>
+                            <form action="/shuttles/gestionar/<%= currentCampus %>/actualizar" method="post"
+                                id="edit-service-form">
+                                <!-- Campo oculto para el ID -->
+                                <input type="hidden" id="sti_id_editar" name="sti_id">
 
-                    modalEditar.querySelector('#sti_id_editar').value = sti_id;
-                    modalEditar.querySelector('#tpe_id_editar').value = tpe_id;
-                    modalEditar.querySelector('#sti_descripcion_editar').value = sti_descripcion;
-                    modalEditar.querySelector('#sti_prom_pasajeros_editar').value = sti_prom_pasajeros;
-                    modalEditar.querySelector('#sti_tot_viajes_dia_editar').value = sti_tot_viajes_dia;
+                                <div class="mb-4">
+                                    <label for="tpe_id_editar" class="form-label modal-rst-label">
+                                        <i class="fa fa-random icono-modal-rst me-2"></i>Tipo de Emisión
+                                    </label>
+                                    <select id="tpe_id_editar" name="tpe_id" class="form-select modal-rst-input"
+                                        required>
+                                        <% tiposEmision.forEach(tipo=> { %>
+                                            <option value="<%= tipo.tpe_id %>">
+                                                <%= tipo.tpe_detalle %>
+                                            </option>
+                                            <% }); %>
+                                    </select>
+                                </div>
 
-                });
-            </script>
+                                <div class="mb-4">
+                                    <label for="sti_descripcion_editar" class="form-label modal-rst-label">
+                                        <i class="fa fa-file-text icono-modal-rst me-2"></i>Descripción del servicio
+                                    </label>
+                                    <textarea id="sti_descripcion_editar" name="sti_descripcion"
+                                        class="form-control modal-rst-input" rows="3" required></textarea>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-6 mb-4">
+                                        <label for="sti_prom_pasajeros_editar" class="form-label modal-rst-label">
+                                            <i class="fa fa-users icono-modal-rst me-2"></i>Aproximado de pasajeros
+                                        </label>
+                                        <input type="number" id="sti_prom_pasajeros_editar" name="sti_prom_pasajeros"
+                                            class="form-control modal-rst-input" required min="0">
+                                    </div>
+                                    <div class="col-6 mb-4">
+                                        <label for="sti_tot_viajes_dia_editar" class="form-label modal-rst-label">
+                                            <i class="fa fa-bus icono-modal-rst me-2"></i>Viajes al día
+                                        </label>
+                                        <input type="number" id="sti_tot_viajes_dia_editar" name="sti_tot_viajes_dia"
+                                            class="form-control modal-rst-input" required min="0">
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer border-0 px-4 pb-4">
+                                    <button type="button" class="btn modal-rst-btn-cancel"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn modal-rst-btn-success px-4">Guardar
+                                        Cambios</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            const modalEditar = document.getElementById('modalEditarShuttle');
+
+            modalEditar.addEventListener('show.bs.modal', (event) => {
+                const boton = event.relatedTarget;
+
+                const sti_id = boton.getAttribute('data-id');
+                const tpe_id = boton.getAttribute('data-tpe_id');
+                const sti_descripcion = boton.getAttribute('data-descripcion');
+                const sti_prom_pasajeros = boton.getAttribute('data-pajeros');
+                const sti_tot_viajes_dia = boton.getAttribute('data-viajes');
+
+                modalEditar.querySelector('#sti_id_editar').value = sti_id;
+                modalEditar.querySelector('#tpe_id_editar').value = tpe_id;
+                modalEditar.querySelector('#sti_descripcion_editar').value = sti_descripcion;
+                modalEditar.querySelector('#sti_prom_pasajeros_editar').value = sti_prom_pasajeros;
+                modalEditar.querySelector('#sti_tot_viajes_dia_editar').value = sti_tot_viajes_dia;
+
+            });
+        </script>
 </body>
-</html>
 
+</html>

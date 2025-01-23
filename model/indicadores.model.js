@@ -3,6 +3,7 @@ import { DataTypes } from "sequelize";
 import Categoria from "./categorias.model.js";
 import { MiembroUnidad } from "./miembros.model.js";
 import RangoIndicador from "./rangos.model.js";
+import Usuario from "./usuario.model.js";
 
 
 const Indicador = sequelize.define(
@@ -21,12 +22,12 @@ const Indicador = sequelize.define(
                 key: "cat_cod",
             },
         },
-        mie_ci: {
+        user_id: {
             type: DataTypes.STRING(10),
             allowNull: false,
             references: {
-                model: MiembroUnidad,
-                key: "mie_ci",
+                model: Usuario,
+                key: "user_id",
             },
         },
         ind_nombre: {
@@ -48,8 +49,8 @@ const Indicador = sequelize.define(
 Categoria.hasMany(Indicador, { foreignKey: "cat_cod" });
 Indicador.belongsTo(Categoria, { foreignKey: "cat_cod" });
 
-MiembroUnidad.hasMany(Indicador, { foreignKey: "mie_ci" });
-Indicador.belongsTo(MiembroUnidad, { foreignKey: "mie_ci" });
+Usuario.hasMany(Indicador, { foreignKey: "user_id" });
+Indicador.belongsTo(Usuario, { foreignKey: "user_id" });
 
 Indicador.hasMany(RangoIndicador, { foreignKey: "ind_cod" }); 
 RangoIndicador.belongsTo(Indicador, { foreignKey: "ind_cod" }); 
