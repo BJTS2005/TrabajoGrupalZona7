@@ -15,15 +15,14 @@
     <div class="page-header">
         <div class="container">
             <h2 class="mb-0"><i class="fas fa-edit text-success me-2"></i>Editar Campus</h2>
-            <form action="/campus/imagenes/<%= campus.camp_id %>" method="POST" enctype="multipart/form-data">
-                <div class="mb-3">
-                    <label for="fileInput" class="form-label">Selecciona una imagen:</label>
+            <form action="/campus/imagenes/<%= campus.camp_id %>" method="POST" enctype="multipart/form-data" class="upload-section">
+                <div class="mb-0">
+                    <label for="fileInput" class="form-label">Seleccionar imagen del campus .png:</label>
                     <input type="file" class="form-control" id="fileInput" name="imagen" accept="image/*">
                 </div>
-                <button type="submit" class="btn btn-primary">Subir Imagen</button>
+                <button type="submit" class="btn btn-primary">Subir</button>
             </form>
         </div>
-        
     </div>
 
     <div class="container">

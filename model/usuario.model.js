@@ -61,6 +61,9 @@ const Usuario = sequelize.define('Usuario', {
     freezeTableName: true
 });
 
+
+
+
 TipoUsuario.hasMany(Usuario, { foreignKey: 'tipus_id', as: 'Usuarios' });
 Usuario.belongsTo(TipoUsuario, { foreignKey: 'tipus_id' });
 

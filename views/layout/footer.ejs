@@ -71,7 +71,7 @@
                         <p class="mb-2 developer-name">Pusda H. Cristian H.</p>
                     </div>
                 </div>
-
+                
                 <!-- Enlaces -->
                 <div class="col-lg-3 mb-4">
                     <h5 class="footer-border pb-2 mb-3">Enlaces</h5>
@@ -81,16 +81,29 @@
                                 <i class="fas fa-chevron-right mr-2 small"></i>Inicio
                             </a>
                         </li>
+                        <% if(user.tipo===1) { %>
                         <li class="mb-2">
-                            <a href="/magnitudes" class="footer-link">
-                                <i class="fas fa-chevron-right mr-2 small"></i>Magnitudes
+                            <a href="/categorias" class="footer-link">
+                                <i class="fas fa-chevron-right mr-2 small"></i>Indicadores
                             </a>
                         </li>
                         <li class="mb-2">
-                            <a href="/unidades" class="footer-link">
-                                <i class="fas fa-chevron-right mr-2 small"></i>Unidades
+                            <a href="/miembros" class="footer-link">
+                                <i class="fas fa-chevron-right mr-2 small"></i>Usuarios
                             </a>
                         </li>
+                        <% }else{ %>
+                            <li class="mb-2">
+                                <a href="/reportes/campus" class="footer-link">
+                                    <i class="fas fa-chevron-right mr-2 small"></i>Reportes Campus
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="/reportes/indicadores" class="footer-link">
+                                    <i class="fas fa-chevron-right mr-2 small"></i>Reportes Indicadores
+                                </a>
+                            </li>
+                        <% } %>
                     </ul>
                 </div>
 
@@ -111,11 +124,7 @@
                             info@greenmetric.edu.ec
                         </p>
                     </div>
-                    <div class="social-icons">
-                        <a href="#"><i class="fab fa-github"></i></a>
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                    </div>
+                    
                 </div>
             </div>
 

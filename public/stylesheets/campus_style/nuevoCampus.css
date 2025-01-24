@@ -115,3 +115,30 @@ body {
     margin-bottom: 2rem;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
+
+.page-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.page-header form {
+    max-width: 400px;
+    padding-left: 2rem;
+}
+
+.upload-section {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+}
+
+.upload-section .form-label {
+    margin-bottom: 0.5rem;
+}
+
+.upload-section .btn {
+    height: 38px;
+    padding: 0.375rem 0.75rem;
+}
+
