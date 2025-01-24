@@ -1,6 +1,7 @@
 import { MiembroUnidad, TipoMiembro } from "../model/miembros.model.js";
 import  Usuario  from "../model/usuario.model.js";
 import  TipoUsuario  from "../model/tipoUsuario.model.js";
+import PermisoUsuario from "../model/permisosUsuarios.model.js";
 
 export const miembrosController = {
     // Listar todos los miembros y tipos de miembro
@@ -11,7 +12,10 @@ export const miembrosController = {
                 include: [
                     {
                         model: TipoUsuario,
-                        attributes: ['tipus_id', 'tipus_detalles'], // Incluir solo los campos necesarios
+                        attributes: ['tipus_id','perus_id','tipus_detalles'], include: [{
+                            model: PermisoUsuario,
+                            attributes: ['perus_id','perus_detalle'], 
+                        }]
                     },
                 ],
                 raw: true,
@@ -20,12 +24,22 @@ export const miembrosController = {
 
             // Obtener los tipos de miembro para el formulario de registro y edición
             const tiposMiembro = await TipoUsuario.findAll({
-                attributes: ['tipus_id', 'tipus_detalles'],
+                attributes: ['tipus_id','perus_id','tipus_detalles'],
+                include: [{
+                    model: PermisoUsuario,
+                    attributes: ['perus_id', 'perus_detalle']
+                }],
+                raw: true,
+                nest: true,
+            });
+
+            const permisosMiembro = await PermisoUsuario.findAll({
+                attributes: ['perus_id', 'perus_detalle'],
                 raw: true,
             });
 
             // Renderizar la vista con los datos
-            res.render("miembros/gestionMiembros.ejs", { miembros, tiposMiembro });
+            res.render("miembros/gestionMiembros.ejs", { miembros, tiposMiembro, permisosMiembro });
         } catch (error) {
             console.error("Error al listar los miembros:", error);
             res.status(500).send("Error al cargar la lista de miembros.");

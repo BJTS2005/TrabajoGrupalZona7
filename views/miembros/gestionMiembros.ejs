@@ -47,46 +47,51 @@
                     </thead>
                     <tbody>
                         <% miembros.forEach(miembro=> { %>
-                            <tr>
-                                <td class="text-center">
-                                    <%= miembro.user_cedula %>
-                                </td>
-                                <td class="text-center">
-                                    <%= miembro.user_nombre %>
-                                </td>
-                                <td class="text-center">
-                                    <%= miembro.user_apellido %>
-                                </td>
-                                <td class="text-center">
-                                    <%= miembro.user_telefono %>
-                                </td>
-                                <td class="text-center">
-                                    <%= miembro.user_email %>
-                                </td>
-                                <td class="text-center">
-                                    <%= miembro.TipoUsuario.tipus_detalles %>
-                                </td>
-                                <td class="text-center">
-                                    <div class="d-flex justify-content-center">
-                                        <button class="reutilizable-btn-action reutilizable-btn-edit"
-                                            data-bs-toggle="modal" data-bs-target="#modalEditarMiembro"
-                                            data-id="<%= miembro.user_id %>" data-cedula="<%= miembro.user_cedula %>"
-                                            data-nombre="<%= miembro.user_nombre %>"
-                                            data-apellido="<%= miembro.user_apellido %>"
-                                            data-telefono="<%= miembro.user_telefono %>"
-                                            data-email="<%= miembro.user_email %>" data-tipus="<%= miembro.tipus_id %>">
-                                            <i class="fas fa-edit mr-1"></i>Editar
-                                        </button>
-                                        <form action="/miembros/eliminar/<%= miembro.user_id %>" method="POST"
-                                            onsubmit="return confirm('¿Estás seguro de eliminar este miembro?');">
-                                            <button class="reutilizable-btn-action reutilizable-btn-delete">
-                                                <i class="fas fa-trash-alt mr-1"></i>Eliminar
+                            <%if(miembro.TipoUsuario.PermisoUsuario.perus_detalle==="GM_TE_USER" ){%>
+                                <tr>
+                                    <td class="text-center">
+                                        <%= miembro.user_cedula %>
+                                    </td>
+                                    <td class="text-center">
+                                        <%= miembro.user_nombre %>
+                                    </td>
+                                    <td class="text-center">
+                                        <%= miembro.user_apellido %>
+                                    </td>
+                                    <td class="text-center">
+                                        <%= miembro.user_telefono %>
+                                    </td>
+                                    <td class="text-center">
+                                        <%= miembro.user_email %>
+                                    </td>
+                                    <td class="text-center">
+                                        <%= miembro.TipoUsuario.tipus_detalles %>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center">
+                                            <button class="reutilizable-btn-action reutilizable-btn-edit"
+                                                data-bs-toggle="modal" data-bs-target="#modalEditarMiembro"
+                                                data-id="<%= miembro.user_id %>"
+                                                data-cedula="<%= miembro.user_cedula %>"
+                                                data-nombre="<%= miembro.user_nombre %>"
+                                                data-apellido="<%= miembro.user_apellido %>"
+                                                data-telefono="<%= miembro.user_telefono %>"
+                                                data-email="<%= miembro.user_email %>"
+                                                data-tipus="<%= miembro.tipus_id %>">
+                                                <i class="fas fa-edit mr-1"></i>Editar
                                             </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                            <% }); %>
+                                            <form action="/miembros/eliminar/<%= miembro.user_id %>" method="POST"
+                                                onsubmit="return confirm('¿Estás seguro de eliminar este miembro?');">
+                                                <button class="reutilizable-btn-action reutilizable-btn-delete">
+                                                    <i class="fas fa-trash-alt mr-1"></i>Eliminar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <% } %>
+                                    <% }); %>
+
                     </tbody>
                 </table>
             </div>
@@ -160,10 +165,12 @@
                                     </label>
                                     <select id="tipus_id" name="tipus_id" class="form-select modal-rst-input" required>
                                         <% tiposMiembro.forEach(tipo=> { %>
-                                            <option value="<%= tipo.tipus_id %>">
-                                                <%= tipo.tipus_detalles %>
-                                            </option>
-                                            <% }); %>
+                                            <%if(tipo.PermisoUsuario.perus_detalle==="GM_TE_USER"){%>
+                                                <option value="<%= tipo.tipus_id %>">
+                                                    <%= tipo.tipus_detalles %>
+                                                </option>
+                                                <% } %>
+                                                    <% }); %>
                                     </select>
                                 </div>
 
@@ -235,9 +242,11 @@
                                     <select id="tipus_id_editar" name="tipus_id" class="form-select modal-rst-input"
                                         required>
                                         <% tiposMiembro.forEach(tipo=> { %>
+                                            <%if(tipo.PermisoUsuario.perus_detalle==="GM_TE_USER"){%>
                                             <option value="<%= tipo.tipus_id %>">
                                                 <%= tipo.tipus_detalles %>
                                             </option>
+                                            <% } %>
                                             <% }); %>
                                     </select>
                                 </div>
@@ -281,23 +290,3 @@
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

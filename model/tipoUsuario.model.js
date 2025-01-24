@@ -13,7 +13,7 @@ const TipoUsuario = sequelize.define('TipoUsuario', {
         type: DataTypes.INTEGER,
         allowNull: true,
         references: {
-            model: 'permisos_usuarios',
+            model: 'PermisoUsuario',
             key: 'perus_id'
         }
     },
