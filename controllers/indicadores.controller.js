@@ -3,6 +3,8 @@ import { MiembroUnidad } from "../model/miembros.model.js";
 import Indicador from "../model/indicadores.model.js";
 import RangoIndicador from "../model/rangos.model.js";
 import Usuario from "../model/usuario.model.js";
+import  TipoUsuario  from "../model/tipoUsuario.model.js";
+import PermisoUsuario from "../model/permisosUsuarios.model.js";
 
 
 
@@ -36,8 +38,18 @@ export const indicadoresController = {
 
             // Obtener los miembros para el formulario
             const miembros = await Usuario.findAll({
-                attributes: ['user_cedula', 'user_nombre', 'user_apellido'],
+                include: [
+                    {
+                        model: TipoUsuario,
+                        attributes: ['tipus_id','perus_id','tipus_detalles'],
+                         include: [{
+                            model: PermisoUsuario,
+                            attributes: ['perus_id','perus_detalle'], 
+                        }]
+                    },
+                ],
                 raw: true,
+                nest: true,
             });
 
             // Renderizar la vista con los datos
@@ -54,7 +66,7 @@ export const indicadoresController = {
     },
     registrar: async (req, res) => {
         try {
-            const { ind_cod, cat_cod, mie_ci, ind_nombre, ind_puntos } = req.body;
+            const { ind_cod, cat_cod, user_id, ind_nombre, ind_puntos } = req.body;
 
             // Validar si el indicador ya existe
             const indicadorExistente = await Indicador.findByPk(ind_cod);
@@ -66,7 +78,7 @@ export const indicadoresController = {
             await Indicador.create({
                 ind_cod,
                 cat_cod,
-                mie_ci,
+                user_id,
                 ind_nombre,
                 ind_puntos,
             });
@@ -80,7 +92,7 @@ export const indicadoresController = {
 
     editar: async (req, res) => {
         try {
-            const { ind_cod, ind_nombre, ind_puntos, mie_ci } = req.body;
+            const { ind_cod, ind_nombre, ind_puntos, user_id } = req.body;
 
             const indicador = await Indicador.findByPk(ind_cod);
             if (!indicador) {
@@ -91,7 +103,7 @@ export const indicadoresController = {
             await indicador.update({
                 ind_nombre,
                 ind_puntos,
-                mie_ci,
+                user_id,
             });
 
             res.redirect(`/indicadores/gestionar/${indicador.cat_cod}`);

@@ -24,7 +24,7 @@ const Indicador = sequelize.define(
         },
         user_id: {
             type: DataTypes.STRING(10),
-            allowNull: false,
+            allowNull: true,
             references: {
                 model: Usuario,
                 key: "user_id",
