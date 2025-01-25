@@ -71,8 +71,8 @@
                                             <% } %>
                                 </td>
                                 <td class="text-center">
-                                    <%= indicador.MiembroUnidad.mie_nombres %>
-                                        <%= indicador.MiembroUnidad.mie_apellidos %>
+                                    <%= indicador.Usuario.user_nombre %>
+                                        <%= indicador.Usuario.user_apellido %>
                                 </td>
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center">
@@ -81,7 +81,7 @@
                                             data-cod="<%= indicador.ind_cod %>"
                                             data-nombre="<%= indicador.ind_nombre %>"
                                             data-puntos="<%= indicador.ind_puntos %>"
-                                            data-mie_ci="<%= indicador.mie_ci %>">
+                                            data-mie_ci="<%= indicador.user_id %>">
                                             <i class="fas fa-edit mr-1"></i>Editar
                                         </button>
                                         <form
@@ -149,13 +149,15 @@
                                     <label for="mie_ci" class="form-label modal-rst-label">
                                         <i class="fa fa-user-tie icono-modal-rst me-2"></i>Responsable
                                     </label>
-                                    <select id="mie_ci" name="mie_ci" class="form-select modal-rst-input" required>
+                                    <select id="mie_ci" name="user_id" class="form-select modal-rst-input" required>
                                         <% miembros.forEach(miembro=> { %>
-                                            <option value="<%= miembro.mie_ci %>">
-                                                <%= miembro.mie_nombres %>
-                                                    <%= miembro.mie_apellidos %>
-                                            </option>
-                                            <% }); %>
+                                            <%if(miembro.TipoUsuario.PermisoUsuario.perus_detalle==="GM_TE_USER"){%>
+                                                <option value="<%= miembro.user_id %>">
+                                                    <%= miembro.user_nombre %>
+                                                        <%= miembro.user_apellido %>
+                                                </option>
+                                                <%}%>
+                                                    <% }); %>
                                     </select>
                                 </div>
 
@@ -211,14 +213,16 @@
                                     <label for="mie_ci_editar" class="form-label modal-rst-label">
                                         <i class="fa fa-user-tie icono-modal-rst me-2"></i>Responsable
                                     </label>
-                                    <select id="mie_ci_editar" name="mie_ci" class="form-select modal-rst-input"
+                                    <select id="mie_ci_editar" name="user_id" class="form-select modal-rst-input"
                                         required>
                                         <% miembros.forEach(miembro=> { %>
-                                            <option value="<%= miembro.mie_ci %>">
-                                                <%= miembro.mie_nombres %>
-                                                    <%= miembro.mie_apellidos %>
-                                            </option>
-                                            <% }); %>
+                                            <%if(miembro.TipoUsuario.PermisoUsuario.perus_detalle==="GM_TE_USER"){%>
+                                                <option value="<%= miembro.user_id %>">
+                                                    <%= miembro.user_nombre %>
+                                                        <%= miembro.user_apellido %>
+                                                </option>
+                                                <% } %>
+                                                    <% }); %>
                                     </select>
                                 </div>
 
@@ -313,8 +317,8 @@
                                         <% } %>
                             </td>
                             <td>
-                                <%= indicador.MiembroUnidad.mie_nombres %>
-                                    <%= indicador.MiembroUnidad.mie_apellidos %>
+                                <%= indicador.Usuario.user_nombre %>
+                                    <%= indicador.Usuario.user_apellido %>
                             </td>
                             <td>
                                 <button class="btn btn-warning btn-sm" data-bs-toggle="modal"

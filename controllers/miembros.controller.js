@@ -12,7 +12,8 @@ export const miembrosController = {
                 include: [
                     {
                         model: TipoUsuario,
-                        attributes: ['tipus_id','perus_id','tipus_detalles'], include: [{
+                        attributes: ['tipus_id','perus_id','tipus_detalles'],
+                         include: [{
                             model: PermisoUsuario,
                             attributes: ['perus_id','perus_detalle'], 
                         }]
