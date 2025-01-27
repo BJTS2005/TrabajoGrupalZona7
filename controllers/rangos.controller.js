@@ -1,6 +1,7 @@
 import Rango from "../model/rangos.model.js";
 import Indicador from "../model/indicadores.model.js";
 import { MiembroUnidad } from "../model/miembros.model.js";
+import Usuario from "../model/usuario.model.js";
 
 export const rangosController = {
     listar: async (req, res) => {
@@ -18,7 +19,7 @@ export const rangosController = {
             const indicador = await Indicador.findOne({
                 where: { ind_cod },
                 include: [
-                    { model: MiembroUnidad, attributes: ['mie_nombres', 'mie_apellidos'] },
+                    { model: Usuario, attributes: ['user_nombre', 'user_apellido'] },
                 ],
                 raw: true,
                 nest: true,
