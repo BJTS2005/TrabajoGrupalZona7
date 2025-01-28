@@ -206,6 +206,65 @@
                     </tbody>
                 </table>
             </div>
+            <div class="card p-4 mt-5">
+                <h2 class="text-muted mb-4">Gráficos Estadísticos</h2>
+                
+                <div class="container">
+                    <div class="row g-4">
+                        <!-- Gráfico de Viajes por Día -->
+                        <div class="col-12 col-md-6">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">Distribución de Viajes</h5>
+                                    <p class="card-text text-muted">Análisis diario de frecuencia de viajes</p>
+                                    <div class="chart-container">
+                                        <canvas id="graficosShuttles" class="w-100"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            
+                        <!-- Gráfico Radar de Viajes -->
+                        <div class="col-12 col-md-6">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">Análisis Radar de Viajes</h5>
+                                    <p class="card-text text-muted">Distribución radial de frecuencia diaria</p>
+                                    <div class="chart-container">
+                                        <canvas id="graficosShuttlesRadar" class="w-100"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            
+                        <!-- Gráfico de Promedio de Pasajeros -->
+                        <div class="col-12 col-md-6">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">Promedio de Pasajeros</h5>
+                                    <p class="card-text text-muted">Distribución de ocupación por viaje</p>
+                                    <div class="chart-container">
+                                        <canvas id="graficosShuttlesPasajeros" class="w-100"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            
+                        <!-- Gráfico Radar de Promedio de Pasajeros -->
+                        <div class="col-12 col-md-6">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">Análisis Radar de Pasajeros</h5>
+                                    <p class="card-text text-muted">Distribución radial de ocupación</p>
+                                    <div class="chart-container">
+                                        <canvas id="graficosShuttlesRadarPasajeros" class="w-100"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- Modal Registrar-->
             <div class="modal fade" id="registro-servicio-modal" tabindex="-1">
@@ -367,6 +426,7 @@
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
             const modalEditar = document.getElementById('modalEditarShuttle');
 
@@ -385,6 +445,126 @@
                 modalEditar.querySelector('#sti_prom_pasajeros_editar').value = sti_prom_pasajeros;
                 modalEditar.querySelector('#sti_tot_viajes_dia_editar').value = sti_tot_viajes_dia;
 
+            });
+
+
+
+            const tabla = document.querySelector('#tbl-shuttles-gestion');
+            console.log(tabla)
+            const datos = []
+            const datosPasajeros = []
+            const etiquetas = []
+
+
+            tabla.querySelectorAll('tr').forEach(fila => {
+                const celdas = fila.querySelectorAll('td')
+                if (celdas.length > 0) {
+                    etiquetas.push(celdas[1].textContent)
+                    datos.push(celdas[4].textContent)
+                    datosPasajeros.push(celdas[3].textContent)
+                }
+            });
+
+            const ctx = document.getElementById('graficosShuttles').getContext('2d');
+            const miGrafico = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: etiquetas,
+                    datasets: [{
+                        data: datos,
+                        backgroundColor: [
+                            '#9966FF',
+                            '#FF6384',
+                            '#36A2EB',
+                            '#FFCE56',
+                            '#4BC0C0',
+
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+
+            const ctxRadar = document.getElementById('graficosShuttlesRadar').getContext('2d');
+            const graficoRadar = new Chart(ctxRadar, {
+                type: 'radar',
+                data: {
+                    labels: etiquetas,
+                    datasets: [{
+                        label: 'Vehículos',
+                        data: datos,
+                        backgroundColor: 'rgba(194, 36, 1, 0.2)',
+                        borderColor: '#c52200',
+                        pointBackgroundColor: '#c52200',
+                        borderWidth: 2,
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true
+                            },
+                            suggestedMin: 0
+                        }
+                    }
+                }
+            });
+
+
+            const ctxPasajeros = document.getElementById('graficosShuttlesPasajeros').getContext('2d');
+            const miGraficoPasajeros = new Chart(ctxPasajeros, {
+                type: 'pie',
+                data: {
+                    labels: etiquetas,
+                    datasets: [{
+                        data: datosPasajeros,
+                        backgroundColor: [
+                            '#36A2EB',
+                            '#FFCE56',
+                            '#4BC0C0',
+
+
+                            '#9966FF',
+                            '#FF6384'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+
+            const ctxRadarPasajeros = document.getElementById('graficosShuttlesRadarPasajeros').getContext('2d');
+            const graficoRadarPasajeros = new Chart(ctxRadarPasajeros, {
+                type: 'radar',
+                data: {
+                    labels: etiquetas,
+                    datasets: [{
+                        label: 'Vehículos',
+                        data: datosPasajeros,
+                        backgroundColor: 'rgba(27, 166, 73, 0.2)',
+                        borderColor: '#1ba649',
+                        pointBackgroundColor: '#1ba649',
+                        borderWidth: 2,
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true
+                            },
+                            suggestedMin: 0
+                        }
+                    }
+                }
             });
         </script>
 </body>
