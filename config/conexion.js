@@ -1,8 +1,8 @@
 import { Sequelize } from "sequelize";
 
 
-const sequelize = new Sequelize('postgres', 'GM_TE', 'GM_TE', {
-    host: 'bdd-unificada.postgres.database.azure.com',
+const sequelize = new Sequelize('Proyecto_Integrador', 'GM_TE', 'GM_TE', {
+    host: 'databaseunified.postgres.database.azure.com',
     dialect: 'postgres',
     port: 5432,
     dialectOptions: {
