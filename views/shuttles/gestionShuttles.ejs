@@ -24,13 +24,16 @@
                     <h1 class="page-title">Gestión de Servicios de Transporte</h1>
                     <p class="page-subtitle">Administra los servicios de transporte del campus</p>
                 </div>
-                <button class="add-service-btn" data-bs-toggle="modal" data-bs-target="#registro-servicio-modal">
-                    <i class="fas fa-plus me-2"></i>Registrar Nuevo Servicio
-                </button>
-                <button class="add-service-btn"
-                    onclick="exportTableToExcel('tbl-shuttles-gestion', 'GestionShuttles.xlsx', 'Campus ' + '<%= currentCampus %>')">
-                    <i class="fas fa-plus me-2"></i>Exportar Excel
-                </button>
+                <div>
+                    <button class="add-service-btn" data-bs-toggle="modal" data-bs-target="#registro-servicio-modal">
+                        <i class="fas fa-plus me-2"></i>Registrar Nuevo Servicio
+                    </button>
+                    <button class="add-service-btn"
+                        onclick="exportTableToExcel('tbl-shuttles-gestion', 'GestionShuttles.xlsx', 'Campus ' + '<%= currentCampus %>')">
+                        <i class="fas fa-plus me-2"></i>Exportar Excel
+                    </button>
+                </div>
+
             </div>
 
             <!-- Formulario de Filtros -->
@@ -151,8 +154,8 @@
                         <tr>
                             <th class="text-center align-middle">ID</th>
                             <th class="text-center align-middle">Tipo de Emision</th>
-                            <th class="text-center align-middle">Descripsion</th>
-                            <th class="text-center align-middle">Promedio Pasajerp</th>
+                            <th class="text-center align-middle">Descripcion</th>
+                            <th class="text-center align-middle">Pasajeros Promedio</th>
                             <th class="text-center align-middle">Viajes al día</th>
                             <th class="text-center align-middle">Fecha de Registro</th>
                             <th class="text-center align-middle">ACCIONES</th>
@@ -208,7 +211,7 @@
             </div>
             <div class="card p-4 mt-5">
                 <h2 class="text-muted mb-4">Gráficos Estadísticos</h2>
-                
+
                 <div class="container">
                     <div class="row g-4">
                         <!-- Gráfico de Viajes por Día -->
@@ -223,7 +226,7 @@
                                 </div>
                             </div>
                         </div>
-            
+
                         <!-- Gráfico Radar de Viajes -->
                         <div class="col-12 col-md-6">
                             <div class="card h-100 shadow-sm">
@@ -236,7 +239,7 @@
                                 </div>
                             </div>
                         </div>
-            
+
                         <!-- Gráfico de Promedio de Pasajeros -->
                         <div class="col-12 col-md-6">
                             <div class="card h-100 shadow-sm">
@@ -249,7 +252,7 @@
                                 </div>
                             </div>
                         </div>
-            
+
                         <!-- Gráfico Radar de Promedio de Pasajeros -->
                         <div class="col-12 col-md-6">
                             <div class="card h-100 shadow-sm">

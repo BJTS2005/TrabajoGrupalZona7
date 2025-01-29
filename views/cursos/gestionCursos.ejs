@@ -23,13 +23,15 @@
                     <h1 class="page-title">Gestión de Cursos</h1>
                     <p class="page-subtitle">Administra los Cursos del campus</p>
                 </div>
-                <button class="add-service-btn" data-bs-toggle="modal" data-bs-target="#modalRegistrarCurso">
-                    <i class="fas fa-plus me-2"></i>Registrar Nuevo Curso
-                </button>
-                <button class="add-service-btn"
-                    onclick="exportTableToExcel('tbl-cursos-gestion', 'GestionCursos.xlsx', 'Campus ' + '<%= currentCampus %>')">
-                    <i class="fas fa-plus me-2"></i>Exportar Excel
-                </button>
+                <div>
+                    <button class="add-service-btn" data-bs-toggle="modal" data-bs-target="#modalRegistrarCurso">
+                        <i class="fas fa-plus me-2"></i>Registrar Nuevo Curso
+                    </button>
+                    <button class="add-service-btn"
+                        onclick="exportTableToExcel('tbl-cursos-gestion', 'GestionCursos.xlsx', 'Campus ' + '<%= currentCampus %>')">
+                        <i class="fas fa-plus me-2"></i>Exportar Excel
+                    </button>
+                </div>
             </div>
 
             <!-- Formulario de Filtros -->

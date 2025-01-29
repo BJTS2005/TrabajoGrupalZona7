@@ -23,13 +23,16 @@
                     <h1 class="page-title">Gestión de Sitios Web</h1>
                     <p class="page-subtitle">Administra los Sitios Web</p>
                 </div>
-                <button class="add-service-btn" data-bs-toggle="modal" data-bs-target="#modalRegistrarSitioWeb">
-                    <i class="fas fa-plus me-2"></i>Registrar Nuevo Sitios Web
-                </button>
-                <button class="add-service-btn"
-                    onclick="exportTableToExcel('tbl-sweb-gestion', 'GestionSitiosWeb.xlsx', 'Campus ' + '<%= currentCampus %>')">
-                    <i class="fas fa-plus me-2"></i>Exportar Excel
-                </button>
+                <div>
+                    <button class="add-service-btn" data-bs-toggle="modal" data-bs-target="#modalRegistrarSitioWeb">
+                        <i class="fas fa-plus me-2"></i>Registrar Nuevo Sitios Web
+                    </button>
+                    <button class="add-service-btn"
+                        onclick="exportTableToExcel('tbl-sweb-gestion', 'GestionSitiosWeb.xlsx', 'Campus ' + '<%= currentCampus %>')">
+                        <i class="fas fa-plus me-2"></i>Exportar Excel
+                    </button>
+                </div>
+                
             </div>
 
             <!-- Formulario de Filtros -->

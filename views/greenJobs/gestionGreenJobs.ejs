@@ -23,13 +23,15 @@
                     <h1 class="page-title">Gestión de Greeen Jobs</h1>
                     <p class="page-subtitle">Administra los Green Jobs del campus</p>
                 </div>
-                <button class="add-service-btn" data-bs-toggle="modal" data-bs-target="#modalRegistrarGraduado">
-                    <i class="fas fa-plus me-2"></i>Registrar Nuevo Green Job
-                </button>
-                <button class="add-service-btn"
-                    onclick="exportTableToExcel('tbl-gjobs-gestion', 'GestionGreenJobs.xlsx', 'Campus ' + '<%= currentCampus %>')">
-                    <i class="fas fa-plus me-2"></i>Exportar Excel
-                </button>
+                <div>
+                    <button class="add-service-btn" data-bs-toggle="modal" data-bs-target="#modalRegistrarGraduado">
+                        <i class="fas fa-plus me-2"></i>Registrar Nuevo Green Job
+                    </button>
+                    <button class="add-service-btn"
+                        onclick="exportTableToExcel('tbl-gjobs-gestion', 'GestionGreenJobs.xlsx', 'Campus ' + '<%= currentCampus %>')">
+                        <i class="fas fa-plus me-2"></i>Exportar Excel
+                    </button>
+                </div>
             </div>
 
             <!-- Formulario de Filtros -->
@@ -177,14 +179,6 @@
                                             </option>
                                             <% }); %>
                                     </select>
-                                </div>
-
-                                <div class="mb-4">
-                                    <label for="job_detalle" class="form-label modal-rst-label">
-                                        <i class="fa fa-info-circle icono-modal-rst me-2"></i>Detalle del Green Job
-                                    </label>
-                                    <input type="text" class="form-control modal-rst-input" id="job_detalle"
-                                        name="job_detalle" maxlength="50" placeholder="Ej: Gestion de --" required>
                                 </div>
 
                                 <div class="mb-4">
