@@ -31,7 +31,7 @@ const GraduadoGreenJob = sequelize.define(
             primaryKey: true,
             autoIncrementIdentity: true, // Añade esta línea
             field: 'gra_id'
-        },
+        }, 
         camp_id: {
             type: DataTypes.STRING(5),
             allowNull: false,
