@@ -11,6 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="/utils/crearExcel.js"></script>
+    <script src="/utils/crearGraficos.js"></script>
     <title>Gestión de Vehiculos</title>
     <link rel="stylesheet" href="/stylesheets/campus_style/servicios_trans/gestion-servicios-trans.css">
 </head>
@@ -246,14 +247,25 @@
                             </div>
                         </div>
 
-                        <!-- Gráfico Radar de Vehículos -->
                         <div class="col-12 col-md-6">
                             <div class="card h-100 shadow-sm">
                                 <div class="card-body">
-                                    <h5 class="card-title">Análisis Radar de Vehículos</h5>
+                                    <h5 class="card-title">Distribución de Vehículos</h5>
+                                    <p class="card-text text-muted">Análisis por tipo de emision</p>
+                                    <div class="chart-container">
+                                        <canvas id="graficosVehiculosEmision" class="w-100"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">Análisis Tipo Freciencia</h5>
                                     <p class="card-text text-muted">Distribución radial por categoría</p>
                                     <div class="chart-container">
-                                        <canvas id="graficosVehiculosRadar" class="w-100"></canvas>
+                                        <canvas id="graficosVehiculosFrecuencia" class="w-100"></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -529,82 +541,11 @@
                     datos.push(celdas[4].textContent)
                 }
             });
-
-            // ... código previo para obtener etiquetas y datos ...
-
-            // Consolidar etiquetas y sumar sus valores
-            const consolidado = {};
-
-            for (let i = 0; i < etiquetas.length; i++) {
-                const etiqueta = etiquetas[i];
-                const valor = parseFloat(datos[i]) || 0; // Convertir a número
-
-                if (consolidado[etiqueta]) {
-                    consolidado[etiqueta] += valor;
-                } else {
-                    consolidado[etiqueta] = valor;
-                }
-            }
-
-            // Crear nuevos arrays sin duplicados
-            const etiquetasUnicas = Object.keys(consolidado);
-            const datosSumados = Object.values(consolidado);
-
-
-            const ctx = document.getElementById('graficosVehiculos').getContext('2d');
-            const miGrafico = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: etiquetasUnicas,
-                    datasets: [{
-                        data: datosSumados,
-                        backgroundColor: [
-                            '#9966FF',  // Púrpura vibrante
-                            '#FF6384',  // Rosa coral
-                            '#36A2EB',  // Azul brillante
-                            '#FFCE56',  // Amarillo cálido
-                            '#4BC0C0',  // Turquesa
-                            '#FF9F40',  // Naranja brillante
-                            '#FF99CC',  // Rosa pastel
-                            '#7ED321',  // Verde lima
-                            '#50E3C2',  // Menta brillante
-                            '#FF5C5C'   // Rojo coral
-                        ]
-                    }]
-                },
-                options: {
-                    responsive: true
-                }
-            });
-
-            const ctxRadar = document.getElementById('graficosVehiculosRadar').getContext('2d');
-            const graficoRadar = new Chart(ctxRadar, {
-                type: 'radar',
-                data: {
-                    labels: etiquetasUnicas,
-                    datasets: [{
-                        label: 'Vehículos',
-                        data: datosSumados,
-                        backgroundColor: 'rgba(194, 36, 1, 0.2)',
-                        borderColor: '#c52200',
-                        pointBackgroundColor: '#c52200',
-                        borderWidth: 2,
-                        pointRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        r: {
-                            angleLines: {
-                                display: true
-                            },
-                            suggestedMin: 0
-                        }
-                    }
-                }
-            });
+            crearGraficoPastel('graficosVehiculos', 1 ,4, 'tbl-vehiculos-gestion');
+            crearGraficoPastel('graficosVehiculosFrecuencia', 2 ,4, 'tbl-vehiculos-gestion');
+            crearGraficoPastel('graficosVehiculosEmision', 3 ,4, 'tbl-vehiculos-gestion');
         </script>
+    <%- include ../../views/layout/footer.ejs %>
 
 </body>
 

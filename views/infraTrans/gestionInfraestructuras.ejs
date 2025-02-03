@@ -11,6 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="/utils/crearExcel.js"></script>
+    <script src="/utils/crearGraficos.js"></script>
     <title>Gestión de Vehiculos</title>
     <link rel="stylesheet" href="/stylesheets/campus_style/servicios_trans/gestion-servicios-trans.css">
 </head>
@@ -210,19 +211,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Gráfico Radar de Vehículos -->
-                        <div class="col-12 col-md-6">
-                            <div class="card h-100 shadow-sm">
-                                <div class="card-body">
-                                    <h5 class="card-title">Análisis Radar de Infraestructura</h5>
-                                    <p class="card-text text-muted">Distribución radial por Área (m²)</p>
-                                    <div class="chart-container">
-                                        <canvas id="graficosInfraestructuraRadar" class="w-100"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -393,71 +381,10 @@
 
             });
 
+            crearGraficoPastel('graficosInfraestructura', 2 ,-1, 'tbl-infraestructura-gestion');
 
-
-            const tabla = document.querySelector('#tbl-infraestructura-gestion');
-            console.log(tabla)
-            const datos = []
-            const etiquetas = []
-
-            tabla.querySelectorAll('tr').forEach(fila => {
-                const celdas = fila.querySelectorAll('td')
-                if (celdas.length > 0) {
-                    etiquetas.push(celdas[1].textContent)
-                    datos.push(celdas[4].textContent)
-                }
-            });
-
-            const ctx = document.getElementById('graficosInfraestructura').getContext('2d');
-            const miGrafico = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: etiquetas,
-                    datasets: [{
-                        data: datos,
-                        backgroundColor: [
-                            '#9966FF',
-                            '#FF6384',
-                            '#36A2EB',
-                            '#FFCE56',
-                            '#4BC0C0',
-
-                        ]
-                    }]
-                },
-                options: {
-                    responsive: true
-                }
-            });
-
-            const ctxRadar = document.getElementById('graficosInfraestructuraRadar').getContext('2d');
-            const graficoRadar = new Chart(ctxRadar, {
-                type: 'radar',
-                data: {
-                    labels: etiquetas,
-                    datasets: [{
-                        label: 'Vehículos',
-                        data: datos,
-                        backgroundColor: 'rgba(194, 36, 1, 0.2)',
-                        borderColor: '#c52200',
-                        pointBackgroundColor: '#c52200',
-                        borderWidth: 2,
-                        pointRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        r: {
-                            angleLines: {
-                                display: true
-                            },
-                            suggestedMin: 0
-                        }
-                    }
-                }
-            });
         </script>
+    <%- include ../../views/layout/footer.ejs %>
 
 </body>
 
