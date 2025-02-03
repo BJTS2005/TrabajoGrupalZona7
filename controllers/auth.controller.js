@@ -1,6 +1,7 @@
 import { name } from "ejs";
 import { createToken } from "../libs/jwt.js";
 import Usuario from "../model/usuario.model.js";
+import TipoUsuario from "../model/tipoUsuario.model.js";
 
 export const renderLogin = (req, res) => {
     res.render('login', { error: null });
@@ -10,7 +11,11 @@ export const login = async (req, res) => {
    const {user_email, user_password} = req.body;
    try {
        const userFound = await Usuario.findOne({
-           where: { user_email }
+           where: { user_email },
+           include: [{
+            model: TipoUsuario,
+            attributes: ['tipus_detalles']
+        }]
        });
 
        if (!userFound) return res.render('login', { error: "Usuario no encontrado" });
@@ -18,7 +23,12 @@ export const login = async (req, res) => {
 
        const token = await createToken({id: userFound.user_id, 
         name: userFound.user_nombre,
-        tipo: userFound.tipus_id});
+        tipo: userFound.tipus_id,
+        tipoDetalle: userFound.TipoUsuario.tipus_detalles,
+        apellido: userFound.user_apellido,
+        email: userFound.user_email,
+        telefono: userFound.user_telefono,
+        cedula: userFound.user_cedula,});
        console.log(token);
        res.cookie("token", token);
        res.redirect('/');

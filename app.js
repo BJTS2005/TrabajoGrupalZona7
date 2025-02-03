@@ -24,6 +24,8 @@ import reportesRouter from './routes/reporte.route.js';
 import authRouter from './routes/auth.route.js';
 import { validateToken } from './middlewares/validarToken.middleware.js';
 import imagenesRouter from './routes/imagenes.route.js';
+import perfilRoute from './routes/perfilUsuario.route.js';
+
 
 console.log("hola");
 
@@ -52,6 +54,7 @@ app.use('/inicio', authRouter);
 app.use(validateToken);
 
 app.use('/', indexRouter);
+app.use('/perfil', perfilRoute)
 app.use('/campus/imagenes', imagenesRouter);
 //app.use('/magnitudes', magnitudesRouter);
 //app.use('/unidades', unidadesRouter);
