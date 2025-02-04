@@ -20,6 +20,12 @@ export const greenJobsController = {
         try {
             const { job_id, job_detalle } = req.body;
 
+            const GreenJobExistente = await GreenJob.findByPk(job_id);
+
+            if (GreenJobExistente) {
+                return res.render("atraparErrores.ejs", { error: "Ya existe un Green job con ese id" });
+            }
+
             await GreenJob.create({
                 job_id,
                 job_detalle,
@@ -28,7 +34,7 @@ export const greenJobsController = {
             res.redirect("/greenJobs/listar");
         } catch (error) {
             console.error("Error al registrar el Green Job:", error);
-            res.status(500).send("Error al registrar el Green Job.");
+            res.render("atraparErrores.ejs", { error });
         }
     },
 

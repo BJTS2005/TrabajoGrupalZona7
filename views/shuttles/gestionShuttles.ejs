@@ -11,7 +11,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="/utils/crearExcel.js"></script>
-    <script src="/utils/crearGraficos.js"></script>
     <title>Gestión de Servicios de Transporte</title>
     <link rel="stylesheet" href="/stylesheets/campus_style/servicios_trans/gestion-servicios-trans.css">
 </head>
@@ -155,7 +154,7 @@
                         <tr>
                             <th class="text-center align-middle">ID</th>
                             <th class="text-center align-middle">Tipo de Emision</th>
-                            <th class="text-center align-middle">Categoria</th>
+                            <th class="text-center align-middle">Descripcion</th>
                             <th class="text-center align-middle">Pasajeros Promedio</th>
                             <th class="text-center align-middle">Viajes al día</th>
                             <th class="text-center align-middle">Fecha de Registro</th>
@@ -215,7 +214,46 @@
 
                 <div class="container">
                     <div class="row g-4">
+                        <!-- Gráfico de Viajes por Día -->
+                        <div class="col-12 col-md-6">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">Distribución de Viajes</h5>
+                                    <p class="card-text text-muted">Análisis diario de frecuencia de viajes</p>
+                                    <div class="chart-container">
+                                        <canvas id="graficosShuttles" class="w-100"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
+                        <!-- Gráfico Radar de Viajes -->
+                        <div class="col-12 col-md-6">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">Análisis Radar de Viajes</h5>
+                                    <p class="card-text text-muted">Distribución radial de frecuencia diaria</p>
+                                    <div class="chart-container">
+                                        <canvas id="graficosShuttlesRadar" class="w-100"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gráfico de Promedio de Pasajeros -->
+                        <div class="col-12 col-md-6">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">Promedio de Pasajeros</h5>
+                                    <p class="card-text text-muted">Distribución de ocupación por viaje</p>
+                                    <div class="chart-container">
+                                        <canvas id="graficosShuttlesPasajeros" class="w-100"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gráfico Radar de Promedio de Pasajeros -->
                         <div class="col-12 col-md-6">
                             <div class="card h-100 shadow-sm">
                                 <div class="card-body">
@@ -284,14 +322,12 @@
 
                                 <div class="mb-4">
                                     <label for="sti_descripcion" class="form-label modal-rst-label">
-                                        <i class="fa fa-car icono-modal-rst me-2"></i>Descripción del servicio
+                                        <i class="fa fa-file-text icono-modal-rst me-2"></i>Descripción del servicio
                                     </label>
-                                    <select id="sti_descripcion" name="sti_descripcion" class="form-control modal-rst-input" required>
-                                        <option value="vehiculo">Vehículo</option>
-                                        <option value="bus-buceta">Bus/Buceta</option>
-                                    </select>
+                                    <textarea id="sti_descripcion" name="sti_descripcion"
+                                        class="form-control modal-rst-input" rows="3"
+                                        placeholder="Describe el servicio de transporte" required></textarea>
                                 </div>
-                                
 
                                 <div class="row">
                                     <div class="col-6 mb-4">
@@ -357,12 +393,10 @@
 
                                 <div class="mb-4">
                                     <label for="sti_descripcion_editar" class="form-label modal-rst-label">
-                                        <i class="fa fa-car icono-modal-rst me-2"></i>Descripción del servicio
+                                        <i class="fa fa-file-text icono-modal-rst me-2"></i>Descripción del servicio
                                     </label>
-                                    <select id="sti_descripcion_editar" name="sti_descripcion" class="form-control modal-rst-input" required>
-                                        <option value="vehiculo">Vehículo</option>
-                                        <option value="bus-buceta">Bus/Buceta</option>
-                                    </select>
+                                    <textarea id="sti_descripcion_editar" name="sti_descripcion"
+                                        class="form-control modal-rst-input" rows="3" required></textarea>
                                 </div>
 
                                 <div class="row">
@@ -416,10 +450,126 @@
 
             });
 
-            crearGraficoPastel('graficosShuttlesRadarPasajeros', 1 ,-1, 'tbl-shuttles-gestion');
-        </script>
-    <%- include ../../views/layout/footer.ejs %>
 
+
+            const tabla = document.querySelector('#tbl-shuttles-gestion');
+            console.log(tabla)
+            const datos = []
+            const datosPasajeros = []
+            const etiquetas = []
+
+
+            tabla.querySelectorAll('tr').forEach(fila => {
+                const celdas = fila.querySelectorAll('td')
+                if (celdas.length > 0) {
+                    etiquetas.push(celdas[1].textContent)
+                    datos.push(celdas[4].textContent)
+                    datosPasajeros.push(celdas[3].textContent)
+                }
+            });
+
+            const ctx = document.getElementById('graficosShuttles').getContext('2d');
+            const miGrafico = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: etiquetas,
+                    datasets: [{
+                        data: datos,
+                        backgroundColor: [
+                            '#9966FF',
+                            '#FF6384',
+                            '#36A2EB',
+                            '#FFCE56',
+                            '#4BC0C0',
+
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+
+            const ctxRadar = document.getElementById('graficosShuttlesRadar').getContext('2d');
+            const graficoRadar = new Chart(ctxRadar, {
+                type: 'radar',
+                data: {
+                    labels: etiquetas,
+                    datasets: [{
+                        label: 'Vehículos',
+                        data: datos,
+                        backgroundColor: 'rgba(194, 36, 1, 0.2)',
+                        borderColor: '#c52200',
+                        pointBackgroundColor: '#c52200',
+                        borderWidth: 2,
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true
+                            },
+                            suggestedMin: 0
+                        }
+                    }
+                }
+            });
+
+
+            const ctxPasajeros = document.getElementById('graficosShuttlesPasajeros').getContext('2d');
+            const miGraficoPasajeros = new Chart(ctxPasajeros, {
+                type: 'pie',
+                data: {
+                    labels: etiquetas,
+                    datasets: [{
+                        data: datosPasajeros,
+                        backgroundColor: [
+                            '#36A2EB',
+                            '#FFCE56',
+                            '#4BC0C0',
+
+
+                            '#9966FF',
+                            '#FF6384'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+
+            const ctxRadarPasajeros = document.getElementById('graficosShuttlesRadarPasajeros').getContext('2d');
+            const graficoRadarPasajeros = new Chart(ctxRadarPasajeros, {
+                type: 'radar',
+                data: {
+                    labels: etiquetas,
+                    datasets: [{
+                        label: 'Vehículos',
+                        data: datosPasajeros,
+                        backgroundColor: 'rgba(27, 166, 73, 0.2)',
+                        borderColor: '#1ba649',
+                        pointBackgroundColor: '#1ba649',
+                        borderWidth: 2,
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true
+                            },
+                            suggestedMin: 0
+                        }
+                    }
+                }
+            });
+        </script>
 </body>
 
 </html>

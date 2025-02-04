@@ -84,7 +84,7 @@ export const campusController = {
             res.redirect('/campus');
         } catch (error) {
             console.error("Error al eliminar campus y fondo:", error);
-            res.status(500).send("Error al eliminar campus.");
+            res.render("atraparErrores.ejs", { error: "No se puede eliminar el campus porque tiene metricas asociadas" });
         }
     },
 

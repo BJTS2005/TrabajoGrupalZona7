@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/stylesheets/campus_style/servicios_trans/gestion-servicios-trans.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <%- include ../views/layout/cabecera.ejs %>
+
+        <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+            <div class="card filtro-gst-container" style="max-width: 500px; width: 100%;">
+                <div class="card-body text-center p-5">
+                    <i class="fas fa-exclamation-triangle fa-5x mb-4" style="color: var(--danger-color);"></i>
+                    <h1 class="card-title mb-3" style="color: var(--bg-header);">Oops! Algo salió mal.</h1>
+                    <p class="card-text mb-4">Lo sentimos, pero ha ocurrido un error inesperado. Por favor, inténtalo de
+                        nuevo más tarde.</p>
+                    <p class="alert alert-danger mb-4"><%= error %></p>
+                    <a href="javascript:window.history.back();" class="btn" style="background-color: var(--primary-color); color: white;">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Volver a la Página Anterior
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <%- include ../views/layout/footer.ejs %>
+</body>
+
+</html>
