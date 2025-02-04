@@ -148,7 +148,7 @@ export const eventosController = {
             const { id_eve, tpe_id, eve_detalle, eve_fecha, eve_por_estudiantes, eve_url } = req.body;
             const { camp_id } = req.params;
 
-            const existe = await TipoEvento.findByPk(tpe_id);
+            const existe = await EventoSostenible.findByPk(id_eve);
             if (existe) return res.render("atraparErrores.ejs", { error: "Este id ya esta asociado a un evento" });
 
             await EventoSostenible.create({
