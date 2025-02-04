@@ -71,7 +71,7 @@ export const indicadoresController = {
             // Validar si el indicador ya existe
             const indicadorExistente = await Indicador.findByPk(ind_cod);
             if (indicadorExistente) {
-                return res.status(400).send("El indicador con este código ya existe.");
+                return res.render("atraparErrores.ejs", { error: "El indicador con este código ya existe." });
             }
 
             // Registrar el nuevo indicador
@@ -127,7 +127,7 @@ export const indicadoresController = {
             res.redirect(`/indicadores/gestionar/${cat_cod}`);
         } catch (error) {
             console.error("Error al eliminar el indicador:", error);
-            res.status(500).send("Error al eliminar el indicador.");
+            res.render("atraparErrores.ejs", { error: "No se puede eliminar este indicador, ya que tiene datos asociados." });
         }
     },
 

@@ -22,6 +22,10 @@ export const eventosController = {
         try {
             const { tpe_id, tpe_detalle } = req.body;
 
+            const existe = await TipoEvento.findByPk(tpe_id);
+
+            if (existe) return res.render("atraparErrores.ejs", { error: "Este id ya esta asociado a un tipo de evento" });
+
             await TipoEvento.create({
                 tpe_id,
                 tpe_detalle,
@@ -45,7 +49,7 @@ export const eventosController = {
             res.redirect("/eventos-sostenibles/tipos");
         } catch (error) {
             console.error("Error al eliminar el tipo de evento:", error);
-            res.status(500).send("Error al eliminar el tipo de evento.");
+            res.render("atraparErrores.ejs", { error: "No se puede eliminar este tipo de curso, ya que tiene datos asociados." });
         }
     },
 
@@ -144,6 +148,9 @@ export const eventosController = {
             const { id_eve, tpe_id, eve_detalle, eve_fecha, eve_por_estudiantes, eve_url } = req.body;
             const { camp_id } = req.params;
 
+            const existe = await TipoEvento.findByPk(tpe_id);
+            if (existe) return res.render("atraparErrores.ejs", { error: "Este id ya esta asociado a un evento" });
+
             await EventoSostenible.create({
                 id_eve,
                 tpe_id,
@@ -199,7 +206,7 @@ export const eventosController = {
             res.redirect(`/eventos-sostenibles/gestionar/${camp_id}`);
         } catch (error) {
             console.error("Error al eliminar el evento:", error);
-            res.status(500).send("Error al eliminar el evento.");
+            res.render("atraparErrores.ejs", { error: "No se puede eliminar este evento, ya que tiene datos asociados." });
         }
     },
 };

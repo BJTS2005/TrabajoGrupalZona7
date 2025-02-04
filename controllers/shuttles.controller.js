@@ -68,6 +68,10 @@ export const shuttlesController = {
             const { camp_id } = req.params;
             const { sti_id, tpe_id, sti_descripcion, sti_prom_pasajeros, sti_tot_viajes_dia } = req.body;
 
+            const shuttleExistente = await Shuttle.findByPk(sti_id);
+
+            if (shuttleExistente) return res.render("atraparErrores.ejs", { error: "Este id ya esta asociado a un servicio de transporte" });
+
             await Shuttle.create({
                 sti_id,
                 tpe_id,
@@ -125,7 +129,7 @@ export const shuttlesController = {
 
         } catch (error) {
             console.error("Error al eliminar el servicio:", error);
-            res.status(500).send("Error al eliminar el servicio.");
+            res.render("atraparErrores.ejs", { error: "No se puede eliminar este servicio de transporte, ya que tiene datos asociados." });
         }
     },
 };

@@ -81,7 +81,7 @@ export const miembrosController = {
             // Mejorar el manejo de errores para dar feedback más específico
             if (error.name === 'SequelizeUniqueConstraintError') {
                 // Si el error es por correo duplicado
-                res.status(400).send("El usuario con esa cedula ya está registrado.");
+                res.render("atraparErrores.ejs", { error: "Ya existe un usuario con esta cedula" });
             } else {
                 res.status(500).send("Error al registrar el usuario.");
             }
@@ -156,7 +156,7 @@ export const miembrosController = {
             res.redirect("/miembros");
         } catch (error) {
             console.error("Error al eliminar el miembro:", error);
-            res.status(500).send("Error al eliminar el miembro.");
+            res.render("atraparErrores.ejs", { error: "No se puede eliminar este miembro, ya que tiene datos asociados." });
         }
     },
 

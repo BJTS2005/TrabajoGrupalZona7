@@ -20,11 +20,9 @@ export const greenJobsController = {
         try {
             const { job_id, job_detalle } = req.body;
 
-            const GreenJobExistente = await GreenJob.findByPk(job_id);
+            const existente = await GreenJob.findByPk(job_id);
 
-            if (GreenJobExistente) {
-                return res.render("atraparErrores.ejs", { error: "Ya existe un Green job con ese id" });
-            }
+            if(existente) return res.render("atraparErrores.ejs", { error: "Este id ya esta asociado a un Green Job" });
 
             await GreenJob.create({
                 job_id,
@@ -34,7 +32,7 @@ export const greenJobsController = {
             res.redirect("/greenJobs/listar");
         } catch (error) {
             console.error("Error al registrar el Green Job:", error);
-            res.render("atraparErrores.ejs", { error });
+            res.status(500).send("Error al registrar el Green Job.");
         }
     },
 
@@ -79,7 +77,7 @@ export const greenJobsController = {
             res.redirect("/greenJobs/listar");
         } catch (error) {
             console.error("Error al eliminar el Green Job:", error);
-            res.status(500).send("Error al eliminar el Green Job.");
+            res.render("atraparErrores.ejs", { error: "No se puede eliminar este Green Job, ya que tiene datos asociados." });
         }
     },
 
@@ -151,7 +149,7 @@ export const greenJobsController = {
             });
 
             if (existente) {
-                return res.status(400).send("Este Green Job ya está registrado para este campus.");
+                return res.render("atraparErrores.ejs", { error: "Este id ya esta asociado a este Green Job" });
             }
 
             // Crear el registro si no existe
@@ -204,7 +202,7 @@ export const greenJobsController = {
             res.redirect(`/greenJobs/gestionar/${camp_id}`);
         } catch (error) {
             console.error("Error al eliminar el registro:", error);
-            res.status(500).send("Error al eliminar el registro.");
+            res.render("atraparErrores.ejs", { error: "No se puede eliminar esta categoría, ya que tiene datos asociados." });
         }
     },
 

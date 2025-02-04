@@ -22,6 +22,10 @@ export const infraestructurasController = {
         try {
             const { tpi_id, tpi_detalle } = req.body;
 
+            const existe = await TipoInfraestructura.findByPk(tpi_id);
+
+            if (existe) return res.render("atraparErrores.ejs", { error: "Este id ya esta asociado a un tipo de infraestructura" });
+
             await TipoInfraestructura.create({
                 tpi_id,
                 tpi_detalle,
@@ -43,7 +47,7 @@ export const infraestructurasController = {
             res.redirect('/infra-transporte/tipos');
         } catch (error) {
             console.error("Error al eliminar el tipo de infraestructura:", error);
-            res.status(500).send("Error al eliminar el tipo de infraestructura.");
+            res.render("atraparErrores.ejs", { error: "No se puede eliminar este tipo de infraestructura, ya que tiene datos asociados." });
         }
     },
 
@@ -132,6 +136,10 @@ export const infraestructurasController = {
             const { int_id, int_detalle, tpi_id, int_ubicacion, int_area } = req.body;
             const { camp_id } = req.params;
 
+            const existe = await InfraestructuraTransporte.findByPk(int_id);
+
+            if (existe) return res.render("atraparErrores.ejs", { error: "Este id ya esta asociado a una infraestructura" });
+
             await InfraestructuraTransporte.create({
                 int_id,
                 int_detalle,
@@ -188,7 +196,7 @@ export const infraestructurasController = {
             res.redirect(`/infra-transporte/gestionar/${camp_id}`);
         } catch (error) {
             console.error("Error al eliminar la infraestructura:", error);
-            res.status(500).send("Error al eliminar la infraestructura.");
+            res.render("atraparErrores.ejs", { error: "No se puede eliminar esta infraestructura, ya que tiene datos asociados." });
         }
     },
 };

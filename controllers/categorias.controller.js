@@ -22,6 +22,11 @@ export const categoriasController = {
         try {
             const { cat_cod, cat_nombre, cat_porc } = req.body;
 
+            const categoriaExistente = await Categoria.findByPk(cat_cod);
+
+            if(categoriaExistente) return res.render("atraparErrores.ejs", { error: "Este id ya esta asociado a una categoria" });
+
+
             // Validar que el porcentaje sea un número válido
             if (cat_porc < 0 || cat_porc > 100) {
                 return res.status(400).send("El porcentaje debe estar entre 0 y 100.");
@@ -32,7 +37,7 @@ export const categoriasController = {
             res.redirect("/categorias");
         } catch (error) {
             console.error("Error al guardar la categoría:", error);
-            res.status(500).send("Error al registrar la categoría.");
+            res.render("atraparErrores.ejs", {error});
         }
     },
 
@@ -80,7 +85,7 @@ export const categoriasController = {
             res.redirect("/categorias");
         } catch (error) {
             console.error("Error al eliminar la categoría:", error);
-            res.status(500).send("Error al eliminar la categoría.");
+            res.render("atraparErrores.ejs", { error: "No se puede eliminar esta categoría, ya que tiene datos asociados." });
         }
     },
 };

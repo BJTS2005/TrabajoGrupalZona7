@@ -69,6 +69,11 @@ export const sitiosWebController = {
             const { id_sit, sit_descripcion, sit_url, sit_activo, sit_es_reporte } = req.body;
             const { camp_id } = req.params;
 
+            const sitioWebExistente = await SitioWeb.findByPk(id_sit);
+
+
+            if (sitioWebExistente) return res.render("atraparErrores.ejs", { error: "Este id ya esta asociado a otro sitio web" });
+
             await SitioWeb.create({
                 id_sit,
                 camp_id,
@@ -124,7 +129,7 @@ export const sitiosWebController = {
             res.redirect(`/sitiosWeb/gestionar/${camp_id}`);
         } catch (error) {
             console.error("Error al eliminar el sitio web:", error);
-            res.status(500).send("Error al eliminar el sitio web.");
+            res.render("atraparErrores.ejs", { error: "No se puede eliminar este sitio web, ya que tiene datos asociados." });
         }
     },
 };

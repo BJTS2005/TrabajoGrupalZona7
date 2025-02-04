@@ -56,7 +56,7 @@ export const cursosController = {
             });
 
             if (cursoExistente) {
-                return res.status(400).send("Ya existe un curso con este ID.");
+                return res.render("atraparErrores.ejs", { error: "Este id ya esta asociado a un curso" });;
             }
 
             await Curso.create({
@@ -111,7 +111,7 @@ export const cursosController = {
             res.redirect(`/cursos/gestionar/${camp_id}`);
         } catch (error) {
             console.error("Error al eliminar el curso:", error);
-            res.status(500).send("Error al eliminar el curso.");
+            res.render("atraparErrores.ejs", { error: "No se puede eliminar este curso, ya que tiene datos asociados." });;
         }
     },
 };

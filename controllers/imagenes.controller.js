@@ -42,7 +42,7 @@ export const imagenesController = {
     guardarImagen: async (req, res) => {
         try {
             if (!req.file) {
-                return res.status(400).json({ error: 'No se envió ninguna imagen' });
+                return res.render("atraparErrores.ejs", { error: "Debe seleccionar una imagen para subir" });
             }
 
             const file = req.file;
@@ -52,9 +52,7 @@ export const imagenesController = {
             // Validar extensión
             if (!ALLOWED_EXTENSIONS.includes(ext)) {
                 fs.unlinkSync(file.path);
-                return res.status(400).json({ 
-                    error: 'Formato de archivo no permitido' 
-                });
+                return res.render("atraparErrores.ejs", { error: "Solo se admite imagenes .png" });
             }
 
             // El nombre del archivo ya incluye el ID del campus desde multer

@@ -20,6 +20,10 @@ export const vehiculosController = {
         try {
             const { tpe_id, tpe_detalle } = req.body;
 
+            const existe = await TipoEmision.findByPk(tpe_id);
+
+            if (existe) return res.render("atraparErrores.ejs", { error: "Este id ya esta asociado a un tipo de emision" });
+
             // Crear el nuevo tipo de emisión
             await TipoEmision.create({
                 tpe_id,
@@ -40,7 +44,7 @@ export const vehiculosController = {
             res.redirect('/vehiculos/tipos-emision');
         } catch (error) {
             console.error("Error al eliminar este tipo de emision:", error);
-            res.status(500).send("Error al eliminar este tipo de emision");
+            res.render("atraparErrores.ejs", { error: "No se puede eliminar este tipo de emision, ya que tiene datos asociados." });
         }
     },
     actualizarTpEmision: async (req, res) => {
@@ -81,6 +85,10 @@ export const vehiculosController = {
         try {
             const { fre_id, fre_detalle } = req.body;
 
+            const existe = await Frecuencia.findByPk(fre_id);
+
+            if (existe) return res.render("atraparErrores.ejs", { error: "Este id ya esta asociado a una frecuencia" });
+
             // Crear el nuevo tipo de emisión
             await Frecuencia.create({
                 fre_id,
@@ -101,7 +109,7 @@ export const vehiculosController = {
             res.redirect('/vehiculos/frecuencias');
         } catch (error) {
             console.error("Error al eliminar esta frecuencia:", error);
-            res.status(500).send("Error al eliminar esta frecuencia");
+            res.render("atraparErrores.ejs", { error: "No se puede eliminar esta frecuencia, ya que tiene datos asociados." });
         }
     },
     actualizarFrecuencia: async (req, res) => {
@@ -143,6 +151,10 @@ registrarTpVehiculo: async (req, res) => {
     try {
         const { tpv_id, tpv_detalle } = req.body;
 
+        const existe = await TipoVehiculo.findByPk(tpv_id);
+
+        if (existe) return res.render("atraparErrores.ejs", { error: "Este id ya esta asociado a un tipo de vehículo" });
+
         // Crear el nuevo tipo de vehículo
         await TipoVehiculo.create({
             tpv_id,
@@ -166,7 +178,7 @@ eliminarTpVehiculo: async (req, res) => {
         res.redirect('/vehiculos/tipos-vehiculo');
     } catch (error) {
         console.error("Error al eliminar este tipo de vehículo:", error);
-        res.status(500).send("Error al eliminar este tipo de vehículo.");
+        res.render("atraparErrores.ejs", { error: "No se puede eliminar este tipo de vehículo, ya que tiene datos asociados." });
     }
 },
 
@@ -260,6 +272,10 @@ registrarVehiculo: async (req, res) => {
             veh_distancia_aprox_recorrida,
         } = req.body;
 
+        const existe = await Vehiculo.findByPk(veh_id);
+
+        if (existe) return res.render("atraparErrores.ejs", { error: "Este id ya esta asociado a un vehículo" });
+
         const { camp_id } = req.params;
 
         await Vehiculo.create({
@@ -327,7 +343,7 @@ eliminarVehiculo: async (req, res) => {
         res.redirect(`/vehiculos/gestionar/${camp_id}`);
     } catch (error) {
         console.error("Error al eliminar el vehículo:", error);
-        res.status(500).send("Error al eliminar el vehículo.");
+        res.render("atraparErrores.ejs", { error: "No se puede eliminar este vehículo, ya que tiene datos asociados." });
     }
 },
 

@@ -37,6 +37,10 @@ export const campusController = {
                 fondo_sostenibilidad,
             } = req.body;
 
+            const campusExistente = await Campus.findByPk(camp_id);
+
+            if (campusExistente) return res.render("atraparErrores.ejs", { error: "Este id ya esta asociado a otro campus"});
+
             // Calcular densidad de población si el área es mayor a 0
             const camp_dens_pobla = camp_area > 0 ? camp_cant_pobla / camp_area : 0;
 
