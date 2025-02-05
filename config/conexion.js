@@ -1,16 +1,10 @@
 import { Sequelize } from "sequelize";
 
 
-const sequelize = new Sequelize('Proyecto_Integrador', 'GM_TE', 'GM_TE', {
-    host: 'databaseunified.postgres.database.azure.com',
+const sequelize = new Sequelize('Proyecto_Integrador', 'postgres', '1234', {
+    host: 'localhost',
     dialect: 'postgres',
     port: 5432,
-    dialectOptions: {
-        ssl: {
-            require: true, 
-            rejectUnauthorized: false, 
-        },
-    },
 });
 
 export const testDbConnection = async () => {
